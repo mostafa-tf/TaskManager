@@ -4,7 +4,13 @@ import { IoPersonSharp } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 const DashboardNavbar = () => {
   const navigate = useNavigate();
-  const logout = () => {
+  const logout = async () => {
+    await fetch("http://localhost:3000/api/users/logout", {
+      method: "PUT",
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     localStorage.removeItem("token");
 
     navigate("/login");
@@ -46,7 +52,6 @@ const DashboardNavbar = () => {
       <h2>Dashboard</h2>{" "}
       <button style={personbuttonstyle}>
         <NavLink to="profile">
-          
           <IoPersonSharp />
           Profile
         </NavLink>

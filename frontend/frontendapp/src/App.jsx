@@ -10,6 +10,7 @@ import { DoneTasks } from "./pages/DoneTasks.jsx";
 import { AllTasks } from "./pages/AllTasks.jsx";
 import { AddTasks } from "./pages/AddTasks.jsx";
 import { Profile } from "./pages/Profile.jsx";
+import { EditTask } from "./pages/EditTask.jsx";
 function App() {
   return (
     <>
@@ -30,6 +31,7 @@ function App() {
           <Route path="undonetasks" element={<UnDoneTasks />} />
           <Route path="addtask" element={<AddTasks />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="edittask" element={<EditTask />} />
         </Route>
       </Routes>
     </>

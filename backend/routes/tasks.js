@@ -36,6 +36,7 @@ router.post("/", verifytokenmiddleware, async (req, res) => {
   }
 });
 router.put("/:taskid", verifytokenmiddleware, async (req, res) => {
+  //to update checkboxstatus
   try {
     const user = await usermodel.findById(req.user.id);
 
@@ -105,5 +106,35 @@ router.delete("/:taskid", verifytokenmiddleware, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+router.get("/:taskid", verifytokenmiddleware, async (req, res) => {
+  const taskid = req.params.taskid;
 
+  try {
+    const task = await taskmodel.findOne({ _id: taskid });
+    if (!task) {
+      return res.status(404).json({ message: "task not found " });
+    }
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.put("/updatetask/:taskid", verifytokenmiddleware, async (req, res) => {
+  try {
+    console.log(req.method);
+    const updatedtask = await taskmodel.findByIdAndUpdate(
+      req.params.taskid,
+      { $set: req.body },
+      { new: true },
+    );
+
+    if (!updatedtask) {
+      return res.status(404).json({ message: "task not found " });
+    }
+    res.status(200).json({ message: "updated succesfully " });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 module.exports = router;

@@ -30,6 +30,8 @@ router.post("/login", async (req, res) => {
       { id: user._id, role: user.role },
       process.env.JWT_KEY,
     );
+    user.isActive = true;
+    await user.save();
     res.status(200).json({ token });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -91,5 +93,15 @@ router.put("/profile", verifytoken, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+});
+
+router.put("/logout", verifytoken, async (req, res) => {
+  //3mlt hyde l7ata e3ml isActive false y3ne offline
+  await usermodel.findByIdAndUpdate(req.user.id, {
+    $set: {
+      isActive: false,
+    },
+  });
+  res.status(200).json({ message: "succesfully logout " });
 });
 module.exports = router;

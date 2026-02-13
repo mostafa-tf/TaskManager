@@ -82,6 +82,7 @@ export const UnDoneTasks = () => {
               completedat={task.completedAt}
               deletefun={() => deletetask(task._id)}
               onChange={() => switchcheckbox(task._id)}
+              taskid={task._id}
             />
           );
         })}

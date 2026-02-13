@@ -1,5 +1,6 @@
 import { MdDelete } from "react-icons/md";
 import { TiPencil } from "react-icons/ti";
+import { useNavigate } from "react-router-dom";
 export const TaskStructure = ({
   title,
   description,
@@ -9,6 +10,7 @@ export const TaskStructure = ({
   completedat,
   deletefun,
   onChange,
+  taskid,
 }) => {
   const curtime = new Date();
   const taskdate = new Date(isexpired);
@@ -41,6 +43,7 @@ export const TaskStructure = ({
     right: "15px",
     bottom: "20px",
   };
+  const navigate = useNavigate();
   return (
     <div style={divstyle}>
       <button
@@ -49,6 +52,10 @@ export const TaskStructure = ({
           backgroundColor: "#008000",
           right: "100px",
           top: "0px",
+        }}
+        onClick={() => {
+          localStorage.setItem("taskid", taskid);
+          navigate("/dashboard/edittask");
         }}
       >
         <TiPencil />
