@@ -11,6 +11,7 @@ import { AllTasks } from "./pages/AllTasks.jsx";
 import { AddTasks } from "./pages/AddTasks.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import { EditTask } from "./pages/EditTask.jsx";
+import { AdminDashboard } from "./pages/AdminDashboard.jsx";
 function App() {
   return (
     <>
@@ -18,6 +19,14 @@ function App() {
         <Route path="/" element={<WelcomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route
+          path="/admindashboard"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={

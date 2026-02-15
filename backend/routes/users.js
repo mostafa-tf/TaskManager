@@ -12,6 +12,8 @@ const dotenvv = require("dotenv");
 dotenvv.config();
 const usermodel = require("../models/User.js");
 const verifytoken = require("../middlwares/verifytoken.js");
+const verifyadmin = require("../middlwares/verifyadmin.js");
+const taskmodel = require("../models/Task.js");
 router.post("/login", async (req, res) => {
   const { error } = validatelogin(req.body);
   if (error) {
@@ -31,6 +33,7 @@ router.post("/login", async (req, res) => {
       process.env.JWT_KEY,
     );
     user.isActive = true;
+    user.lastseen = null;
     await user.save();
     res.status(200).json({ token });
   } catch (err) {
@@ -86,6 +89,12 @@ router.put("/profile", verifytoken, async (req, res) => {
     return res.status(400).json({ message: error.details[0].message });
   }
   try {
+    const user = await usermodel.findOne({ email: req.body.email });
+    if (user) {
+      return res
+        .status(400)
+        .json({ message: "cannot update ,email already exists " });
+    }
     await usermodel.findByIdAndUpdate(req.user.id, {
       $set: req.body,
     });
@@ -100,8 +109,74 @@ router.put("/logout", verifytoken, async (req, res) => {
   await usermodel.findByIdAndUpdate(req.user.id, {
     $set: {
       isActive: false,
+      lastseen: Date.now(),
     },
   });
   res.status(200).json({ message: "succesfully logout " });
+});
+router.get("/checkrole", verifytoken, async (req, res) => {
+  try {
+    const user = await usermodel.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "user not found " });
+    }
+    return res.status(200).json({ role: user.role });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+router.get("/", verifytoken, verifyadmin, async (req, res) => {
+  //njeb kl users wkl tasks  lentba3on bl table
+  try {
+    const alluserswithtasksinfo = await usermodel.aggregate([
+      {
+        $lookup: {
+          from: "tasks",
+          localField: "_id",
+          foreignField: "userId",
+          as: "tasks",
+        },
+      },
+      {
+        $project: {
+          username: 1,
+          email: 1,
+          isActive: 1,
+          role: 1,
+          lastseen: 1,
+          createdAt: 1,
+          isbanned: 1,
+
+          nballtasks: { $size: "$tasks" },
+
+          nbdonetasks: {
+            $size: {
+              $filter: {
+                input: "$tasks",
+                as: "task",
+                cond: { $eq: ["$$task.isDone", true] },
+              },
+            },
+          },
+
+          nbundonetasks: {
+            $size: {
+              $filter: {
+                input: "$tasks",
+                as: "task",
+                cond: { $eq: ["$$task.isDone", false] },
+              },
+            },
+          },
+        },
+      },
+    ]);
+    if (alluserswithtasksinfo.length == 0) {
+      return res.status(404).json({ message: "no users available" });
+    }
+    res.status(200).json(alluserswithtasksinfo);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 module.exports = router;

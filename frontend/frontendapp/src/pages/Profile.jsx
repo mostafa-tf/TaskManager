@@ -46,7 +46,7 @@ export const Profile = () => {
         });
         if (res.status != 200) {
           const errormessage = await res.json();
-          throw new Error(errormessage);
+          throw new Error(errormessage.message);
         }
         alert("update sucesfully");
       } catch (error) {
