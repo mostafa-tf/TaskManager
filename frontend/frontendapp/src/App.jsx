@@ -12,6 +12,10 @@ import { AddTasks } from "./pages/AddTasks.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import { EditTask } from "./pages/EditTask.jsx";
 import { AdminDashboard } from "./pages/AdminDashboard.jsx";
+import { UpdateUser } from "./pages/UpdateUser.jsx";
+import { Feedback } from "./pages/Feedback.jsx";
+import { FeedbacksDashboard } from "./pages/FeedbacksDashboard.jsx";
+
 function App() {
   return (
     <>
@@ -24,6 +28,22 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admindashboard/feedbacks"
+          element={
+            <ProtectedRoute>
+              <FeedbacksDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admindashboard/updateuser"
+          element={
+            <ProtectedRoute>
+              <UpdateUser />
             </ProtectedRoute>
           }
         />
@@ -41,6 +61,7 @@ function App() {
           <Route path="addtask" element={<AddTasks />} />
           <Route path="profile" element={<Profile />} />
           <Route path="edittask" element={<EditTask />} />
+          <Route path="feedback" element={<Feedback />} />
         </Route>
       </Routes>
     </>

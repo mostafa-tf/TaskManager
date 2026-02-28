@@ -6,6 +6,7 @@ const {
   validatelogin,
   validatesignup,
   validateupdateprofile,
+  validateupdateuser,
 } = require("../joivalidate");
 const jwt = require("jsonwebtoken");
 const dotenvv = require("dotenv");
@@ -27,6 +28,9 @@ router.post("/login", async (req, res) => {
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) {
       return res.status(400).json({ message: "email or password is wrong " });
+    }
+    if (user.isbanned) {
+      return res.status(403).json({ message: "Cannot login! You Are Banned " });
     }
     const token = jwt.sign(
       { id: user._id, role: user.role },
@@ -128,49 +132,51 @@ router.get("/checkrole", verifytoken, async (req, res) => {
 router.get("/", verifytoken, verifyadmin, async (req, res) => {
   //njeb kl users wkl tasks  lentba3on bl table
   try {
-    const alluserswithtasksinfo = await usermodel.aggregate([
-      {
-        $lookup: {
-          from: "tasks",
-          localField: "_id",
-          foreignField: "userId",
-          as: "tasks",
+    const alluserswithtasksinfo = await usermodel
+      .aggregate([
+        {
+          $lookup: {
+            from: "tasks",
+            localField: "_id",
+            foreignField: "userId",
+            as: "tasks",
+          },
         },
-      },
-      {
-        $project: {
-          username: 1,
-          email: 1,
-          isActive: 1,
-          role: 1,
-          lastseen: 1,
-          createdAt: 1,
-          isbanned: 1,
+        {
+          $project: {
+            username: 1,
+            email: 1,
+            isActive: 1,
+            role: 1,
+            lastseen: 1,
+            createdAt: 1,
+            isbanned: 1,
 
-          nballtasks: { $size: "$tasks" },
+            nballtasks: { $size: "$tasks" },
 
-          nbdonetasks: {
-            $size: {
-              $filter: {
-                input: "$tasks",
-                as: "task",
-                cond: { $eq: ["$$task.isDone", true] },
+            nbdonetasks: {
+              $size: {
+                $filter: {
+                  input: "$tasks",
+                  as: "task",
+                  cond: { $eq: ["$$task.isDone", true] },
+                },
+              },
+            },
+
+            nbundonetasks: {
+              $size: {
+                $filter: {
+                  input: "$tasks",
+                  as: "task",
+                  cond: { $eq: ["$$task.isDone", false] },
+                },
               },
             },
           },
-
-          nbundonetasks: {
-            $size: {
-              $filter: {
-                input: "$tasks",
-                as: "task",
-                cond: { $eq: ["$$task.isDone", false] },
-              },
-            },
-          },
         },
-      },
-    ]);
+      ])
+      .sort({ nbdonetasks: -1 });
     if (alluserswithtasksinfo.length == 0) {
       return res.status(404).json({ message: "no users available" });
     }
@@ -179,4 +185,73 @@ router.get("/", verifytoken, verifyadmin, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+router.delete("/:useremail", verifytoken, verifyadmin, async (req, res) => {
+  try {
+    const user = await usermodel.findOne({ email: req.params.useremail });
+    await taskmodel.deleteMany({ userId: user._id });
+    await usermodel.deleteOne({ email: req.params.useremail });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+  res.status(200).json({ message: "delete succesfully" });
+});
+router.put(
+  "/toggleblock/:useremail",
+  verifytoken,
+  verifyadmin,
+  async (req, res) => {
+    try {
+      const user = await usermodel.findOne({ email: req.params.useremail });
+      user.isbanned = !user.isbanned;
+      if (user.isbanned) {
+        user.isActive = false;
+      }
+
+      await user.save();
+      return res.status(200).json({ message: "updated succesfully " });
+    } catch (error) {
+      res.status(500).json({ message: "error in server" });
+    }
+  },
+);
+router.get("/userinfo/:userid", verifytoken, verifyadmin, async (req, res) => {
+  //hwn l admin 3m yjeb user info
+  const userid = req.params.userid;
+  try {
+    const user = await usermodel.findOne({ _id: userid });
+    if (!user) {
+      return res.status(404).json({ message: "user not found " });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.put(
+  "/updateuser/:userid",
+  verifytoken,
+  verifyadmin,
+  async (req, res) => {
+    try {
+      const { error } = validateupdateuser(req.body);
+      if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+      }
+
+      const updateduser = await usermodel.findByIdAndUpdate(
+        req.params.userid,
+        { $set: req.body },
+        { new: true },
+      );
+      if (!updateduser) {
+        return res.status(400).json({ message: "user not found " });
+      }
+
+      res.status(200).json({ message: "updated" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+);
 module.exports = router;

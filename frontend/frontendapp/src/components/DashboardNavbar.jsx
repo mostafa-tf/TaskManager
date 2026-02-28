@@ -74,6 +74,14 @@ const DashboardNavbar = () => {
     fontSize: "20px",
     color: "#A52A2A",
   };
+  const feedbackbuttonstyle = {
+    width: "100px",
+    height: "50px",
+    marginBottom: "15px",
+    marginLeft: "20px",
+    fontSize: "20px",
+    color: "#A52A2A",
+  };
   useEffect(() => {
     isadmin();
   }, []);
@@ -92,6 +100,12 @@ const DashboardNavbar = () => {
         <NavLink to="profile">
           <IoPersonSharp />
           Profile
+        </NavLink>
+      </button>
+      <button style={feedbackbuttonstyle}>
+        <NavLink to="feedback">
+          <IoPersonSharp />
+          Feedback
         </NavLink>
       </button>
       <button style={buttonstyle} onClick={logout}>

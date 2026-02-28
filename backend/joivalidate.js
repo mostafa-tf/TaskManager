@@ -31,9 +31,27 @@ function validateupdateprofile(reqbody) {
   });
   return schema.validate(reqbody);
 }
+function validateupdateuser(reqbody) {
+  const schema = Joi.object({
+    email: Joi.string().email().min(11).max(35).required(),
+    username: Joi.string().required().min(2).max(20),
+    role: Joi.string().valid("user", "admin").required(),
+  });
+  return schema.validate(reqbody);
+}
+function validatecreatefeedback(reqbody) {
+  const schema = Joi.object({
+    rating: Joi.number().required().valid(1, 2, 3, 4, 5),
+    message: Joi.string().min(4).max(80).required(),
+  });
+  return schema.validate(reqbody);
+}
+
 module.exports = {
   validatelogin,
   validatesignup,
   validatenewtask,
   validateupdateprofile,
+  validateupdateuser,
+  validatecreatefeedback,
 };

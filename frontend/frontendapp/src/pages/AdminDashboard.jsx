@@ -1,6 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
+import { FeedbacksDashboard } from "./FeedbacksDashboard";
+
 export const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
 
@@ -24,7 +26,35 @@ export const AdminDashboard = () => {
     border: "3px solid green",
     cursor: "pointer",
   };
-
+  const deleteuser = async (email) => {
+    setUsers(
+      users.filter((user) => {
+        return user.email != email;
+      }),
+    );
+    fetch(`http://localhost:3000/api/users/${email}`, {
+      method: "DELETE",
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+  };
+  const toggleblock = async (email) => {
+    setUsers(
+      users.map((user) => {
+        if (user.email == email) {
+          user.isbanned = !user.isbanned;
+        }
+        return user;
+      }),
+    );
+    await fetch(`http://localhost:3000/api/users/toggleblock/${email}`, {
+      method: "PUT",
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+  };
   const fetchallusersandtasks = async () => {
     try {
       const userandtasksjson = await fetch("http://localhost:3000/api/users", {
@@ -59,15 +89,15 @@ export const AdminDashboard = () => {
     const lastseen = new Date(datestring);
     const seconds = Math.floor((now - lastseen) / 1000);
     if (seconds < 60) {
-      return "JustNow";
+      return "Just now";
     } else if (seconds < 3600) {
-      return Math.floor(seconds / 60) + " minute ago";
+      return Math.floor(seconds / 60) + " minutes ago";
     } else if (seconds < 86400) {
       return Math.floor(seconds / 3600) + " hours ago";
-    } else if (seconds < 604800) {
+    } else if (seconds < 2629746) {
       return Math.floor(seconds / 86400) + " days ago";
     } else {
-      return Math.floor(seconds / 604800) + " months ago ";
+      return Math.floor(seconds / 2629746) + " months ago";
     }
   };
   return (
@@ -106,7 +136,7 @@ export const AdminDashboard = () => {
             <thead>
               <th>Username</th>
               <th>Email</th>
-              <th>IsActive</th>
+              <th>Status</th>
               <th>LastSeen</th>
               <th>role</th>
               <th>Date Joined</th>
@@ -121,7 +151,7 @@ export const AdminDashboard = () => {
                   <tr key={user._id}>
                     <td>{user.username}</td>
                     <td>{user.email}</td>
-                    <td>{user.isActive ? "Active" : "Offline"}</td>
+                    <td>{user.isActive ? "Online 🟢" : "Inactive⚫"}</td>
                     <td>
                       {!user.isActive ? findlastseen(user.lastseen) : "--"}
                     </td>
@@ -141,8 +171,20 @@ export const AdminDashboard = () => {
                       %
                     </td>
                     <td>
-                      <button>Delete</button> <button>Update</button>
-                      <button>{user.isbanned ? "UnBlock" : "Block"}</button>
+                      <button onClick={() => deleteuser(user.email)}>
+                        Delete
+                      </button>{" "}
+                      <button
+                        onClick={() => {
+                          localStorage.setItem("userid", user._id);
+                          navigate("updateuser");
+                        }}
+                      >
+                        Update
+                      </button>
+                      <button onClick={() => toggleblock(user.email)}>
+                        {user.isbanned ? "UnBlock" : "Block"}
+                      </button>
                     </td>
                   </tr>
                 );
@@ -151,6 +193,9 @@ export const AdminDashboard = () => {
           </table>
         )}
       </main>
+      <h1 style={{ textAlign: "center" }}>
+        <NavLink to="feedbacks">View FeedBacks</NavLink>
+      </h1>
     </>
   );
 };
