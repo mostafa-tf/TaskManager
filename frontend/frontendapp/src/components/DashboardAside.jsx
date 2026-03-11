@@ -1,52 +1,74 @@
 import { NavLink } from "react-router-dom";
 import { IoIosAddCircle } from "react-icons/io";
+import { FcStatistics } from "react-icons/fc";
+import { FaTasks } from "react-icons/fa";
+import { MdDone } from "react-icons/md";
+import { MdPending } from "react-icons/md";
+
 const DashboardAside = () => {
   const asidestyle = {
-    borderRight: "3px solid green",
-    backgroundColor: "black",
     gridArea: "aside",
+    background: "#0b1210",
+    borderRight: "1px solid #1f3d2e",
     display: "flex",
-    fontSize: "25px",
-    gap: "70px",
     flexDirection: "column",
-    justifyContent: "center",
+    paddingTop: "40px",
+    gap: "20px",
     alignItems: "center",
   };
-  const stylenavlink = ({ isActive }) => {
-    return isActive
-      ? {
-          color: "red",
-          textDecoration: "none",
-          fontWeight: "bold",
-          fontFamily: "Georgia",
-        }
-      : { color: "blue", textDecoration: "underline", fontWeight: "normal" };
+
+  const navItem = {
+    width: "85%",
+    height: "45px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: "10px",
+    paddingLeft: "15px",
+    borderRadius: "10px",
+    fontSize: "16px",
+    fontWeight: "600",
   };
+
+  const stylenavlink = ({ isActive }) => ({
+    ...navItem,
+    textDecoration: "none",
+    color: isActive ? "#00ff9d" : "#eafff4",
+    background: isActive ? "rgba(0,255,140,0.12)" : "transparent",
+    border: isActive
+      ? "1px solid rgba(0,255,140,0.2)"
+      : "1px solid transparent",
+    transition: "all 0.25s ease",
+  });
 
   return (
     <aside style={asidestyle}>
       <NavLink to="" end style={stylenavlink}>
+        <FaTasks size={18} />
         All Tasks
       </NavLink>
-      <NavLink style={stylenavlink} to="donetasks">
+
+      <NavLink to="donetasks" style={stylenavlink}>
+        <MdDone size={20} />
         Done Tasks
       </NavLink>
-      <NavLink style={stylenavlink} to="undonetasks">
+
+      <NavLink to="undonetasks" style={stylenavlink}>
+        <MdPending size={20} />
         Pending Tasks
       </NavLink>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {" "}
-        <NavLink style={stylenavlink} to="addtask">
-          Add task <IoIosAddCircle size={18} style={{ marginBottom: 0 }} />
-        </NavLink>{" "}
-      </div>
+
+      <NavLink to="addtask" style={stylenavlink}>
+        <IoIosAddCircle size={20} />
+        Add Task
+      </NavLink>
+
+      <NavLink to="/analysis" style={stylenavlink}>
+        <FcStatistics size={20} />
+        Analysis
+      </NavLink>
     </aside>
   );
 };
+
 export default DashboardAside;

@@ -1,10 +1,31 @@
 import { useState, useEffect } from "react";
 import { TaskStructure } from "../components/TaskStructure";
 import { RiTaskLine } from "react-icons/ri";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const AllTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [notasks, setNoTasks] = useState(false);
+  const [titlefilter, setTitleFilter] = useState("");
+  const [calenderdate, setCalenderDate] = useState(null);
+  const [priorityfilter, setPriorityFilter] = useState("");
+  const changepriorityfilter = (e) => {
+    setPriorityFilter(e.target.value);
+  };
+
+  const filteredtasks = tasks.filter((task) => {
+    const date = calenderdate
+      ? calenderdate.toLocaleDateString("en-CA") // يعطي YYYY-MM-DD
+      : "";
+    return (
+      task.title.startsWith(titlefilter) &&
+      task.dueDate.startsWith(date) &&
+      task.priority.startsWith(priorityfilter)
+    );
+  });
+  const filterdiv = {};
+
   async function fetchalltasks() {
     setNoTasks(false);
     setTasks([]);
@@ -30,6 +51,9 @@ export const AllTasks = () => {
   useEffect(() => {
     fetchalltasks();
   }, []);
+  const handlecalenderchange = (d) => {
+    setCalenderDate(d);
+  };
   const switchcheckbox = async (taskid) => {
     alert(taskid);
 
@@ -69,7 +93,29 @@ export const AllTasks = () => {
         {notasks && (
           <h1 style={{ color: "green", marginLeft: "40%" }}>No Tasks Found</h1>
         )}
-        {tasks.map((task, index) => {
+        <div style={filterdiv}>
+          {" "}
+          Search By Title
+          <input
+            type="text"
+            value={titlefilter}
+            onChange={(e) => setTitleFilter(e.target.value)}
+          />
+          <DatePicker
+            placeholderText="Select date"
+            selected={calenderdate}
+            dateFormat="yyyy-MM-dd"
+            onChange={handlecalenderchange}
+          />
+          Filter By Priority{" "}
+          <select value={priorityfilter} onChange={changepriorityfilter}>
+            <option value="">Filter By Priority</option>
+            <option value="low">low</option>
+            <option value="med">medium</option>
+            <option value="high">high</option>
+          </select>
+        </div>
+        {filteredtasks.map((task, index) => {
           return (
             <TaskStructure
               key={task._id}
@@ -82,6 +128,8 @@ export const AllTasks = () => {
               deletefun={() => deletetask(task._id)}
               onChange={() => switchcheckbox(task._id)}
               taskid={task._id}
+              starthour={task.starthour}
+              endhour={task.endhour}
             />
           );
         })}

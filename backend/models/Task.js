@@ -37,6 +37,14 @@ const taskSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    starthour: {
+      type: String,
+      default: "00:00",
+    },
+    endhour: {
+      type: String,
+      default: "23:59",
+    },
   },
   { timestamps: true },
 );

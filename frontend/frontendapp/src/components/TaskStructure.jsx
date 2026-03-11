@@ -1,6 +1,7 @@
 import { MdDelete } from "react-icons/md";
 import { TiPencil } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
+import { IoAlarm } from "react-icons/io5";
 export const TaskStructure = ({
   title,
   description,
@@ -11,10 +12,14 @@ export const TaskStructure = ({
   deletefun,
   onChange,
   taskid,
+  starthour,
+  endhour,
 }) => {
   const curtime = new Date();
-  const taskdate = new Date(isexpired);
+  let taskdate = new Date(isexpired);
+  taskdate.setDate(taskdate.getDate() + 1); // hwn 3m zed 1 day
   let copy;
+
   let color = "";
   if (completed) {
     color = "green";
@@ -25,7 +30,17 @@ export const TaskStructure = ({
       color = "silver";
     }
   }
+  const expirestime = (curdate, taskdate) => {
+    const diff = Math.floor((taskdate - curdate) / 1000);
 
+    if (diff < 0) return "Expired";
+    if (diff < 60) return `${diff} seconds`;
+    if (diff < 3600) return `${Math.floor(diff / 60)} minutes`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hours`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)} days`;
+    if (diff < 2419200) return `${Math.floor(diff / 604800)} weeks`;
+    return `${Math.floor(diff / 2419200)} months`;
+  };
   const divstyle = {
     width: "65%",
     height: "150px",
@@ -78,14 +93,29 @@ export const TaskStructure = ({
       <h3 style={{ marginLeft: "20px", marginTop: "9px" }}>
         Priority:{priority}
       </h3>
+      <h3>
+        <IoAlarm /> :{starthour}-{endhour}
+      </h3>
       <h3 style={{ marginLeft: "20px", marginTop: "9px" }}>
         {completed && (
           <p>
             Completed At:
-            {completedat.slice(0, 19).replace("Z", " ")}
+            {completedat.slice(0, 19).replace("T", " ")}
           </p>
         )}
-        {taskdate < curtime && <p style={{ color: "red" }}>Expired</p>}
+        {taskdate < curtime && !completed ? (
+          <p style={{ color: "red" }}>Expired</p>
+        ) : (
+          ""
+        )}
+        {taskdate > curtime && !completed ? (
+          <p style={{ color: "red" }}>
+            Expires In {expirestime(curtime, taskdate)} (
+            {isexpired.slice(0, 10)})
+          </p>
+        ) : (
+          ""
+        )}
       </h3>
       <input
         type="checkbox"

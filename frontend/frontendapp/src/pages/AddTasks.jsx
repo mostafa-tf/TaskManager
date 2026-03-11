@@ -1,13 +1,20 @@
 import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 export const AddTasks = () => {
   const [taskinfo, setTaskInfo] = useState({
     title: "",
     priority: "",
     dueDate: null,
     description: "",
+    starthour: "00:00",
+    endhour: "23:59",
   });
   const [inserted, setInserted] = useState(false);
   const [error, setError] = useState("");
+  const [tasktime, setTaskTime] = useState("allday");
+
   const handlesubmit = async (e) => {
     setError("");
     setInserted(false);
@@ -31,34 +38,175 @@ export const AddTasks = () => {
       setError(error.message);
     }
   };
+
+  const refreshhour = () => {
+    setTaskInfo((prev) => {
+      return { ...prev, starthour: "00:00", endhour: "23:59" };
+    });
+  };
+
+  const pageStyle = {
+    display: "flex",
+    width: "100%",
+    minHeight: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "40px 20px",
+    boxSizing: "border-box",
+    background:
+      "radial-gradient(circle at top, rgba(0,255,140,0.10), transparent 28%), linear-gradient(135deg, #07110d 0%, #0b1d15 45%, #08110c 100%)",
+  };
+
+  const cardStyle = {
+    width: "100%",
+    maxWidth: "720px",
+    borderRadius: "30px",
+    background: "rgba(255,255,255,0.06)",
+    border: "1px solid rgba(0,255,140,0.16)",
+    boxShadow: "0 24px 70px rgba(0,0,0,0.42)",
+    backdropFilter: "blur(16px)",
+    WebkitBackdropFilter: "blur(16px)",
+    padding: "34px 32px",
+    boxSizing: "border-box",
+  };
+
+  const titleStyle = {
+    margin: 0,
+    color: "#ffffff",
+    fontSize: "34px",
+    fontWeight: "800",
+    textAlign: "center",
+    letterSpacing: "0.4px",
+  };
+
+  const subtitleStyle = {
+    marginTop: "10px",
+    marginBottom: "28px",
+    color: "rgba(255,255,255,0.72)",
+    textAlign: "center",
+    fontSize: "15px",
+    lineHeight: "1.7",
+  };
+
+  const formStyle = {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "18px 18px",
+  };
+
+  const fullWidth = {
+    gridColumn: "1 / -1",
+  };
+
+  const fieldStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+  };
+
+  const labelStyle = {
+    color: "#dffff0",
+    fontSize: "14px",
+    fontWeight: "700",
+    letterSpacing: "0.3px",
+  };
+
+  const inputStyle = {
+    width: "100%",
+    height: "48px",
+    borderRadius: "14px",
+    border: "1px solid rgba(0,255,140,0.20)",
+    background: "rgba(255,255,255,0.07)",
+    color: "#ffffff",
+    padding: "0 14px",
+    outline: "none",
+    fontSize: "15px",
+    boxSizing: "border-box",
+  };
+
+  const selectStyle = {
+    ...inputStyle,
+    cursor: "pointer",
+  };
+
+  const textareaStyle = {
+    width: "100%",
+    minHeight: "140px",
+    borderRadius: "16px",
+    border: "1px solid rgba(0,255,140,0.20)",
+    background: "rgba(255,255,255,0.07)",
+    color: "#ffffff",
+    padding: "14px",
+    outline: "none",
+    fontSize: "15px",
+    resize: "none",
+    boxSizing: "border-box",
+    lineHeight: "1.7",
+  };
+
+  const radioWrapper = {
+    ...fullWidth,
+    display: "flex",
+    alignItems: "center",
+    gap: "18px",
+    flexWrap: "wrap",
+    padding: "10px 14px",
+    borderRadius: "14px",
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(0,255,140,0.12)",
+    color: "#eafff4",
+  };
+
+  const timeFieldsWrapper = {
+    ...fullWidth,
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "18px",
+  };
+
+  const buttonStyle = {
+    width: "100%",
+    height: "54px",
+    borderRadius: "16px",
+    border: "none",
+    background: "linear-gradient(135deg, #00c853, #00e676)",
+    color: "#08110c",
+    fontSize: "16px",
+    fontWeight: "800",
+    cursor: "pointer",
+    boxShadow: "0 14px 30px rgba(0, 200, 83, 0.28)",
+    transition: "all 0.3s ease",
+  };
+
+  const messageStyle = {
+    gridColumn: "1 / -1",
+    margin: 0,
+    fontSize: "14px",
+    fontWeight: "700",
+  };
+
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          width: "100%",
-          height: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "green",
-        }}
-      >
+    <div style={pageStyle}>
+      <div style={cardStyle}>
+        <h2 style={titleStyle}>Add Your Task</h2>
+        <p style={subtitleStyle}>
+          Create a new task, set its priority, due date, and manage the time in
+          a clean and organized way.
+        </p>
+
         <div
           style={{
-            width: "350px",
-            height: "400px",
-            backgroundColor: "gold",
-            textAlign: "center",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "4px",
+            width: "80px",
+            height: "4px",
+            borderRadius: "999px",
+            background: "linear-gradient(90deg, #00c853, #b7ffd5)",
+            margin: "0 auto 26px",
           }}
-        >
-          <h2 style={{ borderBottom: "1px solid green" }}>Add Your Task</h2>
-          <form onSubmit={handlesubmit}>
-            Task Title{" "}
+        />
+
+        <form onSubmit={handlesubmit} style={formStyle}>
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Task Title</label>
             <input
               type="text"
               value={taskinfo.title}
@@ -70,9 +218,13 @@ export const AddTasks = () => {
               required
               minLength={2}
               maxLength={15}
+              style={inputStyle}
+              placeholder="Enter task title"
             />
-            <br />
-            Task Priority{" "}
+          </div>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Task Priority</label>
             <select
               value={taskinfo.priority}
               onChange={(e) =>
@@ -80,14 +232,17 @@ export const AddTasks = () => {
                   return { ...prev, priority: e.target.value };
                 })
               }
+              style={selectStyle}
             >
               <option value="">Select Priority</option>
               <option value="low">Low Priority</option>
               <option value="medium">Medium Priority</option>
               <option value="high">High Priority</option>
             </select>
-            <br />
-            DueDate{" "}
+          </div>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Due Date</label>
             <input
               type="date"
               value={taskinfo.dueDate}
@@ -97,9 +252,74 @@ export const AddTasks = () => {
                 })
               }
               required
+              style={inputStyle}
             />
-            <br />
-            Description{" "}
+          </div>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Task Type</label>
+            <div style={radioWrapper}>
+              <span style={{ fontWeight: "700" }}>Time</span>
+              <input
+                type="radio"
+                value="time"
+                checked={tasktime == "time"}
+                onChange={(e) => setTaskTime(e.target.value)}
+              />
+
+              <span style={{ fontWeight: "700" }}>All Day</span>
+              <input
+                type="radio"
+                checked={tasktime == "allday"}
+                value="allday"
+                onChange={(e) => {
+                  setTaskTime(e.target.value);
+                  refreshhour();
+                }}
+              />
+            </div>
+          </div>
+
+          {tasktime == "time" && (
+            <div style={timeFieldsWrapper}>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>Start Hour</label>
+                <input
+                  type="text"
+                  placeholder="HH:MM"
+                  pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                  required={true}
+                  value={taskinfo.starthour}
+                  onChange={(e) =>
+                    setTaskInfo((prev) => {
+                      return { ...prev, starthour: e.target.value };
+                    })
+                  }
+                  style={inputStyle}
+                />
+              </div>
+
+              <div style={fieldStyle}>
+                <label style={labelStyle}>End Hour</label>
+                <input
+                  type="text"
+                  placeholder="HH:MM"
+                  pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                  required={true}
+                  value={taskinfo.endhour}
+                  onChange={(e) =>
+                    setTaskInfo((prev) => {
+                      return { ...prev, endhour: e.target.value };
+                    })
+                  }
+                  style={inputStyle}
+                />
+              </div>
+            </div>
+          )}
+
+          <div style={{ ...fieldStyle, ...fullWidth }}>
+            <label style={labelStyle}>Description</label>
             <textarea
               value={taskinfo.description}
               rows={5}
@@ -109,21 +329,41 @@ export const AddTasks = () => {
                   return { ...prev, description: e.target.value };
                 })
               }
+              style={textareaStyle}
+              placeholder="Write task description..."
             />
-            <br />
+          </div>
+
+          <div style={fullWidth}>
             <button
               type="submit"
-              style={{ marginLeft: "130px", width: "100px", height: "80px" }}
+              style={buttonStyle}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow =
+                  "0 18px 34px rgba(0, 200, 83, 0.35)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 14px 30px rgba(0, 200, 83, 0.28)";
+              }}
             >
-              Save task
+              Save Task
             </button>
-            {error && <p color="red">error</p>}
-            {inserted && (
-              <h2 style={{ color: "green" }}>Inserted To The Database</h2>
-            )}
-          </form>
-        </div>
+          </div>
+
+          {error && (
+            <p style={{ ...messageStyle, color: "#ff7b7b" }}>{error}</p>
+          )}
+
+          {inserted && (
+            <h3 style={{ ...messageStyle, color: "#60ff9c" }}>
+              Inserted To The Database
+            </h3>
+          )}
+        </form>
       </div>
-    </>
+    </div>
   );
 };

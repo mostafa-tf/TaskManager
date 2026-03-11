@@ -15,7 +15,9 @@ import { AdminDashboard } from "./pages/AdminDashboard.jsx";
 import { UpdateUser } from "./pages/UpdateUser.jsx";
 import { Feedback } from "./pages/Feedback.jsx";
 import { FeedbacksDashboard } from "./pages/FeedbacksDashboard.jsx";
-
+import { Analysis } from "./pages/Analysis.jsx";
+import { ForgotPassword } from "./pages/ForgotPassword.jsx";
+import { ResetPassword } from "./pages/ResetPassword.jsx";
 function App() {
   return (
     <>
@@ -31,6 +33,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/resetpassword" element={<ResetPassword />} />
         <Route
           path="/admindashboard/feedbacks"
           element={
@@ -39,6 +42,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route
           path="/admindashboard/updateuser"
           element={
@@ -63,6 +68,14 @@ function App() {
           <Route path="edittask" element={<EditTask />} />
           <Route path="feedback" element={<Feedback />} />
         </Route>
+        <Route
+          path="/analysis"
+          element={
+            <ProtectedRoute>
+              <Analysis />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

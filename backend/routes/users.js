@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const resetpasswordtoken = require("../middlwares/resetpasswordtoken.js");
+
 const {
   validatelogin,
   validatesignup,
@@ -254,4 +257,54 @@ router.put(
     }
   },
 );
+
+router.post("/forgotpassword", async (req, res) => {
+  try {
+    const user = await usermodel.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).json({ message: "user not  found" });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_KEY,
+      { expiresIn: "15m" },
+    );
+
+    const resetLink = `http://localhost:5173/resetpassword?token=${token}`;
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: process.env.MAIL_USER, pass: process.env.MAIL_PASS },
+    });
+    await transporter.sendMail({
+      from: process.env.MAIL_USER,
+      to: user.email,
+      subject: "Reset Your Password",
+      html: `
+        <h3>Password Reset</h3>
+        <p>You requested to reset your password.</p>
+        <p>This link will expire in 15 minutes.</p>
+             <a href="${resetLink}">Reset Password</a>
+      `,
+    });
+    res.status(200).json({ message: "reset link send to your email checkit" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.put("/resetpassword", resetpasswordtoken, async (req, res) => {
+  const password = req.body.password;
+  const salt = await bcrypt.genSalt(10);
+  const hashedpass = await bcrypt.hash(password, salt);
+
+  try {
+    await usermodel.findByIdAndUpdate(req.user.id, {
+      password: hashedpass,
+    });
+    res.status(200).json({ message: "updated sucesfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 module.exports = router;

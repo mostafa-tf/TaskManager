@@ -6,6 +6,9 @@ export const EditTask = () => {
   const [description, setDescription] = useState("");
   const [dueDate, setdueDate] = useState("");
   const [priority, setPriority] = useState("");
+  const [starthour, setStartHour] = useState("");
+  const [endhour, setEndHour] = useState("");
+  const [tasktime, setTaskTime] = useState("");
 
   const divstyle = {
     width: "100%",
@@ -42,6 +45,13 @@ export const EditTask = () => {
       setDescription(taskinfo.description);
       setdueDate(taskinfo.dueDate.split("T")[0]);
       setPriority(taskinfo.priority);
+      setStartHour(taskinfo.starthour);
+      setEndHour(taskinfo.endhour);
+      setTaskTime(
+        taskinfo.starthour == "00:00" && taskinfo.endhour == "23:59"
+          ? "allday"
+          : "time",
+      );
     } catch (error) {
       alert(error.message);
     }
@@ -58,7 +68,14 @@ export const EditTask = () => {
             "Content-Type": "application/json",
             authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({ dueDate, description, priority, title }),
+          body: JSON.stringify({
+            dueDate,
+            description,
+            priority,
+            title,
+            starthour,
+            endhour,
+          }),
         },
       );
       if (res.status != 200) {
@@ -100,6 +117,52 @@ export const EditTask = () => {
           onChange={(e) => setdueDate(e.target.value)}
           required
         />
+        <div>
+          Type:{"  "} Time
+          <input
+            type="radio"
+            checked={tasktime == "time"}
+            onChange={(e) => setTaskTime("time")}
+            value="time"
+          />{" "}
+          Allday
+          <input
+            type="radio"
+            checked={tasktime == "allday"}
+            onChange={(e) => {
+              setTaskTime("allday");
+              setStartHour("00:00");
+              setEndHour("23:59");
+            }}
+            value="allday"
+          />
+          {tasktime == "time" && (
+            <>
+              <br />
+              Start Hour
+              <input
+                type="text"
+                placeholder="HH:MM"
+                pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                style={{ width: "60px" }}
+                required={true}
+                value={starthour}
+                onChange={(e) => setStartHour(e.target.value)}
+              />
+              End Hour
+              <input
+                type="text"
+                placeholder="HH:MM"
+                pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                style={{ width: "60px" }}
+                required={true}
+                value={endhour}
+                onChange={(e) => setEndHour(e.target.value)}
+              />
+            </>
+          )}
+        </div>
+        {}
         Description{" "}
         <textarea
           cols={25}

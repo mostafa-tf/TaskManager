@@ -7,7 +7,9 @@ const verifyadminmiddleware = require("../middlwares/verifyadmin.js");
 const { validatenewtask } = require("../joivalidate.js");
 router.get("/", verifytokenmiddleware, async (req, res) => {
   try {
-    const alltasks = await taskmodel.find({ userId: req.user.id });
+    const alltasks = await taskmodel
+      .find({ userId: req.user.id })
+      .sort({ dueDate: 1 });
     if (alltasks.length == 0) {
       return res.status(404).json({ message: "no tasks found " });
     }
@@ -28,6 +30,8 @@ router.post("/", verifytokenmiddleware, async (req, res) => {
       dueDate: req.body.dueDate,
       priority: req.body.priority || "low",
       userId: req.user.id,
+      starthour: req.body.starthour,
+      endhour: req.body.endhour,
     });
 
     return res.status(201).json(task);
@@ -60,10 +64,12 @@ router.put("/:taskid", verifytokenmiddleware, async (req, res) => {
 
 router.get("/done", verifytokenmiddleware, async (req, res) => {
   try {
-    const donetasks = await taskmodel.find({
-      userId: req.user.id,
-      isDone: true,
-    });
+    const donetasks = await taskmodel
+      .find({
+        userId: req.user.id,
+        isDone: true,
+      })
+      .sort({ dueDate: 1 });
     if (donetasks.length == 0) {
       return res.status(404).json({ message: "No Done Tasks Available" });
     }
@@ -74,10 +80,12 @@ router.get("/done", verifytokenmiddleware, async (req, res) => {
 });
 router.get("/undone", verifytokenmiddleware, async (req, res) => {
   try {
-    const undonetasks = await taskmodel.find({
-      userId: req.user.id,
-      isDone: false,
-    });
+    const undonetasks = await taskmodel
+      .find({
+        userId: req.user.id,
+        isDone: false,
+      })
+      .sort({ dueDate: 1 });
     if (undonetasks.length == 0) {
       return res.status(404).json({ message: "No Done Tasks Available" });
     }
@@ -122,7 +130,6 @@ router.get("/:taskid", verifytokenmiddleware, async (req, res) => {
 
 router.put("/updatetask/:taskid", verifytokenmiddleware, async (req, res) => {
   try {
-    console.log(req.method);
     const updatedtask = await taskmodel.findByIdAndUpdate(
       req.params.taskid,
       { $set: req.body },

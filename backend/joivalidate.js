@@ -21,6 +21,8 @@ function validatenewtask(reqbody) {
     dueDate: Joi.string().required(),
     priority: Joi.string().valid("", "low", "medium", "high"),
     description: Joi.string().max(80).allow(""),
+    starthour: Joi.string().required(),
+    endhour: Joi.string().required(),
   });
   return schema.validate(reqbody);
 }
