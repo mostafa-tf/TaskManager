@@ -5,12 +5,14 @@ const app = express();
 const cors = require("cors");
 const taskspage = require("./routes/tasks.js");
 const feedbackspage = require("./routes/feedbacks.js");
+const friendshippage = require("./routes/friendship.js");
 app.use(cors());
 app.use(express.json());
 
 connectdb();
 app.use("/api/tasks", taskspage);
 app.use("/api/feedbacks", feedbackspage);
+app.use("/api/friendship", friendshippage);
 
 app.use("/api/users", userspage);
 app.get("/", (req, res) => {

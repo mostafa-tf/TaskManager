@@ -4,6 +4,7 @@ import { FcStatistics } from "react-icons/fc";
 import { FaTasks } from "react-icons/fa";
 import { MdDone } from "react-icons/md";
 import { MdPending } from "react-icons/md";
+import { GiThreeFriends } from "react-icons/gi";
 
 const DashboardAside = () => {
   const asidestyle = {
@@ -66,6 +67,10 @@ const DashboardAside = () => {
       <NavLink to="/analysis" style={stylenavlink}>
         <FcStatistics size={20} />
         Analysis
+      </NavLink>
+      <NavLink to="/friendsdashboard" style={stylenavlink}>
+        <GiThreeFriends size={20} />
+        Friends
       </NavLink>
     </aside>
   );

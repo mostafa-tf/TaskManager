@@ -1,12 +1,13 @@
 import { IoIosLogOut } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { IoPersonSharp } from "react-icons/io5";
-import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa6";
+
 const DashboardNavbar = () => {
   const [isadminn, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+
   const logout = async () => {
     await fetch("http://localhost:3000/api/users/logout", {
       method: "PUT",
@@ -14,8 +15,8 @@ const DashboardNavbar = () => {
         authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-    localStorage.removeItem("token");
 
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -28,7 +29,12 @@ const DashboardNavbar = () => {
     const data = await res.json();
     setIsAdmin(data.role == "admin");
   };
-  let dashboardnavbarstyle = {
+
+  useEffect(() => {
+    isadmin();
+  }, []);
+
+  const navbarStyle = {
     backgroundColor: "black",
     color: "cyan",
     borderBottom: "3px solid green",
@@ -38,80 +44,83 @@ const DashboardNavbar = () => {
     alignItems: "center",
     position: "relative",
   };
-  let buttonstyle = {
-    color: "yellow",
-    backgroundColor: "brown",
+
+  const logoutBtn = {
     position: "absolute",
     right: "20px",
     height: "50px",
-    width: "100px",
-    padding: "10px",
-    marginBottom: "15px",
+    width: "120px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    gap: "8px",
     fontSize: "17px",
-  };
-  let viewusersbutton = {
+    backgroundColor: "brown",
     color: "yellow",
-    backgroundColor: "darkblue",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+  };
+
+  const adminBtn = {
     position: "absolute",
     left: "20px",
     height: "50px",
-    width: "100px",
-    padding: "10px",
-    marginBottom: "15px",
+    width: "140px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontSize: "17px",
+    gap: "8px",
+    fontSize: "16px",
+    backgroundColor: "darkblue",
+    color: "yellow",
+    borderRadius: "8px",
+    cursor: "pointer",
   };
-  const personbuttonstyle = {
-    width: "100px",
+
+  const linkBtn = {
     height: "50px",
+    width: "120px",
     marginBottom: "15px",
     marginLeft: "20px",
-    fontSize: "20px",
+    fontSize: "18px",
     color: "#A52A2A",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "6px",
+    textDecoration: "none",
+    backgroundColor: "white",
+    borderRadius: "8px",
   };
-  const feedbackbuttonstyle = {
-    width: "100px",
-    height: "50px",
-    marginBottom: "15px",
-    marginLeft: "20px",
-    fontSize: "20px",
-    color: "#A52A2A",
-  };
-  useEffect(() => {
-    isadmin();
-  }, []);
+
   return (
-    <nav style={dashboardnavbarstyle}>
+    <nav style={navbarStyle}>
       {isadminn && (
-        <button
-          style={viewusersbutton}
-          onClick={() => navigate("/admindashboard")}
-        >
-          View Users <FaUsers size={30} />
+        <button style={adminBtn} onClick={() => navigate("/admindashboard")}>
+          <FaUsers size={22} />
+          Users
         </button>
       )}
-      <h2>Dashboard</h2>{" "}
-      <button style={personbuttonstyle}>
-        <NavLink to="profile">
-          <IoPersonSharp />
-          Profile
-        </NavLink>
-      </button>
-      <button style={feedbackbuttonstyle}>
-        <NavLink to="feedback">
-          <IoPersonSharp />
-          Feedback
-        </NavLink>
-      </button>
-      <button style={buttonstyle} onClick={logout}>
-        Logout <IoIosLogOut size={40} />{" "}
+
+      <h2>Dashboard</h2>
+
+      <NavLink to="profile" style={linkBtn}>
+        <IoPersonSharp size={20} />
+        Profile
+      </NavLink>
+
+      <NavLink to="feedback" style={linkBtn}>
+        <IoPersonSharp size={20} />
+        Feedback
+      </NavLink>
+
+      <button style={logoutBtn} onClick={logout}>
+        Logout
+        <IoIosLogOut size={25} />
       </button>
     </nav>
   );
 };
+
 export default DashboardNavbar;

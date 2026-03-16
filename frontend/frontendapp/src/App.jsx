@@ -18,6 +18,13 @@ import { FeedbacksDashboard } from "./pages/FeedbacksDashboard.jsx";
 import { Analysis } from "./pages/Analysis.jsx";
 import { ForgotPassword } from "./pages/ForgotPassword.jsx";
 import { ResetPassword } from "./pages/ResetPassword.jsx";
+import { FriendsDashboard } from "./pages/FriendsDashboard.jsx";
+import { AddFriend } from "./pages/AddFriend.jsx";
+import { ViewFriends } from "./pages/ViewFriends.jsx";
+import { IncomingRequests } from "./pages/IncomingRequests.jsx";
+import { OutgoingRequests } from "./pages/OutgoingRequests.jsx";
+import { BlockedUsers } from "./pages/BlockedUsers.jsx";
+
 function App() {
   return (
     <>
@@ -76,6 +83,20 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/friendsdashboard"
+          element={
+            <ProtectedRoute>
+              <FriendsDashboard />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AddFriend />} />
+          <Route path="viewfriends" element={<ViewFriends />} />
+          <Route path="incomingrequests" element={<IncomingRequests />} />
+          <Route path="outgoingrequests" element={<OutgoingRequests />} />
+          <Route path="blockedusers" element={<BlockedUsers />} />
+        </Route>
       </Routes>
     </>
   );
