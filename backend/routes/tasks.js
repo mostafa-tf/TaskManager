@@ -8,7 +8,7 @@ const { validatenewtask } = require("../joivalidate.js");
 router.get("/", verifytokenmiddleware, async (req, res) => {
   try {
     const alltasks = await taskmodel
-      .find({ userId: req.user.id })
+      .find({ userId: req.user.id, taskType: "personal" })
       .sort({ dueDate: 1 });
     if (alltasks.length == 0) {
       return res.status(404).json({ message: "no tasks found " });
@@ -68,6 +68,7 @@ router.get("/done", verifytokenmiddleware, async (req, res) => {
       .find({
         userId: req.user.id,
         isDone: true,
+        taskType: "personal",
       })
       .sort({ dueDate: 1 });
     if (donetasks.length == 0) {
@@ -84,6 +85,7 @@ router.get("/undone", verifytokenmiddleware, async (req, res) => {
       .find({
         userId: req.user.id,
         isDone: false,
+        taskType: "personal",
       })
       .sort({ dueDate: 1 });
     if (undonetasks.length == 0) {

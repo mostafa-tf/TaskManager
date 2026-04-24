@@ -24,7 +24,10 @@ import { ViewFriends } from "./pages/ViewFriends.jsx";
 import { IncomingRequests } from "./pages/IncomingRequests.jsx";
 import { OutgoingRequests } from "./pages/OutgoingRequests.jsx";
 import { BlockedUsers } from "./pages/BlockedUsers.jsx";
-
+import { ProjectDashboard } from "./pages/ProjectDashboard.jsx";
+import { ViewProjects } from "./pages/ViewProjects.jsx";
+import { AddProject } from "./pages/AddProject.jsx";
+import { ViewProject } from "./pages/ViewProject.jsx";
 function App() {
   return (
     <>
@@ -97,6 +100,38 @@ function App() {
           <Route path="outgoingrequests" element={<OutgoingRequests />} />
           <Route path="blockedusers" element={<BlockedUsers />} />
         </Route>
+        <Route
+          path="/projects"
+          element={
+            <ProtectedRoute>
+              <ProjectDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/viewprojects"
+          element={
+            <ProtectedRoute>
+              <ViewProjects />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/addproject"
+          element={
+            <ProtectedRoute>
+              <AddProject />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/viewprojects/:projectid"
+          element={
+            <ProtectedRoute>
+              <ViewProject />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

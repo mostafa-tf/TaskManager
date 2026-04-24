@@ -32,11 +32,14 @@ const taskSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    // personal task owner
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+
     starthour: {
       type: String,
       default: "00:00",
@@ -45,8 +48,31 @@ const taskSchema = new mongoose.Schema(
       type: String,
       default: "23:59",
     },
+
+    // NEW FIELDS
+    projectId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      default: null,
+    },
+    assignedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    taskType: {
+      type: String,
+      enum: ["personal", "project"],
+      default: "personal",
+    },
+    status: {
+      type: String,
+      enum: ["todo", "inprogress", "done"],
+      default: "todo",
+    },
   },
   { timestamps: true },
 );
+
 const Task = mongoose.model("Task", taskSchema);
 module.exports = Task;

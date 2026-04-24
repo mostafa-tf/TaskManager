@@ -3,7 +3,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { IoPersonSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa6";
-
+import { FaProjectDiagram } from "react-icons/fa";
 const DashboardNavbar = () => {
   const [isadminn, setIsAdmin] = useState(false);
   const navigate = useNavigate();
@@ -114,7 +114,9 @@ const DashboardNavbar = () => {
         <IoPersonSharp size={20} />
         Feedback
       </NavLink>
-
+      <NavLink to="/projects" style={linkBtn}>
+        Projects <FaProjectDiagram />
+      </NavLink>
       <button style={logoutBtn} onClick={logout}>
         Logout
         <IoIosLogOut size={25} />
