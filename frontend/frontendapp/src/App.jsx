@@ -28,6 +28,7 @@ import { ProjectDashboard } from "./pages/ProjectDashboard.jsx";
 import { ViewProjects } from "./pages/ViewProjects.jsx";
 import { AddProject } from "./pages/AddProject.jsx";
 import { ViewProject } from "./pages/ViewProject.jsx";
+import { MemberPage } from "./pages/MemberPage.jsx";
 function App() {
   return (
     <>
@@ -131,6 +132,10 @@ function App() {
               <ViewProject />
             </ProtectedRoute>
           }
+        />
+        <Route
+          path="/projects/projectmember/:memberid"
+          element={<MemberPage />}
         />
       </Routes>
     </>

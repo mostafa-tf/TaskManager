@@ -4,6 +4,7 @@ const router = express.Router();
 const verifytoken = require("../middlwares/verifytoken");
 const projectmodel = require("../models/Project.js");
 const taskmodel = require("../models/Task.js");
+const usermodel = require("../models/User.js");
 router.post("/", verifytoken, async (req, res) => {
   let contributers = req.body.contributers || [];
   contributers = [req.user.id, ...contributers];
@@ -48,11 +49,11 @@ router.get("/projectinfo/:projectid", verifytoken, async (req, res) => {
       return res.status(404).json({ message: "project not found" });
     }
 
-    if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({
-        message: "permission denied you are not owner!",
-      });
-    }
+    // if (project.owner.toString() !== req.user.id) {
+    //   return res.status(403).json({
+    //     message: "permission denied you are not owner!",
+    //   });
+    // }
 
     const result = [];
 
@@ -111,6 +112,99 @@ router.post("/assigntask", verifytoken, async (req, res) => {
     });
 
     return res.status(201).json(task);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get(
+  "/membertasks/:projectid/:memberid",
+  verifytoken,
+  async (req, res) => {
+    try {
+      const project = await projectmodel.findById(req.params.projectid);
+      const member = await usermodel.findById(req.params.memberid);
+      if (!project) {
+        return res
+          .status(404)
+          .json({ message: "project with provided id not found " });
+      }
+      if (!member) {
+        return res
+          .status(404)
+          .json({ message: "member with provided id not found " });
+      }
+      if (project.owner != req.user.id) {
+        return res.status(403).json({ message: "access denied " });
+      }
+      const inprogresstasks = await taskmodel.find({
+        assignedTo: req.params.memberid,
+        taskType: "project",
+        projectId: req.params.projectid,
+        status: "inprogress",
+      });
+      const todotasks = await taskmodel.find({
+        assignedTo: req.params.memberid,
+        taskType: "project",
+        projectId: req.params.projectid,
+        status: "todo",
+      });
+      const donetasks = await taskmodel.find({
+        assignedTo: req.params.memberid,
+        taskType: "project",
+        projectId: req.params.projectid,
+        status: "done",
+      });
+      return res.status(200).json({
+        todo: todotasks,
+        inprogress: inprogresstasks,
+        done: donetasks,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+);
+router.get("/contributertasks/:projectid", verifytoken, async (req, res) => {
+  try {
+    const contributer = await usermodel.findById(req.user.id);
+    if (!contributer) {
+      return res.status(404).json({ message: "user not found " });
+    }
+    const project = await projectmodel.findById(req.params.projectid);
+    if (!project) {
+      return res.status(404).json({ message: "project not found " });
+    }
+
+    const isMember = project.members.some((m) => m.userId.equals(req.user.id));
+    if (!isMember) {
+      return res.status(403).json({
+        message: "access denied you must be a member of this project",
+      });
+    }
+    const inprogresstasks = await taskmodel.find({
+      assignedTo: req.user.id,
+      taskType: "project",
+      projectId: req.params.projectid,
+      status: "inprogress",
+    });
+    const todotasks = await taskmodel.find({
+      assignedTo: req.user.id,
+      taskType: "project",
+      projectId: req.params.projectid,
+      status: "todo",
+    });
+    const donetasks = await taskmodel.find({
+      assignedTo: req.user.id,
+      taskType: "project",
+      projectId: req.params.projectid,
+      status: "done",
+    });
+    return res.status(200).json({
+      todo: todotasks,
+      inprogress: inprogresstasks,
+      done: donetasks,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
