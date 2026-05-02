@@ -1,12 +1,34 @@
 import { useNavigate } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaStar, FaArrowLeft } from "react-icons/fa";
+import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 import { useState, useEffect } from "react";
 
 export const FeedbacksDashboard = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [searchfilter, setSearchFilter] = useState("");
   const [ratingfilter, setRatingFilter] = useState("");
+  const [messageBox, setMessageBox] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
+
+  const navigate = useNavigate();
+
+  const showBox = (type, title, message) => {
+    setMessageBox({ show: true, type, title, message });
+  };
+
+  useEffect(() => {
+    if (messageBox.show) {
+      const timer = setTimeout(() => {
+        setMessageBox({ show: false, type: "", title: "", message: "" });
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [messageBox.show]);
 
   const filteredfeedbacks = feedbacks.filter(
     (feedback) =>
@@ -22,23 +44,34 @@ export const FeedbacksDashboard = () => {
         },
       });
 
-      if (res.status == 404) {
-        setFeedbacks([]);
+      const data = await res.json();
+
+      if (res.status === 401) {
+        throw new Error(data.message || "You must login first");
       }
 
-      if (res.status == 200) {
-        const feedbacks = await res.json();
-        setFeedbacks(feedbacks);
-      } else {
-        const data = await res.json();
-        throw new Error(data.message);
+      if (res.status === 403) {
+        throw new Error(data.message || "Admin only access");
       }
+
+      if (res.status === 404) {
+        setFeedbacks([]);
+        return;
+      }
+
+      if (res.status === 500) {
+        throw new Error(data.message || "Server error");
+      }
+
+      if (res.status !== 200) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      setFeedbacks(data);
     } catch (error) {
-      alert(error.message);
+      showBox("error", "Fetch Failed", error.message);
     }
   };
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchfeedbacks();
@@ -194,8 +227,83 @@ export const FeedbacksDashboard = () => {
     marginTop: "50px",
   };
 
+  const boxOverlay = {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.35)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  };
+
+  const isError = messageBox.type === "error";
+
+  const boxStyle = {
+    width: "min(430px, 90%)",
+    padding: "22px",
+    borderRadius: "24px",
+    background:
+      "linear-gradient(135deg, rgba(22,22,22,0.98), rgba(12,12,12,0.98))",
+    border: isError
+      ? "1px solid rgba(255,77,79,0.45)"
+      : "1px solid rgba(0,255,140,0.35)",
+    boxShadow: "0 24px 70px rgba(0,0,0,0.55)",
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    color: "#fff",
+  };
+
+  const boxIcon = {
+    minWidth: "52px",
+    height: "52px",
+    borderRadius: "18px",
+    background: isError ? "rgba(255,77,79,0.14)" : "rgba(0,255,140,0.12)",
+    border: isError
+      ? "1px solid rgba(255,77,79,0.25)"
+      : "1px solid rgba(0,255,140,0.22)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: isError ? "#ff6b6b" : "#60ff9c",
+  };
+
+  const boxTitle = {
+    margin: "0 0 5px",
+    fontSize: "18px",
+    fontWeight: "800",
+  };
+
+  const boxMessage = {
+    margin: 0,
+    fontSize: "14px",
+    lineHeight: "1.5",
+    color: "rgba(255,255,255,0.72)",
+  };
+
   return (
     <div style={pageStyle}>
+      {messageBox.show && (
+        <div style={boxOverlay}>
+          <div style={boxStyle}>
+            <div style={boxIcon}>
+              {isError ? (
+                <MdErrorOutline size={30} />
+              ) : (
+                <MdCheckCircleOutline size={30} />
+              )}
+            </div>
+
+            <div>
+              <h3 style={boxTitle}>{messageBox.title}</h3>
+              <p style={boxMessage}>{messageBox.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <nav style={navStyle}>
         <button style={buttonstyle} onClick={() => navigate(-1)}>
           <FaArrowLeft />

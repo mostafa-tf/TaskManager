@@ -1,12 +1,60 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
+import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 
 export const ViewProject = () => {
   const [project, setProject] = useState({});
   const [tasks, setTasks] = useState({});
+  const [messageBox, setMessageBox] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
+
   const navigate = useNavigate();
   const { projectid } = useParams();
+
+  const showBox = (type, title, message) => {
+    setMessageBox({ show: true, type, title, message });
+  };
+
+  useEffect(() => {
+    if (messageBox.show) {
+      const timer = setTimeout(() => {
+        setMessageBox({ show: false, type: "", title: "", message: "" });
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [messageBox.show]);
+
+  const updatetask = async (status, taskid) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/projects/updatetask/${taskid}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ status: status }),
+        },
+      );
+
+      if (!res.ok) {
+        const ermessage = await res.json();
+        throw new Error(ermessage.message);
+      }
+
+      showBox("success", "Task Updated", "Task updated successfully");
+      fetchcontributertasks();
+    } catch (error) {
+      showBox("error", "Update Failed", error.message);
+    }
+  };
 
   const statusColumns = [
     { key: "todo", title: "Todo" },
@@ -41,9 +89,9 @@ export const ViewProject = () => {
 
       if (!res.ok) throw new Error(data.message);
 
-      alert("Task assigned");
+      showBox("success", "Task Assigned", "Task assigned successfully");
     } catch (error) {
-      alert(error.message);
+      showBox("error", "Assign Failed", error.message);
     }
   };
 
@@ -64,7 +112,7 @@ export const ViewProject = () => {
 
       setTasks(data);
     } catch (error) {
-      alert(error.message);
+      showBox("error", "Fetch Failed", error.message);
     }
   };
 
@@ -91,7 +139,7 @@ export const ViewProject = () => {
         projectid: data.projectId,
       }));
     } catch (error) {
-      alert(error.message);
+      showBox("error", "Fetch Failed", error.message);
     }
   };
 
@@ -103,8 +151,47 @@ export const ViewProject = () => {
     }
   }, []);
 
+  const isError = messageBox.type === "error";
+
   return (
     <div style={styles.page}>
+      {messageBox.show && (
+        <div style={styles.boxOverlay}>
+          <div
+            style={{
+              ...styles.boxStyle,
+              border: isError
+                ? "1px solid rgba(255,77,79,0.45)"
+                : "1px solid rgba(0,255,140,0.35)",
+            }}
+          >
+            <div
+              style={{
+                ...styles.boxIcon,
+                background: isError
+                  ? "rgba(255,77,79,0.14)"
+                  : "rgba(0,255,140,0.12)",
+                border: isError
+                  ? "1px solid rgba(255,77,79,0.25)"
+                  : "1px solid rgba(0,255,140,0.22)",
+                color: isError ? "#ff6b6b" : "#60ff9c",
+              }}
+            >
+              {isError ? (
+                <MdErrorOutline size={30} />
+              ) : (
+                <MdCheckCircleOutline size={30} />
+              )}
+            </div>
+
+            <div>
+              <h3 style={styles.boxTitle}>{messageBox.title}</h3>
+              <p style={styles.boxMessage}>{messageBox.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <nav style={styles.nav}>
         <button style={styles.backButton} onClick={() => navigate(-1)}>
           <FaArrowLeft />
@@ -276,9 +363,24 @@ export const ViewProject = () => {
                       </p>
 
                       <div style={styles.taskActions}>
-                        <button style={styles.smallButton}>Todo</button>
-                        <button style={styles.smallButton}>In Progress</button>
-                        <button style={styles.smallButton}>Done</button>
+                        <button
+                          style={styles.smallButton}
+                          onClick={() => updatetask("todo", task._id)}
+                        >
+                          Todo
+                        </button>
+                        <button
+                          style={styles.smallButton}
+                          onClick={() => updatetask("inprogress", task._id)}
+                        >
+                          In Progress
+                        </button>
+                        <button
+                          style={styles.smallButton}
+                          onClick={() => updatetask("done", task._id)}
+                        >
+                          Done
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -525,5 +627,51 @@ const styles = {
   message: {
     textAlign: "center",
     color: "#dffff0",
+  },
+
+  boxOverlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.35)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  },
+
+  boxStyle: {
+    width: "min(430px, 90%)",
+    padding: "22px",
+    borderRadius: "24px",
+    background:
+      "linear-gradient(135deg, rgba(22,22,22,0.98), rgba(12,12,12,0.98))",
+    boxShadow: "0 24px 70px rgba(0,0,0,0.55)",
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    color: "#fff",
+  },
+
+  boxIcon: {
+    minWidth: "52px",
+    height: "52px",
+    borderRadius: "18px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  boxTitle: {
+    margin: "0 0 5px",
+    fontSize: "18px",
+    fontWeight: "800",
+  },
+
+  boxMessage: {
+    margin: 0,
+    fontSize: "14px",
+    lineHeight: "1.5",
+    color: "rgba(255,255,255,0.72)",
   },
 };

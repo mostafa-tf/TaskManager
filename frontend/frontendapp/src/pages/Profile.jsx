@@ -1,4 +1,5 @@
 import { IoPersonSharp } from "react-icons/io5";
+import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 import { useState, useEffect, useRef } from "react";
 
 export const Profile = () => {
@@ -7,23 +8,49 @@ export const Profile = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [buttontext, setButtonText] = useState("update profile");
+  const [messageBox, setMessageBox] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
+
   const usernameinput = useRef(null);
   const emailinput = useRef(null);
 
-  const fetchprofile = async () => {
-    const result = await fetch("http://localhost:3000/api/users/profile", {
-      method: "GET",
-      headers: {
-        authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+  const showBox = (type, title, message) => {
+    setMessageBox({ show: true, type, title, message });
+  };
 
-    if (result.status != 200) {
-      alert("error in data fetching ");
-    } else {
-      const userobject = await result.json();
-      setUsername(userobject.username);
-      setEmail(userobject.email);
+  useEffect(() => {
+    if (messageBox.show) {
+      const timer = setTimeout(() => {
+        setMessageBox({ show: false, type: "", title: "", message: "" });
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [messageBox.show]);
+
+  const fetchprofile = async () => {
+    try {
+      const result = await fetch("http://localhost:3000/api/users/profile", {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const data = await result.json();
+
+      if (result.status != 200) {
+        throw new Error(data.message || "error in data fetching");
+      }
+
+      setUsername(data.username);
+      setEmail(data.email);
+    } catch (error) {
+      showBox("error", "Fetch Failed", error.message);
     }
   };
 
@@ -50,14 +77,15 @@ export const Profile = () => {
           body: JSON.stringify({ username, email }),
         });
 
+        const data = await res.json();
+
         if (res.status != 200) {
-          const errormessage = await res.json();
-          throw new Error(errormessage.message);
+          throw new Error(data.message || "Update failed");
         }
 
-        alert("update sucesfully");
+        showBox("success", "Updated", "Profile updated successfully");
       } catch (error) {
-        alert(error.message);
+        showBox("error", "Update Failed", error.message);
       }
 
       setButtonText("update profile");
@@ -180,8 +208,83 @@ export const Profile = () => {
     lineHeight: "1.6",
   };
 
+  const boxOverlay = {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.35)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  };
+
+  const isError = messageBox.type === "error";
+
+  const boxStyle = {
+    width: "min(430px, 90%)",
+    padding: "22px",
+    borderRadius: "24px",
+    background:
+      "linear-gradient(135deg, rgba(22,22,22,0.98), rgba(12,12,12,0.98))",
+    border: isError
+      ? "1px solid rgba(255,77,79,0.45)"
+      : "1px solid rgba(0,255,140,0.35)",
+    boxShadow: "0 24px 70px rgba(0,0,0,0.55)",
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    color: "#fff",
+  };
+
+  const boxIcon = {
+    minWidth: "52px",
+    height: "52px",
+    borderRadius: "18px",
+    background: isError ? "rgba(255,77,79,0.14)" : "rgba(0,255,140,0.12)",
+    border: isError
+      ? "1px solid rgba(255,77,79,0.25)"
+      : "1px solid rgba(0,255,140,0.22)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: isError ? "#ff6b6b" : "#60ff9c",
+  };
+
+  const boxTitle = {
+    margin: "0 0 5px",
+    fontSize: "18px",
+    fontWeight: "800",
+  };
+
+  const boxMessage = {
+    margin: 0,
+    fontSize: "14px",
+    lineHeight: "1.5",
+    color: "rgba(255,255,255,0.72)",
+  };
+
   return (
     <div style={pageStyle}>
+      {messageBox.show && (
+        <div style={boxOverlay}>
+          <div style={boxStyle}>
+            <div style={boxIcon}>
+              {isError ? (
+                <MdErrorOutline size={30} />
+              ) : (
+                <MdCheckCircleOutline size={30} />
+              )}
+            </div>
+
+            <div>
+              <h3 style={boxTitle}>{messageBox.title}</h3>
+              <p style={boxMessage}>{messageBox.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={cardStyle}>
         <div style={iconWrapper}>
           <IoPersonSharp size={34} />

@@ -133,15 +133,25 @@ router.get("/checkrole", verifytoken, async (req, res) => {
   }
 });
 router.get("/", verifytoken, verifyadmin, async (req, res) => {
-  //njeb kl users wkl tasks  lentba3on bl table
   try {
     const alluserswithtasksinfo = await usermodel
       .aggregate([
         {
           $lookup: {
             from: "tasks",
-            localField: "_id",
-            foreignField: "userId",
+            let: { userId: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$userId", "$$userId"] },
+                      { $eq: ["$assignedTo", null] },
+                    ],
+                  },
+                },
+              },
+            ],
             as: "tasks",
           },
         },
@@ -180,9 +190,11 @@ router.get("/", verifytoken, verifyadmin, async (req, res) => {
         },
       ])
       .sort({ nbdonetasks: -1 });
+
     if (alluserswithtasksinfo.length == 0) {
       return res.status(404).json({ message: "no users available" });
     }
+
     res.status(200).json(alluserswithtasksinfo);
   } catch (error) {
     res.status(500).json({ message: error.message });

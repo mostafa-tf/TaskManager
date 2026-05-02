@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { TaskStructure } from "../components/TaskStructure";
 import { RiTaskLine } from "react-icons/ri";
 import { FaFilter } from "react-icons/fa";
-import { MdDateRange, MdLowPriority } from "react-icons/md";
+import { MdDateRange, MdLowPriority, MdErrorOutline } from "react-icons/md";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -12,6 +12,18 @@ export const AllTasks = () => {
   const [titlefilter, setTitleFilter] = useState("");
   const [calenderdate, setCalenderDate] = useState(null);
   const [priorityfilter, setPriorityFilter] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const showError = (message) => {
+    setErrorMsg(message || "Error From Server");
+  };
+
+  useEffect(() => {
+    if (errorMsg) {
+      const timer = setTimeout(() => setErrorMsg(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMsg]);
 
   const changepriorityfilter = (e) => {
     setPriorityFilter(e.target.value);
@@ -45,7 +57,7 @@ export const AllTasks = () => {
         setTasks(tasksobj);
       }
     } catch (error) {
-      alert(error.message);
+      showError(error.message);
     }
   }
 
@@ -58,19 +70,25 @@ export const AllTasks = () => {
   };
 
   const switchcheckbox = async (taskid) => {
-    alert(taskid);
+    try {
+      const res = await fetch(`http://localhost:3000/api/tasks/${taskid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-    const res = await fetch(`http://localhost:3000/api/tasks/${taskid}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+      const msg = await res.json();
 
-    const msg = await res.json();
-    alert(msg.message);
-    await fetchalltasks();
+      if (res.status !== 200) {
+        throw new Error(msg.message || "Error From Server");
+      }
+
+      await fetchalltasks();
+    } catch (error) {
+      showError(error.message);
+    }
   };
 
   const deletetask = async (taskid) => {
@@ -90,7 +108,7 @@ export const AllTasks = () => {
 
       await fetchalltasks();
     } catch (error) {
-      alert("Failed " + error.message);
+      showError("Failed " + error.message);
     }
   };
 
@@ -197,8 +215,74 @@ export const AllTasks = () => {
     margin: "34px 0",
   };
 
+  const overlayStyle = {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.45)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  };
+
+  const alertBox = {
+    width: "min(420px, 90%)",
+    padding: "22px 24px",
+    borderRadius: "22px",
+    background:
+      "linear-gradient(135deg, rgba(40,20,20,0.98), rgba(20,20,20,0.98))",
+    border: "1px solid rgba(255,77,79,0.45)",
+    boxShadow: "0 24px 60px rgba(0,0,0,0.55)",
+    color: "#ffffff",
+    display: "flex",
+    alignItems: "center",
+    gap: "14px",
+  };
+
+  const alertIconWrap = {
+    minWidth: "48px",
+    height: "48px",
+    borderRadius: "16px",
+    background: "rgba(255,77,79,0.14)",
+    border: "1px solid rgba(255,77,79,0.25)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#ff6b6b",
+  };
+
+  const alertTitle = {
+    margin: "0 0 4px 0",
+    fontSize: "17px",
+    fontWeight: "800",
+    color: "#ffffff",
+  };
+
+  const alertMessage = {
+    margin: 0,
+    fontSize: "14px",
+    color: "rgba(255,255,255,0.75)",
+    lineHeight: "1.5",
+  };
+
   return (
     <div style={pageStyle}>
+      {errorMsg && (
+        <div style={overlayStyle}>
+          <div style={alertBox}>
+            <div style={alertIconWrap}>
+              <MdErrorOutline size={28} />
+            </div>
+
+            <div>
+              <h3 style={alertTitle}>Something went wrong</h3>
+              <p style={alertMessage}>{errorMsg}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={headerStyle}>
         <div style={titleWrap}>
           <div style={iconWrap}>

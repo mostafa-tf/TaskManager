@@ -1,24 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
+import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 import "react-datepicker/dist/react-datepicker.css";
 
 export const AddTasks = () => {
   const [taskinfo, setTaskInfo] = useState({
     title: "",
     priority: "",
-    dueDate: null,
+    dueDate: "",
     description: "",
     starthour: "00:00",
     endhour: "23:59",
   });
-  const [inserted, setInserted] = useState(false);
-  const [error, setError] = useState("");
+
   const [tasktime, setTaskTime] = useState("allday");
+  const [messageBox, setMessageBox] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
+
+  const showBox = (type, title, message) => {
+    setMessageBox({ show: true, type, title, message });
+  };
+
+  useEffect(() => {
+    if (messageBox.show) {
+      const timer = setTimeout(() => {
+        setMessageBox({ show: false, type: "", title: "", message: "" });
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [messageBox.show]);
 
   const handlesubmit = async (e) => {
-    setError("");
-    setInserted(false);
     e.preventDefault();
+
     try {
       const res = await fetch("http://localhost:3000/api/tasks", {
         method: "POST",
@@ -28,14 +47,20 @@ export const AddTasks = () => {
         },
         body: JSON.stringify(taskinfo),
       });
+
       const data = await res.json();
 
       if (res.status != 201) {
         throw new Error(data.message);
       }
-      setInserted(true);
+
+      showBox(
+        "success",
+        "Task Added",
+        "Task inserted to the database successfully",
+      );
     } catch (error) {
-      setError(error.message);
+      showBox("error", "Insert Failed", error.message || "Error From Server");
     }
   };
 
@@ -178,15 +203,83 @@ export const AddTasks = () => {
     transition: "all 0.3s ease",
   };
 
-  const messageStyle = {
-    gridColumn: "1 / -1",
+  const boxOverlay = {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.35)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  };
+
+  const isError = messageBox.type === "error";
+
+  const boxStyle = {
+    width: "min(430px, 90%)",
+    padding: "22px",
+    borderRadius: "24px",
+    background:
+      "linear-gradient(135deg, rgba(22,22,22,0.98), rgba(12,12,12,0.98))",
+    border: isError
+      ? "1px solid rgba(255,77,79,0.45)"
+      : "1px solid rgba(0,255,140,0.35)",
+    boxShadow: "0 24px 70px rgba(0,0,0,0.55)",
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    color: "#fff",
+  };
+
+  const boxIcon = {
+    minWidth: "52px",
+    height: "52px",
+    borderRadius: "18px",
+    background: isError ? "rgba(255,77,79,0.14)" : "rgba(0,255,140,0.12)",
+    border: isError
+      ? "1px solid rgba(255,77,79,0.25)"
+      : "1px solid rgba(0,255,140,0.22)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: isError ? "#ff6b6b" : "#60ff9c",
+  };
+
+  const boxTitle = {
+    margin: "0 0 5px",
+    fontSize: "18px",
+    fontWeight: "800",
+  };
+
+  const boxMessage = {
     margin: 0,
     fontSize: "14px",
-    fontWeight: "700",
+    lineHeight: "1.5",
+    color: "rgba(255,255,255,0.72)",
   };
 
   return (
     <div style={pageStyle}>
+      {messageBox.show && (
+        <div style={boxOverlay}>
+          <div style={boxStyle}>
+            <div style={boxIcon}>
+              {isError ? (
+                <MdErrorOutline size={30} />
+              ) : (
+                <MdCheckCircleOutline size={30} />
+              )}
+            </div>
+
+            <div>
+              <h3 style={boxTitle}>{messageBox.title}</h3>
+              <p style={boxMessage}>{messageBox.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={cardStyle}>
         <h2 style={titleStyle}>Add Your Task</h2>
         <p style={subtitleStyle}>
@@ -352,16 +445,6 @@ export const AddTasks = () => {
               Save Task
             </button>
           </div>
-
-          {error && (
-            <p style={{ ...messageStyle, color: "#ff7b7b" }}>{error}</p>
-          )}
-
-          {inserted && (
-            <h3 style={{ ...messageStyle, color: "#60ff9c" }}>
-              Inserted To The Database
-            </h3>
-          )}
         </form>
       </div>
     </div>

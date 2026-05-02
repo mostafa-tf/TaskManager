@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const taskmodel = require("../models/Task.js");
-const usermodel = require("../models/Task.js");
+const usermodel = require("../models/User.js");
 const verifytokenmiddleware = require("../middlwares/verifytoken.js");
 const verifyadminmiddleware = require("../middlwares/verifyadmin.js");
 const { validatenewtask } = require("../joivalidate.js");

@@ -1,8 +1,29 @@
 import { useState, useEffect } from "react";
 import { FaUserCircle, FaUndo } from "react-icons/fa";
+import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 
 export const OutgoingRequests = () => {
   const [users, setUsers] = useState([]);
+  const [messageBox, setMessageBox] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
+
+  const showBox = (type, title, message) => {
+    setMessageBox({ show: true, type, title, message });
+  };
+
+  useEffect(() => {
+    if (messageBox.show) {
+      const timer = setTimeout(() => {
+        setMessageBox({ show: false, type: "", title: "", message: "" });
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [messageBox.show]);
 
   const fetchusers = async () => {
     try {
@@ -23,7 +44,7 @@ export const OutgoingRequests = () => {
       const usersarray = await usersjson.json();
       setUsers(usersarray);
     } catch (error) {
-      alert(error.message);
+      showBox("error", "Error", error.message || "Error From Server");
     }
   };
 
@@ -45,12 +66,13 @@ export const OutgoingRequests = () => {
         },
       );
 
+      const data = await res.json();
+
       if (res.status != 200) {
-        const errorobject = await res.json();
-        throw new Error(errorobject.message);
+        throw new Error(data.message);
       }
 
-      alert("undo request");
+      showBox("success", "Request Canceled", data.message || "Undo request");
 
       setUsers(
         users.filter((user) => {
@@ -58,7 +80,7 @@ export const OutgoingRequests = () => {
         }),
       );
     } catch (error) {
-      alert(error.message);
+      showBox("error", "Undo Failed", error.message || "Something went wrong");
     }
   };
 
@@ -138,8 +160,83 @@ export const OutgoingRequests = () => {
     marginTop: "40px",
   };
 
+  const boxOverlay = {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.35)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  };
+
+  const isError = messageBox.type === "error";
+
+  const boxStyle = {
+    width: "min(430px, 90%)",
+    padding: "22px",
+    borderRadius: "24px",
+    background:
+      "linear-gradient(135deg, rgba(22,22,22,0.98), rgba(12,12,12,0.98))",
+    border: isError
+      ? "1px solid rgba(255,77,79,0.45)"
+      : "1px solid rgba(0,255,140,0.35)",
+    boxShadow: "0 24px 70px rgba(0,0,0,0.55)",
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    color: "#fff",
+  };
+
+  const boxIcon = {
+    minWidth: "52px",
+    height: "52px",
+    borderRadius: "18px",
+    background: isError ? "rgba(255,77,79,0.14)" : "rgba(0,255,140,0.12)",
+    border: isError
+      ? "1px solid rgba(255,77,79,0.25)"
+      : "1px solid rgba(0,255,140,0.22)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: isError ? "#ff6b6b" : "#60ff9c",
+  };
+
+  const boxTitle = {
+    margin: "0 0 5px",
+    fontSize: "18px",
+    fontWeight: "800",
+  };
+
+  const boxMessage = {
+    margin: 0,
+    fontSize: "14px",
+    lineHeight: "1.5",
+    color: "rgba(255,255,255,0.72)",
+  };
+
   return (
     <div style={pageStyle}>
+      {messageBox.show && (
+        <div style={boxOverlay}>
+          <div style={boxStyle}>
+            <div style={boxIcon}>
+              {isError ? (
+                <MdErrorOutline size={30} />
+              ) : (
+                <MdCheckCircleOutline size={30} />
+              )}
+            </div>
+
+            <div>
+              <h3 style={boxTitle}>{messageBox.title}</h3>
+              <p style={boxMessage}>{messageBox.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <h2 style={titleStyle}>Outgoing Friend Requests</h2>
 
       <div style={usersdiv}>

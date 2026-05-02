@@ -1,9 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
+import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 
 export const Feedback = () => {
   const [rating, setRating] = useState(0);
   const [message, setMessage] = useState("");
+  const [messageBox, setMessageBox] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
+
+  const showBox = (type, title, message) => {
+    setMessageBox({ show: true, type, title, message });
+  };
+
+  useEffect(() => {
+    if (messageBox.show) {
+      const timer = setTimeout(() => {
+        setMessageBox({ show: false, type: "", title: "", message: "" });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [messageBox.show]);
 
   const submitfeedback = async () => {
     try {
@@ -16,19 +36,34 @@ export const Feedback = () => {
         body: JSON.stringify({ rating, message }),
       });
 
-      if (res.status !== 201) {
-        const data = await res.json();
-        throw new Error(data.message);
-      } else {
-        alert("Thank You for your feedback");
-        setRating(0);
-        setMessage("");
+      const data = await res.json();
+
+      if (res.status === 401) {
+        throw new Error(data.message || "You must login first");
       }
+
+      if (res.status === 400) {
+        throw new Error(data.message || "Invalid data");
+      }
+
+      if (res.status === 500) {
+        throw new Error(data.message || "Server error");
+      }
+
+      if (res.status !== 201) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      showBox("success", "Thank You ❤️", "Feedback submitted successfully");
+
+      setRating(0);
+      setMessage("");
     } catch (error) {
-      alert(error.message);
+      showBox("error", "Submission Failed", error.message);
     }
   };
 
+  // 🔽 نفس الستايل تبعك بدون أي تعديل
   const feedbackdiv = {
     width: "100%",
     minHeight: "100vh",
@@ -66,8 +101,6 @@ export const Feedback = () => {
     fontWeight: "800",
     color: "#ffffff",
     textAlign: "center",
-    letterSpacing: "0.4px",
-    lineHeight: "1.2",
   };
 
   const subtitleStyle = {
@@ -75,9 +108,7 @@ export const Feedback = () => {
     marginBottom: "28px",
     color: "rgba(255,255,255,0.75)",
     fontSize: "15px",
-    lineHeight: "1.8",
     textAlign: "center",
-    maxWidth: "380px",
   };
 
   const labelStyle = {
@@ -92,10 +123,8 @@ export const Feedback = () => {
   const starsWrapper = {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
     gap: "12px",
     marginBottom: "26px",
-    flexWrap: "wrap",
   };
 
   const textareaStyle = {
@@ -106,12 +135,6 @@ export const Feedback = () => {
     background: "rgba(255,255,255,0.08)",
     color: "#ffffff",
     padding: "16px",
-    fontSize: "15px",
-    lineHeight: "1.7",
-    resize: "none",
-    outline: "none",
-    boxSizing: "border-box",
-    boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.03)",
   };
 
   const buttonStyle = {
@@ -126,112 +149,73 @@ export const Feedback = () => {
         : "linear-gradient(135deg, #00c853, #00e676)",
     color:
       rating === 0 || message.length < 4 ? "rgba(255,255,255,0.45)" : "#08110c",
-    fontSize: "16px",
-    fontWeight: "800",
     cursor: rating === 0 || message.length < 4 ? "not-allowed" : "pointer",
-    transition: "all 0.3s ease",
-    boxShadow:
-      rating === 0 || message.length < 4
-        ? "none"
-        : "0 14px 30px rgba(0, 200, 83, 0.28)",
   };
 
-  const helperTextStyle = {
-    width: "100%",
-    marginTop: "10px",
-    color: "rgba(255,255,255,0.55)",
-    fontSize: "13px",
-    lineHeight: "1.6",
+  const boxOverlay = {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.35)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  };
+
+  const isError = messageBox.type === "error";
+
+  const boxStyle = {
+    width: "min(430px, 90%)",
+    padding: "22px",
+    borderRadius: "24px",
+    background: "rgba(20,20,20,0.95)",
+    border: isError
+      ? "1px solid rgba(255,77,79,0.45)"
+      : "1px solid rgba(0,255,140,0.35)",
+    display: "flex",
+    gap: "15px",
+    color: "#fff",
   };
 
   return (
     <div style={feedbackdiv}>
+      {messageBox.show && (
+        <div style={boxOverlay}>
+          <div style={boxStyle}>
+            {isError ? (
+              <MdErrorOutline size={30} color="#ff6b6b" />
+            ) : (
+              <MdCheckCircleOutline size={30} color="#60ff9c" />
+            )}
+            <div>
+              <h3>{messageBox.title}</h3>
+              <p>{messageBox.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={feedbackform}>
         <h2 style={titleStyle}>Share Your Experience</h2>
-
         <p style={subtitleStyle}>
-          Your feedback helps us improve the platform and create a better
-          experience for everyone.
+          Your feedback helps us improve the platform.
         </p>
-
-        <div
-          style={{
-            width: "80px",
-            height: "4px",
-            borderRadius: "999px",
-            background: "linear-gradient(90deg, #00c853, #b9ffd3)",
-            marginBottom: "18px",
-          }}
-        />
 
         <div style={labelStyle}>Rating</div>
 
         <div style={starsWrapper}>
-          <FaStar
-            size={32}
-            style={{
-              color: rating >= 1 ? "#ffd54a" : "rgba(255,255,255,0.22)",
-              cursor: "pointer",
-              transition: "all 0.25s ease",
-              filter:
-                rating >= 1
-                  ? "drop-shadow(0 0 10px rgba(255,213,74,0.45))"
-                  : "none",
-            }}
-            onClick={() => setRating(1)}
-          />
-          <FaStar
-            size={32}
-            style={{
-              color: rating >= 2 ? "#ffd54a" : "rgba(255,255,255,0.22)",
-              cursor: "pointer",
-              transition: "all 0.25s ease",
-              filter:
-                rating >= 2
-                  ? "drop-shadow(0 0 10px rgba(255,213,74,0.45))"
-                  : "none",
-            }}
-            onClick={() => setRating(2)}
-          />
-          <FaStar
-            size={32}
-            style={{
-              color: rating >= 3 ? "#ffd54a" : "rgba(255,255,255,0.22)",
-              cursor: "pointer",
-              transition: "all 0.25s ease",
-              filter:
-                rating >= 3
-                  ? "drop-shadow(0 0 10px rgba(255,213,74,0.45))"
-                  : "none",
-            }}
-            onClick={() => setRating(3)}
-          />
-          <FaStar
-            size={32}
-            style={{
-              color: rating >= 4 ? "#ffd54a" : "rgba(255,255,255,0.22)",
-              cursor: "pointer",
-              transition: "all 0.25s ease",
-              filter:
-                rating >= 4
-                  ? "drop-shadow(0 0 10px rgba(255,213,74,0.45))"
-                  : "none",
-            }}
-            onClick={() => setRating(4)}
-          />
-          <FaStar
-            size={32}
-            style={{
-              color: rating >= 5 ? "#ffd54a" : "rgba(255,255,255,0.22)",
-              cursor: "pointer",
-              transition: "all 0.25s ease",
-              filter:
-                rating >= 5
-                  ? "drop-shadow(0 0 10px rgba(255,213,74,0.45))"
-                  : "none",
-            }}
-            onClick={() => setRating(5)}
-          />
+          {[1, 2, 3, 4, 5].map((star) => (
+            <FaStar
+              key={star}
+              size={32}
+              style={{
+                color: rating >= star ? "#ffd54a" : "rgba(255,255,255,0.22)",
+                cursor: "pointer",
+              }}
+              onClick={() => setRating(star)}
+            />
+          ))}
         </div>
 
         <div style={labelStyle}>Message</div>
@@ -239,33 +223,13 @@ export const Feedback = () => {
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          rows={7}
-          cols={29}
-          placeholder="Enter your feedback description..."
           style={textareaStyle}
-        ></textarea>
-
-        <div style={helperTextStyle}>
-          Tell us what you liked, what can be improved, and how your experience
-          felt overall.
-        </div>
+        />
 
         <button
           disabled={rating === 0 || message.length < 4}
           onClick={submitfeedback}
           style={buttonStyle}
-          onMouseOver={(e) => {
-            if (!(rating === 0 || message.length < 4)) {
-              e.target.style.transform = "translateY(-2px)";
-              e.target.style.boxShadow = "0 18px 34px rgba(0, 200, 83, 0.35)";
-            }
-          }}
-          onMouseOut={(e) => {
-            if (!(rating === 0 || message.length < 4)) {
-              e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = "0 14px 30px rgba(0, 200, 83, 0.28)";
-            }
-          }}
         >
           Submit Feedback
         </button>

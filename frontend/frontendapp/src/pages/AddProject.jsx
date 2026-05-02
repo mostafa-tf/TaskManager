@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 import { useState, useEffect } from "react";
 
 export const AddProject = () => {
@@ -10,7 +11,28 @@ export const AddProject = () => {
     contributers: [],
   });
 
+  const [messageBox, setMessageBox] = useState({
+    show: false,
+    type: "",
+    title: "",
+    message: "",
+  });
+
   const navigate = useNavigate();
+
+  const showBox = (type, title, message) => {
+    setMessageBox({ show: true, type, title, message });
+  };
+
+  useEffect(() => {
+    if (messageBox.show) {
+      const timer = setTimeout(() => {
+        setMessageBox({ show: false, type: "", title: "", message: "" });
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [messageBox.show]);
 
   const handlesubmit = async (e) => {
     e.preventDefault();
@@ -31,10 +53,17 @@ export const AddProject = () => {
         throw new Error(data.message || "Failed to create project");
       }
 
-      alert("Project inserted");
-      navigate(-1);
+      showBox(
+        "success",
+        "Project Created",
+        data.message || "Project created successfully",
+      );
+
+      setTimeout(() => {
+        navigate(-1);
+      }, 1200);
     } catch (error) {
-      alert(error.message);
+      showBox("error", "Creation Failed", error.message);
     }
   };
 
@@ -57,7 +86,7 @@ export const AddProject = () => {
 
       setFriends(data || []);
     } catch (error) {
-      alert(error.message);
+      showBox("error", "Fetch Failed", error.message);
     }
   };
 
@@ -81,8 +110,47 @@ export const AddProject = () => {
     });
   };
 
+  const isError = messageBox.type === "error";
+
   return (
     <div style={styles.page}>
+      {messageBox.show && (
+        <div style={styles.boxOverlay}>
+          <div
+            style={{
+              ...styles.boxStyle,
+              border: isError
+                ? "1px solid rgba(255,77,79,0.45)"
+                : "1px solid rgba(0,255,140,0.35)",
+            }}
+          >
+            <div
+              style={{
+                ...styles.boxIcon,
+                background: isError
+                  ? "rgba(255,77,79,0.14)"
+                  : "rgba(0,255,140,0.12)",
+                border: isError
+                  ? "1px solid rgba(255,77,79,0.25)"
+                  : "1px solid rgba(0,255,140,0.22)",
+                color: isError ? "#ff6b6b" : "#60ff9c",
+              }}
+            >
+              {isError ? (
+                <MdErrorOutline size={30} />
+              ) : (
+                <MdCheckCircleOutline size={30} />
+              )}
+            </div>
+
+            <div>
+              <h3 style={styles.boxTitle}>{messageBox.title}</h3>
+              <p style={styles.boxMessage}>{messageBox.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <nav style={styles.nav}>
         <button style={styles.backButton} onClick={() => navigate(-1)}>
           <FaArrowLeft />
@@ -246,6 +314,7 @@ const styles = {
     color: "#ffffff",
     outline: "none",
     fontSize: "16px",
+    boxSizing: "border-box",
   },
 
   textarea: {
@@ -259,6 +328,7 @@ const styles = {
     outline: "none",
     fontSize: "16px",
     resize: "vertical",
+    boxSizing: "border-box",
   },
 
   sectionHeader: {
@@ -317,5 +387,51 @@ const styles = {
     fontSize: "17px",
     fontWeight: "900",
     cursor: "pointer",
+  },
+
+  boxOverlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.35)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  },
+
+  boxStyle: {
+    width: "min(430px, 90%)",
+    padding: "22px",
+    borderRadius: "24px",
+    background:
+      "linear-gradient(135deg, rgba(22,22,22,0.98), rgba(12,12,12,0.98))",
+    boxShadow: "0 24px 70px rgba(0,0,0,0.55)",
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    color: "#fff",
+  },
+
+  boxIcon: {
+    minWidth: "52px",
+    height: "52px",
+    borderRadius: "18px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  boxTitle: {
+    margin: "0 0 5px",
+    fontSize: "18px",
+    fontWeight: "800",
+  },
+
+  boxMessage: {
+    margin: 0,
+    fontSize: "14px",
+    lineHeight: "1.5",
+    color: "rgba(255,255,255,0.72)",
   },
 };

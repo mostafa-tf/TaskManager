@@ -5,6 +5,8 @@ const verifytoken = require("../middlwares/verifytoken");
 const projectmodel = require("../models/Project.js");
 const taskmodel = require("../models/Task.js");
 const usermodel = require("../models/User.js");
+const { PiLetterCircleH } = require("react-icons/pi");
+const { GiLetterBomb } = require("react-icons/gi");
 router.post("/", verifytoken, async (req, res) => {
   let contributers = req.body.contributers || [];
   contributers = [req.user.id, ...contributers];
@@ -205,6 +207,31 @@ router.get("/contributertasks/:projectid", verifytoken, async (req, res) => {
       inprogress: inprogresstasks,
       done: donetasks,
     });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+router.put("/updatetask/:taskid", verifytoken, async (req, res) => {
+  try {
+    let task = await taskmodel.findById(req.params.taskid);
+    if (!task) {
+      return res.status(400).json({ message: "task not found " });
+    }
+    if (!task.assignedTo.equals(req.user.id)) {
+      return res.status(403).json({ message: "cannot update task /forbidden" });
+    }
+    if (req.body.status == "done") {
+      task.isDone = true;
+      task.status = "done";
+    } else if (req.body.status == "inprogress") {
+      task.isDone = false;
+      task.status = "inprogress";
+    } else if (req.body.status == "todo") {
+      task.isDone = false;
+      task.status = "todo";
+    }
+    await task.save();
+    return res.status(200).json({ message: "updated" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
