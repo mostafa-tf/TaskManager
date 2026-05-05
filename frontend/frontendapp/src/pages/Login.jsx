@@ -147,7 +147,7 @@ const Login = () => {
                 type="email"
                 required
                 minLength={11}
-                maxLength={35}
+                maxLength={50}
                 style={inputStyle}
                 placeholder="Enter your email"
                 value={data.email}

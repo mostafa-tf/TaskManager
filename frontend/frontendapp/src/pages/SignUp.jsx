@@ -169,7 +169,7 @@ const SignUp = () => {
                 style={inputStyle}
                 required
                 minLength={11}
-                maxLength={35}
+                maxLength={50}
                 onChange={(e) =>
                   setData((prev) => {
                     return { ...prev, email: e.target.value };

@@ -135,7 +135,11 @@ function App() {
         />
         <Route
           path="/projects/projectmember/:memberid"
-          element={<MemberPage />}
+          element={
+            <ProtectedRoute>
+              <MemberPage />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </>

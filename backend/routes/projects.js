@@ -5,8 +5,7 @@ const verifytoken = require("../middlwares/verifytoken");
 const projectmodel = require("../models/Project.js");
 const taskmodel = require("../models/Task.js");
 const usermodel = require("../models/User.js");
-const { PiLetterCircleH } = require("react-icons/pi");
-const { GiLetterBomb } = require("react-icons/gi");
+
 router.post("/", verifytoken, async (req, res) => {
   let contributers = req.body.contributers || [];
   contributers = [req.user.id, ...contributers];
