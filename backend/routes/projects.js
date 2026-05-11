@@ -5,15 +5,26 @@ const verifytoken = require("../middlwares/verifytoken");
 const projectmodel = require("../models/Project.js");
 const taskmodel = require("../models/Task.js");
 const usermodel = require("../models/User.js");
-
+const notificationmodel = require("../models/Notification");
 router.post("/", verifytoken, async (req, res) => {
   let contributers = req.body.contributers || [];
+
   contributers = [req.user.id, ...contributers];
+
   let projmembers = [];
-  projmembers[0] = { userId: req.user.id, role: "owner" };
+
+  projmembers[0] = {
+    userId: req.user.id,
+    role: "owner",
+  };
+
   for (let i = 1; i < contributers.length; i++) {
-    projmembers[i] = { userId: contributers[i], role: "member" };
+    projmembers[i] = {
+      userId: contributers[i],
+      role: "member",
+    };
   }
+
   try {
     const project = await projectmodel.create({
       name: req.body.name,
@@ -21,9 +32,28 @@ router.post("/", verifytoken, async (req, res) => {
       owner: req.user.id,
       members: projmembers,
     });
-    res.status(201).json({ message: "project created" });
+
+    const owner = await usermodel.findById(req.user.id);
+
+    const io = req.app.get("io");
+
+    for (let i = 1; i < contributers.length; i++) {
+      const notification = await notificationmodel.create({
+        type: "assigned project",
+        message: `${owner.username} added you to project ${project.name}`,
+        receiver: contributers[i],
+      });
+
+      io.to(`${contributers[i]}`).emit("project_invitation", notification);
+    }
+
+    return res.status(201).json({
+      message: "project created",
+    });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 });
 
@@ -111,7 +141,15 @@ router.post("/assigntask", verifytoken, async (req, res) => {
       projectId: req.body.projectid,
       taskType: req.body.taskType,
     });
-
+    const owner = await usermodel.findById(req.user.id);
+    const project = await projectmodel.findById(req.body.projectid);
+    const notification = await notificationmodel.create({
+      type: "assigned task",
+      message: `${owner.username} assigned you a  task for project ${project.name} `,
+      receiver: req.body.assignedto,
+    });
+    const io = req.app.get("io");
+    io.to(`${req.body.assignedto}`).emit("assigned_task", notification);
     return res.status(201).json(task);
   } catch (error) {
     return res.status(500).json({ message: error.message });

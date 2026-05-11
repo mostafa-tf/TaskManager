@@ -29,6 +29,7 @@ import { ViewProjects } from "./pages/ViewProjects.jsx";
 import { AddProject } from "./pages/AddProject.jsx";
 import { ViewProject } from "./pages/ViewProject.jsx";
 import { MemberPage } from "./pages/MemberPage.jsx";
+import { Notifications } from "./pages/Notifications.jsx";
 function App() {
   return (
     <>
@@ -138,6 +139,14 @@ function App() {
           element={
             <ProtectedRoute>
               <MemberPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
             </ProtectedRoute>
           }
         />

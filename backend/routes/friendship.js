@@ -3,6 +3,8 @@ const router = express.Router();
 const verifytoken = require("../middlwares/verifytoken");
 const usermodel = require("../models/User");
 const friendshipmodel = require("../models/Friendship");
+const notificationmodel = require("../models/Notification");
+
 const checkisfriend = async (myid, userid) => {
   const isfriend = await friendshipmodel.findOne({
     $or: [
@@ -258,6 +260,15 @@ router.put("/acceptuser", verifytoken, async (req, res) => {
       friendship.status = "accepted";
       friendship.friendshipdate = new Date();
       await friendship.save();
+      const receiver = await usermodel.findById(friendship.receiver);
+
+      const notification = await notificationmodel.create({
+        type: "friend request accepted",
+        message: `${receiver.username} accepted your friend request`,
+        receiver: req.body.userid,
+      });
+      const io = req.app.get("io");
+      io.to(`${req.body.userid}`).emit("request_accepted", notification);
       return res.status(200).json({ message: "friend request accepted" });
     }
 

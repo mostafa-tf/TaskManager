@@ -77,6 +77,14 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+router.get("/getmyid", verifytoken, async (req, res) => {
+  try {
+    return res.status(200).json({ myid: req.user.id });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 router.get("/profile", verifytoken, async (req, res) => {
   try {
     const user = await usermodel.findById(req.user.id);

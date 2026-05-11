@@ -72,6 +72,10 @@ const DashboardAside = () => {
         <GiThreeFriends size={20} />
         Friends
       </NavLink>
+      <NavLink to="/notifications" style={stylenavlink}>
+        <GiThreeFriends size={20} />
+        Notifications
+      </NavLink>
     </aside>
   );
 };
