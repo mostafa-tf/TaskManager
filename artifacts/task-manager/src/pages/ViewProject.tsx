@@ -63,6 +63,7 @@ export const ViewProject = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       showBox("success", "Task Assigned", "Task assigned successfully");
+      await fetchmembers();
     } catch (error: any) {
       showBox("error", "Assign Failed", error.message);
     }
