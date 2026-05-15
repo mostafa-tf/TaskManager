@@ -140,8 +140,13 @@ function WelcomePage() {
         </div>
       </section>
 
-      <footer className="border-t border-[rgba(255,255,255,0.06)] text-center py-6 text-white/30 text-sm">
-        © {new Date().getFullYear()} TaskFlow · Built for productive teams
+      <footer className="border-t border-[rgba(255,255,255,0.06)] py-8 px-5 text-center">
+        <p className="m-0 mb-1 text-white/30 text-sm">© {new Date().getFullYear()} TaskFlow · Built for productive teams</p>
+        <p className="m-0 text-white/50 text-sm">
+          Designed & developed by{" "}
+          <span className="font-bold text-[#60ff9c]">Mostafa Tfaily</span>
+          {" "}· M1 Software Engineering Student, Lebanese University
+        </p>
       </footer>
     </div>
   );
