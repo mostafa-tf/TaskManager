@@ -1,20 +1,23 @@
 import WelcomeNavbar from "../components/WelcomeNavbar";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { MdErrorOutline } from "react-icons/md";
 
 const Login = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     try {
       const res = await fetch("/api/users/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
       if (res.status !== 200) { const msg = await res.json(); throw new Error(msg.message); }
       const msg = await res.json();
       localStorage.setItem("token", msg.token);
       navigate("/dashboard");
-    } catch (error: any) { alert("error " + error.message); }
+    } catch (error: any) { setError(error.message); }
   };
 
   return (
@@ -26,6 +29,14 @@ const Login = () => {
           <p className="text-white/72 text-center text-[15px] mb-[30px] leading-[1.7]">
             Login to your account and continue managing your tasks efficiently.
           </p>
+
+          {error && (
+            <div className="flex items-center gap-3 mb-5 px-4 py-3 rounded-[14px] border border-[rgba(255,77,79,0.40)] bg-[rgba(255,77,79,0.10)]">
+              <MdErrorOutline size={20} className="text-[#ff6b6b] shrink-0" />
+              <p className="m-0 text-[#ff9c9c] text-sm font-semibold">{error}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <div className="mb-5">
               <label className="block text-[#caffdf] mb-2 text-[15px] font-semibold">Email</label>
