@@ -29,8 +29,6 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-connectdb();
-
 app.use("/api", healthRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/tasks", tasksRouter);
