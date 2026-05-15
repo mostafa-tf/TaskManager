@@ -37,7 +37,106 @@ router.get("/", verifytoken, async (req: Request, res: Response) => {
   try {
     const userprojects = await Project.find({ $or: [{ owner: (req as any).user.id }, { "members.userId": (req as any).user.id }] });
     if (userprojects.length === 0) { res.status(404).json({ message: "no projects found" }); return; }
-    res.status(200).json(userprojects);
+    res.status(200).json({ projects: userprojects, userid: (req as any).user.id });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.post("/assigntask", verifytoken, async (req: Request, res: Response) => {
+  try {
+    const task = await Task.create({
+      title: req.body.title,
+      description: req.body.description,
+      dueDate: req.body.dueDate,
+      priority: req.body.priority || "low",
+      userId: (req as any).user.id,
+      assignedTo: req.body.assignedto,
+      projectId: req.body.projectid,
+      taskType: req.body.taskType,
+    });
+    const owner = await User.findById((req as any).user.id);
+    const project = await Project.findById(req.body.projectid);
+    const notification = await Notification.create({
+      type: "assigned task",
+      message: `${owner?.username} assigned you a task for project ${project?.name}`,
+      receiver: req.body.assignedto,
+    });
+    const io = req.app.get("io");
+    io.to(`${req.body.assignedto}`).emit("assigned_task", notification);
+    res.status(201).json(task);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/projectinfo/:projectid", verifytoken, async (req: Request, res: Response) => {
+  try {
+    const project = await Project.findById(req.params.projectid).populate("members.userId", "username isActive");
+    if (!project) { res.status(404).json({ message: "project not found" }); return; }
+    const result = [];
+    for (const member of project.members as any[]) {
+      const user = member.userId;
+      const tasks = await Task.find({ assignedTo: user._id, projectId: project._id, taskType: "project" });
+      const stats = { todo: 0, inprogress: 0, done: 0 };
+      tasks.forEach((t) => {
+        if (t.status === "todo") stats.todo++;
+        if (t.status === "inprogress") stats.inprogress++;
+        if (t.status === "done") stats.done++;
+      });
+      result.push({ userId: user._id, username: user.username, isActive: user.isActive, totalTasks: tasks.length, ...stats });
+    }
+    res.status(200).json({ projectId: project._id, projectName: project.name, projectDescription: project.description, members: result });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/membertasks/:projectid/:memberid", verifytoken, async (req: Request, res: Response) => {
+  try {
+    const project = await Project.findById(req.params.projectid);
+    const member = await User.findById(req.params.memberid);
+    if (!project) { res.status(404).json({ message: "project with provided id not found" }); return; }
+    if (!member) { res.status(404).json({ message: "member with provided id not found" }); return; }
+    if (project.owner?.toString() !== (req as any).user.id) { res.status(403).json({ message: "access denied" }); return; }
+    const [todotasks, inprogresstasks, donetasks] = await Promise.all([
+      Task.find({ assignedTo: req.params.memberid, taskType: "project", projectId: req.params.projectid, status: "todo" }),
+      Task.find({ assignedTo: req.params.memberid, taskType: "project", projectId: req.params.projectid, status: "inprogress" }),
+      Task.find({ assignedTo: req.params.memberid, taskType: "project", projectId: req.params.projectid, status: "done" }),
+    ]);
+    res.status(200).json({ todo: todotasks, inprogress: inprogresstasks, done: donetasks });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/contributertasks/:projectid", verifytoken, async (req: Request, res: Response) => {
+  try {
+    const project = await Project.findById(req.params.projectid);
+    if (!project) { res.status(404).json({ message: "project not found" }); return; }
+    const isMember = (project.members as any[]).some((m) => m.userId.equals((req as any).user.id));
+    if (!isMember) { res.status(403).json({ message: "access denied you must be a member of this project" }); return; }
+    const [todotasks, inprogresstasks, donetasks] = await Promise.all([
+      Task.find({ assignedTo: (req as any).user.id, taskType: "project", projectId: req.params.projectid, status: "todo" }),
+      Task.find({ assignedTo: (req as any).user.id, taskType: "project", projectId: req.params.projectid, status: "inprogress" }),
+      Task.find({ assignedTo: (req as any).user.id, taskType: "project", projectId: req.params.projectid, status: "done" }),
+    ]);
+    res.status(200).json({ todo: todotasks, inprogress: inprogresstasks, done: donetasks });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.put("/updatetask/:taskid", verifytoken, async (req: Request, res: Response) => {
+  try {
+    const task = await Task.findById(req.params.taskid);
+    if (!task) { res.status(400).json({ message: "task not found" }); return; }
+    if (!(task.assignedTo as mongoose.Types.ObjectId).equals((req as any).user.id)) { res.status(403).json({ message: "cannot update task /forbidden" }); return; }
+    if (req.body.status === "done") { task.isDone = true; task.status = "done"; }
+    else if (req.body.status === "inprogress") { task.isDone = false; task.status = "inprogress"; }
+    else if (req.body.status === "todo") { task.isDone = false; task.status = "todo"; }
+    await task.save();
+    res.status(200).json({ message: "updated" });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
@@ -97,105 +196,6 @@ router.delete("/:projectid/members/:memberid", verifytoken, async (req: Request,
     project.members = (project.members as any[]).filter((m) => m.userId.toString() !== req.params.memberid) as any;
     await project.save();
     res.status(200).json({ message: "member removed" });
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-router.get("/projectinfo/:projectid", verifytoken, async (req: Request, res: Response) => {
-  try {
-    const project = await Project.findById(req.params.projectid).populate("members.userId", "username isActive");
-    if (!project) { res.status(404).json({ message: "project not found" }); return; }
-    const result = [];
-    for (const member of project.members as any[]) {
-      const user = member.userId;
-      const tasks = await Task.find({ assignedTo: user._id, projectId: project._id, taskType: "project" });
-      const stats = { todo: 0, inprogress: 0, done: 0 };
-      tasks.forEach((t) => {
-        if (t.status === "todo") stats.todo++;
-        if (t.status === "inprogress") stats.inprogress++;
-        if (t.status === "done") stats.done++;
-      });
-      result.push({ userId: user._id, username: user.username, isActive: user.isActive, totalTasks: tasks.length, ...stats });
-    }
-    res.status(200).json({ projectId: project._id, projectName: project.name, projectDescription: project.description, members: result });
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-router.post("/assigntask", verifytoken, async (req: Request, res: Response) => {
-  try {
-    const task = await Task.create({
-      title: req.body.title,
-      description: req.body.description,
-      dueDate: req.body.dueDate,
-      priority: req.body.priority || "low",
-      userId: (req as any).user.id,
-      assignedTo: req.body.assignedto,
-      projectId: req.body.projectid,
-      taskType: req.body.taskType,
-    });
-    const owner = await User.findById((req as any).user.id);
-    const project = await Project.findById(req.body.projectid);
-    const notification = await Notification.create({
-      type: "assigned task",
-      message: `${owner?.username} assigned you a task for project ${project?.name}`,
-      receiver: req.body.assignedto,
-    });
-    const io = req.app.get("io");
-    io.to(`${req.body.assignedto}`).emit("assigned_task", notification);
-    res.status(201).json(task);
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-router.get("/membertasks/:projectid/:memberid", verifytoken, async (req: Request, res: Response) => {
-  try {
-    const project = await Project.findById(req.params.projectid);
-    const member = await User.findById(req.params.memberid);
-    if (!project) { res.status(404).json({ message: "project with provided id not found" }); return; }
-    if (!member) { res.status(404).json({ message: "member with provided id not found" }); return; }
-    if (project.owner?.toString() !== (req as any).user.id) { res.status(403).json({ message: "access denied" }); return; }
-    const [todotasks, inprogresstasks, donetasks] = await Promise.all([
-      Task.find({ assignedTo: req.params.memberid, taskType: "project", projectId: req.params.projectid, status: "todo" }),
-      Task.find({ assignedTo: req.params.memberid, taskType: "project", projectId: req.params.projectid, status: "inprogress" }),
-      Task.find({ assignedTo: req.params.memberid, taskType: "project", projectId: req.params.projectid, status: "done" }),
-    ]);
-    res.status(200).json({ todo: todotasks, inprogress: inprogresstasks, done: donetasks });
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-router.get("/contributertasks/:projectid", verifytoken, async (req: Request, res: Response) => {
-  try {
-    const project = await Project.findById(req.params.projectid);
-    if (!project) { res.status(404).json({ message: "project not found" }); return; }
-    const isMember = (project.members as any[]).some((m) => m.userId.equals((req as any).user.id));
-    if (!isMember) { res.status(403).json({ message: "access denied you must be a member of this project" }); return; }
-    const [todotasks, inprogresstasks, donetasks] = await Promise.all([
-      Task.find({ assignedTo: (req as any).user.id, taskType: "project", projectId: req.params.projectid, status: "todo" }),
-      Task.find({ assignedTo: (req as any).user.id, taskType: "project", projectId: req.params.projectid, status: "inprogress" }),
-      Task.find({ assignedTo: (req as any).user.id, taskType: "project", projectId: req.params.projectid, status: "done" }),
-    ]);
-    res.status(200).json({ todo: todotasks, inprogress: inprogresstasks, done: donetasks });
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-router.put("/updatetask/:taskid", verifytoken, async (req: Request, res: Response) => {
-  try {
-    const task = await Task.findById(req.params.taskid);
-    if (!task) { res.status(400).json({ message: "task not found" }); return; }
-    if (!(task.assignedTo as mongoose.Types.ObjectId).equals((req as any).user.id)) { res.status(403).json({ message: "cannot update task /forbidden" }); return; }
-    if (req.body.status === "done") { task.isDone = true; task.status = "done"; }
-    else if (req.body.status === "inprogress") { task.isDone = false; task.status = "inprogress"; }
-    else if (req.body.status === "todo") { task.isDone = false; task.status = "todo"; }
-    await task.save();
-    res.status(200).json({ message: "updated" });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
