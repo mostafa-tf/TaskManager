@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { IoPersonRemove } from "react-icons/io5";
 import { FaUserSlash, FaUserCircle } from "react-icons/fa";
+import { GiThreeFriends } from "react-icons/gi";
 
 export const ViewFriends = () => {
   const [friends, setFriends] = useState<any[]>([]);
@@ -68,7 +69,13 @@ export const ViewFriends = () => {
 
       <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
         {filteredFriends.length === 0 && (
-          <h1 className="text-center text-[#ff8f8f] text-[30px] font-extrabold mt-10">No Friends Found</h1>
+          <div className="col-span-full flex flex-col items-center justify-center py-16 px-5 text-center">
+            <div className="w-[72px] h-[72px] rounded-2xl bg-[rgba(234,128,252,0.08)] border border-[rgba(234,128,252,0.18)] flex items-center justify-center mb-5">
+              <GiThreeFriends size={36} className="text-[#ea80fc]" />
+            </div>
+            <h2 className="m-0 mb-2 text-[22px] font-extrabold text-white">No friends yet</h2>
+            <p className="m-0 text-white/55 text-[14px] max-w-[280px] leading-[1.7]">Head over to Add Friend to find and connect with people you know.</p>
+          </div>
         )}
 
         {filteredFriends.map((friend) => (

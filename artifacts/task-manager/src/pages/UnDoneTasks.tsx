@@ -81,7 +81,15 @@ export const UnDoneTasks = () => {
         </div>
       </div>
 
-      {notasks && <h1 className="text-center text-[#60ff9c] text-[34px] font-extrabold my-[34px]">No Available Tasks Found</h1>}
+      {notasks && (
+        <div className="flex flex-col items-center justify-center py-16 px-5 text-center">
+          <div className="w-[72px] h-[72px] rounded-2xl bg-[rgba(255,193,7,0.08)] border border-[rgba(255,213,79,0.20)] flex items-center justify-center mb-5">
+            <MdPendingActions size={36} className="text-[#ffe082]" />
+          </div>
+          <h2 className="m-0 mb-2 text-[24px] font-extrabold text-white">All caught up!</h2>
+          <p className="m-0 text-white/55 text-[15px] max-w-[320px] leading-[1.7]">You have no pending tasks right now. Add a new task to keep the momentum going.</p>
+        </div>
+      )}
 
       <div className="mb-6 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 p-5 rounded-[20px] bg-[rgba(255,255,255,0.04)] border border-[rgba(0,255,140,0.10)]">
         <div className="flex flex-col gap-2">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaUserSlash, FaUnlockAlt } from "react-icons/fa";
 import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
+import { GiThreeFriends } from "react-icons/gi";
 
 export const BlockedUsers = () => {
   const [blockedusers, setBlockedUsers] = useState<any[]>([]);
@@ -69,7 +70,13 @@ export const BlockedUsers = () => {
 
       <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
         {blockedusers.length === 0 && (
-          <h1 className="text-center text-[#ff8f8f] text-[30px] font-extrabold mt-10">No Blocked Users Found</h1>
+          <div className="col-span-full flex flex-col items-center justify-center py-16 px-5 text-center">
+            <div className="w-[72px] h-[72px] rounded-2xl bg-[rgba(255,193,7,0.08)] border border-[rgba(255,213,79,0.20)] flex items-center justify-center mb-5">
+              <GiThreeFriends size={36} className="text-[#ffe082]" />
+            </div>
+            <h2 className="m-0 mb-2 text-[22px] font-extrabold text-white">No blocked users</h2>
+            <p className="m-0 text-white/55 text-[14px] max-w-[280px] leading-[1.7]">You haven't blocked anyone. Blocked users won't be able to send you friend requests.</p>
+          </div>
         )}
 
         {blockedusers.map((blockeduser) => (

@@ -1,5 +1,5 @@
 import { useNavigate, NavLink } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaProjectDiagram } from "react-icons/fa";
 import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 import { useEffect, useState } from "react";
 
@@ -71,7 +71,14 @@ export const ViewProjects = () => {
         {loading && <h2 className="text-center text-[#dffff0] mt-[60px]">Loading projects...</h2>}
 
         {!loading && projects.length === 0 && (
-          <h2 className="text-center text-[#dffff0] mt-[60px]">No Projects Found</h2>
+          <div className="flex flex-col items-center justify-center py-16 px-5 text-center">
+            <div className="w-[72px] h-[72px] rounded-2xl bg-[rgba(64,196,255,0.08)] border border-[rgba(64,196,255,0.18)] flex items-center justify-center mb-5">
+              <FaProjectDiagram size={30} className="text-[#40c4ff]" />
+            </div>
+            <h2 className="m-0 mb-2 text-[24px] font-extrabold text-white">No projects yet</h2>
+            <p className="m-0 mb-6 text-white/55 text-[15px] max-w-[320px] leading-[1.7]">Create your first project, invite friends as contributors, and start assigning tasks together.</p>
+            <a href="/projects/addproject" className="h-11 px-6 rounded-[12px] no-underline text-[#08110c] font-extrabold text-sm flex items-center" style={{ background: "linear-gradient(135deg, #00c853, #00e676)" }}>+ Create a project</a>
+          </div>
         )}
 
         {!loading && projects.length !== 0 && (
