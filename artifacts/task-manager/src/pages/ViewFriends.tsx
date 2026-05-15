@@ -1,70 +1,107 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { MdDelete } from "react-icons/md";
+import { IoPersonRemove } from "react-icons/io5";
+import { FaUserSlash, FaUserCircle } from "react-icons/fa";
 
 export const ViewFriends = () => {
   const [friends, setFriends] = useState<any[]>([]);
-  const [noFriends, setNoFriends] = useState(false);
-  const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false);
-  const navigate = useNavigate();
+  const [searchfilter, setSearchFilter] = useState("");
 
-  const showMsg = (msg: string, err: boolean) => { setMessage(msg); setIsError(err); setTimeout(() => setMessage(""), 3000); };
-
-  const fetchFriends = async () => {
-    setNoFriends(false); setFriends([]);
+  const fetchfriends = async () => {
     try {
-      const res = await fetch("/api/friendship/friends", { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } });
-      const data = await res.json();
-      if (res.status === 404) setNoFriends(true);
-      else if (res.status === 200) setFriends(data);
-      else throw new Error(data.message);
-    } catch (error: any) { showMsg(error.message, true); }
+      const res = await fetch("/api/friendship/viewfriends", {
+        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      if (res.status === 500) { const err = await res.json(); throw new Error(err.message); }
+      setFriends(await res.json());
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
 
-  useEffect(() => { fetchFriends(); }, []);
+  useEffect(() => { fetchfriends(); }, []);
 
-  const unfriend = async (friendid: string) => {
+  const removefriend = async (friendid: string) => {
     try {
-      const res = await fetch(`/api/friendship/unfriend/${friendid}`, { method: "DELETE", headers: { authorization: `Bearer ${localStorage.getItem("token")}` } });
-      const data = await res.json();
-      if (res.status !== 200) throw new Error(data.message);
-      showMsg("Unfriended successfully!", false); await fetchFriends();
-    } catch (error: any) { showMsg(error.message, true); }
+      const res = await fetch("/api/friendship/removefriend", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` },
+        body: JSON.stringify({ friendid }),
+      });
+      if (res.status !== 200) { const err = await res.json(); throw new Error(err.message); }
+      alert("friend deleted");
+      setFriends(friends.filter((f) => f._id !== friendid));
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
 
   const blockfriend = async (friendid: string) => {
     try {
-      const res = await fetch(`/api/friendship/block/${friendid}`, { method: "PUT", headers: { authorization: `Bearer ${localStorage.getItem("token")}` } });
-      const data = await res.json();
-      if (res.status !== 200) throw new Error(data.message);
-      showMsg("User blocked!", false); await fetchFriends();
-    } catch (error: any) { showMsg(error.message, true); }
+      const res = await fetch("/api/friendship/blockuser", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` },
+        body: JSON.stringify({ userid: friendid }),
+      });
+      if (res.status !== 200) { const err = await res.json(); throw new Error(err.message); }
+      alert("friend blocked");
+      setFriends(friends.filter((f) => f._id !== friendid));
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
 
+  const filteredFriends = friends.filter((f) =>
+    f.username.toLowerCase().startsWith(searchfilter.toLowerCase())
+  );
+
   return (
-    <div>
-      {message && (
-        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
-        </div>
-      )}
-      {noFriends && <h2 className="text-[#60ff9c] font-extrabold">No Friends Yet</h2>}
-      {friends.map((f) => (
-        <div key={f._id} className="flex justify-between items-center gap-[14px] px-5 py-4 rounded-[14px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.10)] mb-2.5">
-          <div>
-            <p className="m-0 text-white font-bold text-base">{f.username}</p>
-            <p className="m-0 text-white/55 text-[13px]">{f.email}</p>
+    <div className="w-full box-border">
+      <div className="w-full flex justify-center mb-6">
+        <input
+          type="text"
+          placeholder="Search friends..."
+          value={searchfilter}
+          onChange={(e) => setSearchFilter(e.target.value)}
+          className="w-80 h-12 rounded-[14px] border border-[rgba(0,255,140,0.18)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px]"
+        />
+      </div>
+
+      <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
+        {filteredFriends.length === 0 && (
+          <h1 className="text-center text-[#ff8f8f] text-[30px] font-extrabold mt-10">No Friends Found</h1>
+        )}
+
+        {filteredFriends.map((friend) => (
+          <div key={friend._id} className="py-[22px] px-[18px] rounded-[20px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.14)] shadow-[0_12px_30px_rgba(0,0,0,0.25)] backdrop-blur-xl flex flex-col items-center gap-3 text-center">
+            <div className="w-16 h-16 rounded-full bg-[rgba(0,255,140,0.10)] border border-[rgba(0,255,140,0.20)] flex items-center justify-center text-[#dffff0] shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
+              <FaUserCircle size={34} />
+            </div>
+
+            <div className="text-xl font-extrabold text-white mt-0.5">{friend.username}</div>
+
+            <div className={`px-3 py-1.5 rounded-full text-[13px] font-bold ${friend.isActive ? "text-[#08110c] bg-gradient-to-br from-[#00c853] to-[#00e676]" : "text-white bg-[rgba(255,255,255,0.10)]"}`}>
+              {friend.isActive ? "Online 🟢" : "Inactive ⚫"}
+            </div>
+
+            <div className="text-white/70 text-sm leading-relaxed">{friend.friendshipdate}</div>
+
+            <div className="flex gap-2.5 mt-2 flex-wrap justify-center">
+              <button
+                onClick={() => removefriend(friend._id)}
+                className="px-[14px] py-2.5 rounded-xl border-none bg-gradient-to-br from-[#c62828] to-[#e53935] text-white font-bold cursor-pointer flex items-center gap-1.5"
+              >
+                Remove <IoPersonRemove />
+              </button>
+              <button
+                onClick={() => blockfriend(friend._id)}
+                className="px-[14px] py-2.5 rounded-xl border-none bg-gradient-to-br from-[#ef6c00] to-[#fb8c00] text-white font-bold cursor-pointer flex items-center gap-1.5"
+              >
+                Block <FaUserSlash />
+              </button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <button className="h-9 px-[14px] rounded-[10px] border-none bg-[linear-gradient(135deg,#1565c0,#1e88e5)] text-white text-[13px] font-bold cursor-pointer" onClick={() => navigate(`/projects/projectmember/${f._id}`)}>View Tasks</button>
-            <button className="h-9 px-[14px] rounded-[10px] border-none bg-[rgba(255,193,7,0.25)] text-white text-[13px] font-bold cursor-pointer" onClick={() => blockfriend(f._id)}>Block</button>
-            <button className="h-9 px-[14px] rounded-[10px] border-none bg-[linear-gradient(135deg,#c62828,#e53935)] text-white text-[13px] font-bold cursor-pointer flex items-center gap-1" onClick={() => unfriend(f._id)}>
-              <MdDelete size={16} />Remove
-            </button>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
