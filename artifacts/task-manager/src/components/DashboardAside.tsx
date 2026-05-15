@@ -5,69 +5,43 @@ import { FaTasks } from "react-icons/fa";
 import { MdDone, MdPending } from "react-icons/md";
 import { GiThreeFriends } from "react-icons/gi";
 
-const DashboardAside = () => {
-  const asidestyle: React.CSSProperties = {
-    gridArea: "aside",
-    background: "#0b1210",
-    borderRight: "1px solid #1f3d2e",
-    display: "flex",
-    flexDirection: "column",
-    paddingTop: "40px",
-    gap: "20px",
-    alignItems: "center",
-  };
+interface DashboardAsideProps {
+  onNavClick?: () => void;
+}
 
-  const navItem: React.CSSProperties = {
-    width: "85%",
-    height: "45px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    gap: "10px",
-    paddingLeft: "15px",
-    borderRadius: "10px",
-    fontSize: "16px",
-    fontWeight: "600",
-  };
-
-  const stylenavlink = ({ isActive }: { isActive: boolean }): React.CSSProperties => ({
-    ...navItem,
-    textDecoration: "none",
-    color: isActive ? "#00ff9d" : "#eafff4",
-    background: isActive ? "rgba(0,255,140,0.12)" : "transparent",
-    border: isActive ? "1px solid rgba(0,255,140,0.2)" : "1px solid transparent",
-    transition: "all 0.25s ease",
-  });
+const DashboardAside = ({ onNavClick }: DashboardAsideProps) => {
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `w-[85%] h-[45px] flex items-center justify-start gap-2.5 pl-[15px] rounded-[10px] text-base font-semibold no-underline transition-all duration-200 ${
+      isActive
+        ? "text-[#00ff9d] bg-[rgba(0,255,140,0.12)] border border-[rgba(0,255,140,0.2)]"
+        : "text-[#eafff4] bg-transparent border border-transparent hover:bg-[rgba(0,255,140,0.06)]"
+    }`;
 
   return (
-    <aside style={asidestyle}>
-      <NavLink to="" end style={stylenavlink}>
+    <aside className="flex flex-col pt-10 gap-5 items-center w-full">
+      <NavLink to="" end className={linkClass} onClick={onNavClick}>
         <FaTasks size={18} />
         All Tasks
       </NavLink>
-      <NavLink to="donetasks" style={stylenavlink}>
+      <NavLink to="donetasks" className={linkClass} onClick={onNavClick}>
         <MdDone size={20} />
         Done Tasks
       </NavLink>
-      <NavLink to="undonetasks" style={stylenavlink}>
+      <NavLink to="undonetasks" className={linkClass} onClick={onNavClick}>
         <MdPending size={20} />
         Pending Tasks
       </NavLink>
-      <NavLink to="addtask" style={stylenavlink}>
+      <NavLink to="addtask" className={linkClass} onClick={onNavClick}>
         <IoIosAddCircle size={20} />
         Add Task
       </NavLink>
-      <NavLink to="/analysis" style={stylenavlink}>
+      <NavLink to="/analysis" className={linkClass} onClick={onNavClick}>
         <FcStatistics size={20} />
         Analysis
       </NavLink>
-      <NavLink to="/friendsdashboard" style={stylenavlink}>
+      <NavLink to="/friendsdashboard" className={linkClass} onClick={onNavClick}>
         <GiThreeFriends size={20} />
         Friends
-      </NavLink>
-      <NavLink to="/notifications" style={stylenavlink}>
-        <GiThreeFriends size={20} />
-        Notifications
       </NavLink>
     </aside>
   );

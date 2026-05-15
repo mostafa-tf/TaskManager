@@ -17,38 +17,52 @@ const Login = () => {
     } catch (error: any) { alert("error " + error.message); }
   };
 
-  const pageStyle: React.CSSProperties = { width: "100%", minHeight: "calc(100vh - 70px)", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, rgb(7, 14, 10) 0%, rgb(10, 24, 17) 45%, rgb(6, 10, 8) 100%)", padding: "30px 20px" };
-  const cardStyle: React.CSSProperties = { width: "100%", maxWidth: "430px", padding: "40px 32px", borderRadius: "28px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(0,255,128,0.18)", boxShadow: "0 20px 60px rgba(0,0,0,0.45)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)" };
-  const titleStyle: React.CSSProperties = { color: "#ffffff", fontSize: "34px", fontWeight: "800", textAlign: "center", marginBottom: "8px", letterSpacing: "0.5px" };
-  const subtitleStyle: React.CSSProperties = { color: "rgba(255,255,255,0.72)", textAlign: "center", fontSize: "15px", marginBottom: "30px", lineHeight: "1.7" };
-  const labelStyle: React.CSSProperties = { display: "block", color: "#caffdf", marginBottom: "8px", fontSize: "15px", fontWeight: "600" };
-  const inputStyle: React.CSSProperties = { width: "100%", height: "48px", borderRadius: "14px", border: "1px solid rgba(0,255,128,0.25)", background: "rgba(255,255,255,0.07)", color: "#ffffff", padding: "0 16px", outline: "none", fontSize: "15px", boxSizing: "border-box" };
-  const fieldWrapper: React.CSSProperties = { marginBottom: "20px" };
-  const linksWrapper: React.CSSProperties = { display: "flex", flexDirection: "column", gap: "10px", marginTop: "8px", marginBottom: "26px", color: "rgba(255,255,255,0.8)", fontSize: "14px" };
-  const linkStyle: React.CSSProperties = { color: "#39ff9c", textDecoration: "none", fontWeight: "700", marginLeft: "6px" };
-  const buttonStyle: React.CSSProperties = { width: "100%", height: "50px", borderRadius: "14px", border: "none", background: "linear-gradient(135deg, #00c853, #00e676)", color: "#08110c", fontSize: "16px", fontWeight: "800", cursor: "pointer", boxShadow: "0 12px 28px rgba(0, 200, 83, 0.28)", transition: "all 0.3s ease" };
-
   return (
     <>
       <WelcomeNavbar page="login" />
-      <div style={pageStyle}>
-        <div style={cardStyle}>
-          <h2 style={titleStyle}>Welcome Back</h2>
-          <p style={subtitleStyle}>Login to your account and continue managing your tasks efficiently.</p>
+      <div className="w-full min-h-[calc(100vh-70px)] flex items-center justify-center bg-[linear-gradient(135deg,rgb(7,14,10)_0%,rgb(10,24,17)_45%,rgb(6,10,8)_100%)] p-[30px_20px]">
+        <div className="w-full max-w-[430px] p-[40px_32px] rounded-[28px] bg-[rgba(255,255,255,0.06)] border border-[rgba(0,255,128,0.18)] shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-[14px]">
+          <h2 className="text-white text-[34px] font-extrabold text-center mb-2 tracking-[0.5px]">Welcome Back</h2>
+          <p className="text-white/72 text-center text-[15px] mb-[30px] leading-[1.7]">
+            Login to your account and continue managing your tasks efficiently.
+          </p>
           <form onSubmit={handleSubmit}>
-            <div style={fieldWrapper}>
-              <label style={labelStyle}>Email</label>
-              <input type="email" required minLength={11} maxLength={50} style={inputStyle} placeholder="Enter your email" value={data.email} onChange={(e) => setData(prev => ({ ...prev, email: e.target.value }))} />
+            <div className="mb-5">
+              <label className="block text-[#caffdf] mb-2 text-[15px] font-semibold">Email</label>
+              <input
+                type="email"
+                required
+                minLength={11}
+                maxLength={50}
+                className="w-full h-12 rounded-[14px] border border-[rgba(0,255,128,0.25)] bg-[rgba(255,255,255,0.07)] text-white px-4 outline-none text-[15px] box-border"
+                placeholder="Enter your email"
+                value={data.email}
+                onChange={(e) => setData(prev => ({ ...prev, email: e.target.value }))}
+              />
             </div>
-            <div style={fieldWrapper}>
-              <label style={labelStyle}>Password</label>
-              <input type="password" style={inputStyle} value={data.password} minLength={5} maxLength={15} placeholder="Enter your password" onChange={(e) => setData(prev => ({ ...prev, password: e.target.value }))} required />
+            <div className="mb-5">
+              <label className="block text-[#caffdf] mb-2 text-[15px] font-semibold">Password</label>
+              <input
+                type="password"
+                required
+                minLength={5}
+                maxLength={15}
+                className="w-full h-12 rounded-[14px] border border-[rgba(0,255,128,0.25)] bg-[rgba(255,255,255,0.07)] text-white px-4 outline-none text-[15px] box-border"
+                placeholder="Enter your password"
+                value={data.password}
+                onChange={(e) => setData(prev => ({ ...prev, password: e.target.value }))}
+              />
             </div>
-            <div style={linksWrapper}>
-              <div>Don&apos;t have an account?<Link to="/signup" style={linkStyle}>Register</Link></div>
-              <div>Forgot your password?<Link to="/forgotpassword" style={linkStyle}>Reset it here</Link></div>
+            <div className="flex flex-col gap-2.5 mt-2 mb-[26px] text-white/80 text-sm">
+              <div>Don&apos;t have an account?<Link to="/signup" className="text-[#39ff9c] no-underline font-bold ml-1.5">Register</Link></div>
+              <div>Forgot your password?<Link to="/forgotpassword" className="text-[#39ff9c] no-underline font-bold ml-1.5">Reset it here</Link></div>
             </div>
-            <button type="submit" style={buttonStyle}>Login</button>
+            <button
+              type="submit"
+              className="w-full h-[50px] rounded-[14px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-base font-extrabold cursor-pointer shadow-[0_12px_28px_rgba(0,200,83,0.28)] transition-all duration-300"
+            >
+              Login
+            </button>
           </form>
         </div>
       </div>

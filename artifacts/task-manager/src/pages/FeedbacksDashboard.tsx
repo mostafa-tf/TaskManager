@@ -34,29 +34,37 @@ export const FeedbacksDashboard = () => {
     } catch (error: any) { showMsg(error.message, true); }
   };
 
-  const cardStyle: React.CSSProperties = { padding: "20px 24px", borderRadius: "18px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,255,140,0.10)", marginBottom: "12px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "14px" };
-
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #07110d 0%, #0b1d15 50%, #08110c 100%)", padding: "30px" }}>
+    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px]">
       {message && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
-          <div style={{ padding: "22px 28px", borderRadius: "20px", background: "rgba(15,15,15,0.98)", border: isError ? "1px solid rgba(255,77,79,0.45)" : "1px solid rgba(0,255,140,0.30)", color: isError ? "#ff9c9c" : "#60ff9c", fontWeight: "700", fontSize: "16px" }}>{message}</div>
+        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
         </div>
       )}
-      <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "28px" }}>
-        <button onClick={() => navigate("/admindashboard")} style={{ width: "46px", height: "46px", borderRadius: "14px", border: "1px solid rgba(0,255,140,0.2)", background: "rgba(0,255,140,0.08)", color: "#dffff0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><FaArrowLeft size={18} /></button>
-        <div style={{ width: "52px", height: "52px", borderRadius: "16px", background: "rgba(0,255,140,0.10)", display: "flex", alignItems: "center", justifyContent: "center", color: "#dffff0" }}><MdFeedback size={26} /></div>
-        <div><h2 style={{ margin: 0, fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>User Feedbacks</h2><p style={{ margin: 0, color: "rgba(255,255,255,0.65)", fontSize: "14px" }}>Review and manage all submitted feedbacks.</p></div>
+
+      <div className="flex items-center gap-[14px] mb-7">
+        <button onClick={() => navigate("/admindashboard")} className="w-[46px] h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer flex items-center justify-center">
+          <FaArrowLeft size={18} />
+        </button>
+        <div className="w-[52px] h-[52px] rounded-2xl bg-[rgba(0,255,140,0.10)] flex items-center justify-center text-[#dffff0]"><MdFeedback size={26} /></div>
+        <div>
+          <h2 className="m-0 text-[28px] font-extrabold text-white">User Feedbacks</h2>
+          <p className="m-0 text-white/65 text-sm">Review and manage all submitted feedbacks.</p>
+        </div>
       </div>
-      {noFeedbacks && <h2 style={{ color: "#60ff9c", textAlign: "center", fontWeight: "800" }}>No Feedbacks Found</h2>}
+
+      {noFeedbacks && <h2 className="text-[#60ff9c] text-center font-extrabold">No Feedbacks Found</h2>}
+
       {feedbacks.map((fb) => (
-        <div style={cardStyle} key={fb._id}>
+        <div key={fb._id} className="px-6 py-5 rounded-[18px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.10)] mb-3 flex justify-between items-start gap-[14px]">
           <div>
-            <h3 style={{ margin: "0 0 6px", color: "#ffffff", fontSize: "18px", fontWeight: "800" }}>{fb.title}</h3>
-            <p style={{ margin: "0 0 6px", color: "rgba(255,255,255,0.75)", fontSize: "14px", lineHeight: "1.6" }}>{fb.feedback}</p>
-            <p style={{ margin: 0, color: "rgba(255,255,255,0.45)", fontSize: "12px" }}>By: {fb.user?.username || "Unknown"} ({fb.user?.email || ""})</p>
+            <h3 className="m-0 mb-1.5 text-white text-lg font-extrabold">{fb.title}</h3>
+            <p className="m-0 mb-1.5 text-white/75 text-sm leading-[1.6]">{fb.feedback}</p>
+            <p className="m-0 text-white/45 text-xs">By: {fb.user?.username || "Unknown"} ({fb.user?.email || ""})</p>
           </div>
-          <button onClick={() => deleteFeedback(fb._id)} style={{ width: "42px", height: "42px", borderRadius: "12px", border: "none", background: "linear-gradient(135deg,#c62828,#e53935)", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><MdDelete size={20} /></button>
+          <button onClick={() => deleteFeedback(fb._id)} className="w-[42px] h-[42px] rounded-[12px] border-none bg-[linear-gradient(135deg,#c62828,#e53935)] text-white cursor-pointer flex items-center justify-center shrink-0">
+            <MdDelete size={20} />
+          </button>
         </div>
       ))}
     </div>

@@ -31,36 +31,53 @@ export const Profile = () => {
     } catch (error: any) { showMsg(error.message, true); }
   };
 
-  const inputStyle: React.CSSProperties = { width: "100%", height: "46px", borderRadius: "12px", border: "1px solid rgba(0,255,128,0.20)", background: "rgba(255,255,255,0.07)", color: "#ffffff", padding: "0 14px", outline: "none", fontSize: "15px", boxSizing: "border-box" };
-  const labelStyle: React.CSSProperties = { display: "block", color: "#caffdf", marginBottom: "6px", fontSize: "13px", fontWeight: "700" };
-  const fieldStyle: React.CSSProperties = { marginBottom: "16px" };
-  const buttonStyle = (col: string): React.CSSProperties => ({ height: "46px", padding: "0 24px", borderRadius: "12px", border: "none", background: col, color: "#ffffff", fontSize: "15px", fontWeight: "700", cursor: "pointer" });
+  const inputClass = "w-full h-[46px] rounded-[12px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px] box-border disabled:opacity-60";
 
-  if (!user) return <p style={{ color: "#fff" }}>Loading profile...</p>;
+  if (!user) return <p className="text-white">Loading profile...</p>;
 
   return (
-    <div style={{ width: "100%", minHeight: "100%", boxSizing: "border-box" }}>
+    <div className="w-full min-h-full box-border">
       {message && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
-          <div style={{ padding: "22px 28px", borderRadius: "20px", background: "rgba(15,15,15,0.98)", border: isError ? "1px solid rgba(255,77,79,0.45)" : "1px solid rgba(0,255,140,0.30)", color: isError ? "#ff9c9c" : "#60ff9c", fontWeight: "700", fontSize: "16px" }}>{message}</div>
+        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
         </div>
       )}
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "28px" }}>
-        <div style={{ width: "52px", height: "52px", borderRadius: "16px", background: "rgba(0,255,140,0.10)", border: "1px solid rgba(0,255,140,0.18)", display: "flex", alignItems: "center", justifyContent: "center", color: "#dffff0" }}><IoPersonSharp size={26} /></div>
-        <div><h2 style={{ margin: 0, fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>Profile</h2><p style={{ margin: 0, color: "rgba(255,255,255,0.65)", fontSize: "14px" }}>Manage your account information.</p></div>
+
+      <div className="flex items-center gap-3 mb-7">
+        <div className="w-[52px] h-[52px] rounded-2xl bg-[rgba(0,255,140,0.10)] border border-[rgba(0,255,140,0.18)] flex items-center justify-center text-[#dffff0]"><IoPersonSharp size={26} /></div>
+        <div>
+          <h2 className="m-0 text-[28px] font-extrabold text-white">Profile</h2>
+          <p className="m-0 text-white/65 text-sm">Manage your account information.</p>
+        </div>
       </div>
-      <div style={{ maxWidth: "500px", padding: "32px", borderRadius: "24px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,255,140,0.12)" }}>
-        <div style={fieldStyle}><label style={labelStyle}>Username</label><input type="text" style={inputStyle} disabled={!editing} value={updated.username || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, username: e.target.value }))} /></div>
-        <div style={fieldStyle}><label style={labelStyle}>Email</label><input type="email" style={inputStyle} disabled={!editing} value={updated.email || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, email: e.target.value }))} /></div>
-        <div style={fieldStyle}><label style={labelStyle}>Phone</label><input type="text" style={inputStyle} disabled={!editing} value={updated.phone || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, phone: e.target.value }))} /></div>
-        <div style={fieldStyle}><label style={labelStyle}>Location</label><input type="text" style={inputStyle} disabled={!editing} value={updated.location || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, location: e.target.value }))} /></div>
-        <div style={fieldStyle}><label style={labelStyle}>Bio</label><textarea style={{ ...inputStyle, height: "70px", padding: "10px 14px", resize: "vertical" }} disabled={!editing} value={updated.bio || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, bio: e.target.value }))} /></div>
-        <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+
+      <div className="max-w-[500px] p-8 rounded-3xl bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.12)]">
+        <div className="mb-4">
+          <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Username</label>
+          <input type="text" className={inputClass} disabled={!editing} value={updated.username || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, username: e.target.value }))} />
+        </div>
+        <div className="mb-4">
+          <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Email</label>
+          <input type="email" className={inputClass} disabled={!editing} value={updated.email || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, email: e.target.value }))} />
+        </div>
+        <div className="mb-4">
+          <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Phone</label>
+          <input type="text" className={inputClass} disabled={!editing} value={updated.phone || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, phone: e.target.value }))} />
+        </div>
+        <div className="mb-4">
+          <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Location</label>
+          <input type="text" className={inputClass} disabled={!editing} value={updated.location || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, location: e.target.value }))} />
+        </div>
+        <div className="mb-4">
+          <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Bio</label>
+          <textarea className="w-full h-[70px] rounded-[12px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] py-[10px] outline-none text-[15px] box-border resize-y disabled:opacity-60" disabled={!editing} value={updated.bio || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, bio: e.target.value }))} />
+        </div>
+        <div className="flex gap-3 mt-2">
           {!editing
-            ? <button style={buttonStyle("linear-gradient(135deg,#1565c0,#1e88e5)")} onClick={() => setEditing(true)}>Edit Profile</button>
+            ? <button className="h-[46px] px-6 rounded-[12px] border-none bg-[linear-gradient(135deg,#1565c0,#1e88e5)] text-white text-[15px] font-bold cursor-pointer" onClick={() => setEditing(true)}>Edit Profile</button>
             : <>
-              <button style={buttonStyle("linear-gradient(135deg,#00c853,#00e676)")} onClick={handleUpdate}>Save Changes</button>
-              <button style={buttonStyle("rgba(255,255,255,0.12)")} onClick={() => { setEditing(false); setUpdated(user); }}>Cancel</button>
+              <button className="h-[46px] px-6 rounded-[12px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-white text-[15px] font-bold cursor-pointer" onClick={handleUpdate}>Save Changes</button>
+              <button className="h-[46px] px-6 rounded-[12px] border-none bg-[rgba(255,255,255,0.12)] text-white text-[15px] font-bold cursor-pointer" onClick={() => { setEditing(false); setUpdated(user); }}>Cancel</button>
             </>
           }
         </div>

@@ -26,8 +26,8 @@ export const TaskStructure = ({
   let taskdate = new Date(isexpired);
   taskdate.setDate(taskdate.getDate() + 1);
 
-  const expirestime = (curdate: Date, taskdate: Date) => {
-    const diff = Math.floor((taskdate.getTime() - curdate.getTime()) / 1000);
+  const expirestime = (curdate: Date, tdate: Date) => {
+    const diff = Math.floor((tdate.getTime() - curdate.getTime()) / 1000);
     if (diff < 0) return "Expired";
     if (diff < 60) return `${diff} seconds`;
     if (diff < 3600) return `${Math.floor(diff / 60)} minutes`;
@@ -40,102 +40,99 @@ export const TaskStructure = ({
   const navigate = useNavigate();
 
   const getStatusConfig = () => {
-    if (completed) return { label: "Completed", bg: "rgba(0, 200, 83, 0.16)", border: "1px solid rgba(0, 230, 118, 0.25)", color: "#7dffb2" };
-    if (curtime > taskdate) return { label: "Expired", bg: "rgba(229, 57, 53, 0.16)", border: "1px solid rgba(255, 82, 82, 0.25)", color: "#ff9c9c" };
-    return { label: "Pending", bg: "rgba(255, 193, 7, 0.14)", border: "1px solid rgba(255, 213, 79, 0.24)", color: "#ffe082" };
+    if (completed) return { label: "Completed", bgClass: "bg-[rgba(0,200,83,0.16)] border-[rgba(0,230,118,0.25)] text-[#7dffb2]" };
+    if (curtime > taskdate) return { label: "Expired", bgClass: "bg-[rgba(229,57,53,0.16)] border-[rgba(255,82,82,0.25)] text-[#ff9c9c]" };
+    return { label: "Pending", bgClass: "bg-[rgba(255,193,7,0.14)] border-[rgba(255,213,79,0.24)] text-[#ffe082]" };
   };
 
   const getPriorityConfig = () => {
-    if (priority === "high") return { bg: "rgba(229, 57, 53, 0.16)", border: "1px solid rgba(255, 82, 82, 0.25)", color: "#ff9c9c" };
-    if (priority === "medium" || priority === "med") return { bg: "rgba(255, 193, 7, 0.14)", border: "1px solid rgba(255, 213, 79, 0.24)", color: "#ffe082" };
-    return { bg: "rgba(0, 200, 83, 0.16)", border: "1px solid rgba(0, 230, 118, 0.25)", color: "#7dffb2" };
+    if (priority === "high") return "bg-[rgba(229,57,53,0.16)] border-[rgba(255,82,82,0.25)] text-[#ff9c9c]";
+    if (priority === "medium" || priority === "med") return "bg-[rgba(255,193,7,0.14)] border-[rgba(255,213,79,0.24)] text-[#ffe082]";
+    return "bg-[rgba(0,200,83,0.16)] border-[rgba(0,230,118,0.25)] text-[#7dffb2]";
   };
 
   const statusConfig = getStatusConfig();
-  const priorityConfig = getPriorityConfig();
+  const priorityClass = getPriorityConfig();
 
-  const cardStyle: React.CSSProperties = {
-    width: "100%", borderRadius: "24px",
-    background: "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))",
-    border: "1px solid rgba(0,255,140,0.12)", boxShadow: "0 18px 45px rgba(0,0,0,0.28)",
-    backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-    padding: "22px", boxSizing: "border-box", position: "relative", overflow: "hidden",
-  };
-
-  const topAccent: React.CSSProperties = {
-    position: "absolute", top: 0, left: 0, right: 0, height: "4px",
-    background: completed
-      ? "linear-gradient(90deg, #00c853, #00e676)"
-      : curtime > taskdate
-        ? "linear-gradient(90deg, #c62828, #e53935)"
-        : "linear-gradient(90deg, #ef6c00, #ffd54f)",
-  };
-
-  const topRow: React.CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px", flexWrap: "wrap", marginBottom: "18px" };
-  const titleSection: React.CSSProperties = { display: "flex", flexDirection: "column", gap: "10px", flex: 1, minWidth: 0 };
-  const titleStyle: React.CSSProperties = { margin: 0, fontSize: "24px", fontWeight: "800", color: "#ffffff", lineHeight: "1.3", wordBreak: "break-word" };
-  const badgesRow: React.CSSProperties = { display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" };
-  const badgeBase: React.CSSProperties = { display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: "999px", fontSize: "13px", fontWeight: "800", letterSpacing: "0.2px" };
-  const actionsRow: React.CSSProperties = { display: "flex", alignItems: "center", gap: "10px" };
-  const iconButton: React.CSSProperties = { width: "42px", height: "42px", borderRadius: "12px", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", boxShadow: "0 8px 20px rgba(0,0,0,0.18)" };
-  const contentGrid: React.CSSProperties = { display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "18px" };
-  const sectionCard: React.CSSProperties = { borderRadius: "18px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", padding: "16px", boxSizing: "border-box" };
-  const labelStyle: React.CSSProperties = { margin: 0, marginBottom: "8px", color: "rgba(255,255,255,0.62)", fontSize: "13px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.8px" };
-  const valueStyle: React.CSSProperties = { margin: 0, color: "#ffffff", fontSize: "16px", lineHeight: "1.8", wordBreak: "break-word" };
-  const bottomRow: React.CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap", marginTop: "18px" };
-  const timeBlock: React.CSSProperties = { display: "flex", alignItems: "center", gap: "10px", color: "#dffff0", fontWeight: "700", fontSize: "15px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,255,140,0.10)", padding: "10px 14px", borderRadius: "14px" };
-  const statusText: React.CSSProperties = { margin: 0, fontSize: "14px", fontWeight: "700", lineHeight: "1.7" };
-  const checkboxWrap: React.CSSProperties = { display: "flex", alignItems: "center", gap: "10px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,255,140,0.10)", padding: "10px 14px", borderRadius: "14px" };
-  const checkboxstyle: React.CSSProperties = { width: "20px", height: "20px", accentColor: "#00e676", cursor: "pointer" };
+  const topAccentBg = completed
+    ? "linear-gradient(90deg, #00c853, #00e676)"
+    : curtime > taskdate
+      ? "linear-gradient(90deg, #c62828, #e53935)"
+      : "linear-gradient(90deg, #ef6c00, #ffd54f)";
 
   return (
-    <div style={cardStyle}>
-      <div style={topAccent} />
-      <div style={topRow}>
-        <div style={titleSection}>
-          <h3 style={titleStyle}>{title}</h3>
-          <div style={badgesRow}>
-            <span style={{ ...badgeBase, background: statusConfig.bg, border: statusConfig.border, color: statusConfig.color }}>{statusConfig.label}</span>
-            <span style={{ ...badgeBase, background: priorityConfig.bg, border: priorityConfig.border, color: priorityConfig.color }}>{priority}</span>
+    <div className="w-full rounded-3xl bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] border border-[rgba(0,255,140,0.12)] shadow-[0_18px_45px_rgba(0,0,0,0.28)] backdrop-blur-[12px] p-[22px] box-border relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-1" style={{ background: topAccentBg }} />
+
+      <div className="flex justify-between items-start gap-4 flex-wrap mb-[18px]">
+        <div className="flex flex-col gap-2.5 flex-1 min-w-0">
+          <h3 className="m-0 text-2xl font-extrabold text-white leading-[1.3] break-words">{title}</h3>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className={`inline-flex items-center justify-center px-3 py-2 rounded-full text-[13px] font-extrabold tracking-[0.2px] border ${statusConfig.bgClass}`}>
+              {statusConfig.label}
+            </span>
+            <span className={`inline-flex items-center justify-center px-3 py-2 rounded-full text-[13px] font-extrabold tracking-[0.2px] border ${priorityClass}`}>
+              {priority}
+            </span>
           </div>
         </div>
-        <div style={actionsRow}>
-          <button style={{ ...iconButton, background: "linear-gradient(135deg, #1565c0, #1e88e5)", color: "#ffffff" }}
-            onClick={() => { localStorage.setItem("taskid", taskid); navigate("/dashboard/edittask"); }}>
+        <div className="flex items-center gap-2.5">
+          <button
+            className="w-[42px] h-[42px] rounded-[12px] border-none cursor-pointer flex items-center justify-center text-xl shadow-[0_8px_20px_rgba(0,0,0,0.18)] bg-[linear-gradient(135deg,#1565c0,#1e88e5)] text-white"
+            onClick={() => { localStorage.setItem("taskid", taskid); navigate("/dashboard/edittask"); }}
+          >
             <TiPencil />
           </button>
-          <button style={{ ...iconButton, background: "linear-gradient(135deg, #c62828, #e53935)", color: "#ffffff" }} onClick={deletefun}>
+          <button
+            className="w-[42px] h-[42px] rounded-[12px] border-none cursor-pointer flex items-center justify-center text-xl shadow-[0_8px_20px_rgba(0,0,0,0.18)] bg-[linear-gradient(135deg,#c62828,#e53935)] text-white"
+            onClick={deletefun}
+          >
             <MdDelete />
           </button>
         </div>
       </div>
-      <div style={contentGrid}>
-        <div style={sectionCard}>
-          <p style={labelStyle}>Description</p>
-          <p style={valueStyle}>{description || "No description provided"}</p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-[1.4fr_1fr] gap-[18px]">
+        <div className="rounded-[18px] bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)] p-4 box-border">
+          <p className="m-0 mb-2 text-white/62 text-[13px] font-bold uppercase tracking-[0.8px]">Description</p>
+          <p className="m-0 text-white text-base leading-[1.8] break-words">{description || "No description provided"}</p>
         </div>
-        <div style={sectionCard}>
-          <p style={labelStyle}>Due Date</p>
-          <p style={valueStyle}>{isexpired?.slice(0, 10)}</p>
+        <div className="rounded-[18px] bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)] p-4 box-border">
+          <p className="m-0 mb-2 text-white/62 text-[13px] font-bold uppercase tracking-[0.8px]">Due Date</p>
+          <p className="m-0 text-white text-base leading-[1.8]">{isexpired?.slice(0, 10)}</p>
         </div>
       </div>
-      <div style={bottomRow}>
-        <div style={timeBlock}>
+
+      <div className="flex justify-between items-center gap-4 flex-wrap mt-[18px]">
+        <div className="flex items-center gap-2.5 text-[#dffff0] font-bold text-[15px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.10)] px-[14px] py-[10px] rounded-[14px]">
           <IoAlarm size={18} />
           <span>{starthour} - {endhour}</span>
         </div>
-        <div style={{ flex: 1, minWidth: "220px" }}>
+
+        <div className="flex-1 min-w-[180px]">
           {completed && completedat && (
-            <p style={{ ...statusText, color: "#7dffb2" }}>Completed At: {completedat.slice(0, 19).replace("T", " ")}</p>
+            <p className="m-0 text-sm font-bold leading-[1.7] text-[#7dffb2]">
+              Completed At: {completedat.slice(0, 19).replace("T", " ")}
+            </p>
           )}
-          {taskdate < curtime && !completed ? <p style={{ ...statusText, color: "#ff9c9c" }}>Expired</p> : ""}
-          {taskdate > curtime && !completed ? (
-            <p style={{ ...statusText, color: "#ffe082" }}>Expires In {expirestime(curtime, taskdate)} ({isexpired.slice(0, 10)})</p>
-          ) : ""}
+          {taskdate < curtime && !completed && (
+            <p className="m-0 text-sm font-bold leading-[1.7] text-[#ff9c9c]">Expired</p>
+          )}
+          {taskdate > curtime && !completed && (
+            <p className="m-0 text-sm font-bold leading-[1.7] text-[#ffe082]">
+              Expires In {expirestime(curtime, taskdate)} ({isexpired.slice(0, 10)})
+            </p>
+          )}
         </div>
-        <div style={checkboxWrap}>
+
+        <div className="flex items-center gap-2.5 bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.10)] px-[14px] py-[10px] rounded-[14px]">
           {completed ? <FaCheckCircle color="#00e676" size={18} /> : <FaRegCircle color="#dffff0" size={18} />}
-          <input type="checkbox" onChange={onChange} style={checkboxstyle} checked={completed} />
+          <input
+            type="checkbox"
+            onChange={onChange}
+            className="w-5 h-5 accent-[#00e676] cursor-pointer"
+            checked={completed}
+          />
         </div>
       </div>
     </div>

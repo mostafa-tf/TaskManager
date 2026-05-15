@@ -28,32 +28,41 @@ const SignUp = () => {
     } catch (er: any) { alert("error " + er.message); }
   };
 
-  const pageStyle: React.CSSProperties = { width: "100%", minHeight: "calc(100vh - 70px)", display: "flex", justifyContent: "center", alignItems: "center", padding: "30px 20px", boxSizing: "border-box", background: "radial-gradient(circle at top, rgba(0,255,140,0.08), transparent 24%), linear-gradient(135deg, rgb(7,14,10) 0%, rgb(10,24,17) 45%, rgb(6,10,8) 100%)" };
-  const cardStyle: React.CSSProperties = { width: "100%", maxWidth: "460px", padding: "38px 32px", borderRadius: "28px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(0,255,128,0.16)", boxShadow: "0 22px 60px rgba(0,0,0,0.42)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", boxSizing: "border-box" };
-  const titleStyle: React.CSSProperties = { margin: 0, color: "#ffffff", fontSize: "34px", fontWeight: "800", textAlign: "center", letterSpacing: "0.4px" };
-  const subtitleStyle: React.CSSProperties = { marginTop: "10px", marginBottom: "28px", color: "rgba(255,255,255,0.72)", textAlign: "center", fontSize: "15px", lineHeight: "1.7" };
-  const fieldStyle: React.CSSProperties = { display: "flex", flexDirection: "column", gap: "8px", marginBottom: "18px" };
-  const labelStyle: React.CSSProperties = { color: "#dffff0", fontSize: "14px", fontWeight: "700", letterSpacing: "0.3px" };
-  const inputStyle: React.CSSProperties = { width: "100%", height: "48px", borderRadius: "14px", border: "1px solid rgba(0,255,128,0.20)", background: "rgba(255,255,255,0.07)", color: "#ffffff", padding: "0 14px", outline: "none", fontSize: "15px", boxSizing: "border-box" };
-  const footerTextStyle: React.CSSProperties = { marginTop: "12px", textAlign: "center", color: "rgba(255,255,255,0.80)", fontSize: "14px" };
-  const linkStyle: React.CSSProperties = { color: "#39ff9c", textDecoration: "none", fontWeight: "700", marginLeft: "6px" };
-  const buttonStyle: React.CSSProperties = { width: "100%", height: "50px", borderRadius: "14px", border: "none", background: "linear-gradient(135deg, #00c853, #00e676)", color: "#08110c", fontSize: "16px", fontWeight: "800", cursor: "pointer", boxShadow: "0 12px 28px rgba(0, 200, 83, 0.28)", transition: "all 0.3s ease", marginTop: "10px" };
+  const inputClass = "w-full h-12 rounded-[14px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px] box-border";
 
   return (
     <>
       <WelcomeNavbar page="signup" />
-      <main style={pageStyle}>
-        <div style={cardStyle}>
-          <h2 style={titleStyle}>Create Account</h2>
-          <p style={subtitleStyle}>Join the platform and start managing your tasks in a smarter and more organized way.</p>
+      <main className="w-full min-h-[calc(100vh-70px)] flex justify-center items-center px-5 py-[30px] box-border bg-[radial-gradient(circle_at_top,rgba(0,255,140,0.08),transparent_24%),linear-gradient(135deg,rgb(7,14,10)_0%,rgb(10,24,17)_45%,rgb(6,10,8)_100%)]">
+        <div className="w-full max-w-[460px] p-[38px_32px] rounded-[28px] bg-[rgba(255,255,255,0.06)] border border-[rgba(0,255,128,0.16)] shadow-[0_22px_60px_rgba(0,0,0,0.42)] backdrop-blur-[14px] box-border">
+          <h2 className="m-0 text-white text-[34px] font-extrabold text-center tracking-[0.4px]">Create Account</h2>
+          <p className="mt-2.5 mb-7 text-white/72 text-center text-[15px] leading-[1.7]">
+            Join the platform and start managing your tasks in a smarter and more organized way.
+          </p>
           <form onSubmit={handleSubmit}>
-            <div style={fieldStyle}><label style={labelStyle}>Email</label><input type="email" style={inputStyle} required minLength={11} maxLength={50} onChange={(e) => setData(prev => ({ ...prev, email: e.target.value }))} value={data.email} placeholder="Enter your email" /></div>
-            <div style={fieldStyle}><label style={labelStyle}>Username</label><input type="text" style={inputStyle} required minLength={2} maxLength={20} onChange={(e) => setData(prev => ({ ...prev, username: e.target.value }))} value={data.username} placeholder="Enter your username" /></div>
-            <div style={fieldStyle}><label style={labelStyle}>Password</label><input type="password" style={inputStyle} required minLength={5} maxLength={15} ref={passwordRef} onChange={(e) => setData(prev => ({ ...prev, password: e.target.value }))} value={data.password} placeholder="Enter your password" /></div>
-            <div style={fieldStyle}><label style={labelStyle}>Confirm Password</label><input type="password" style={inputStyle} required ref={repasswordRef} minLength={5} maxLength={15} onChange={(e) => setData(prev => ({ ...prev, repassword: e.target.value }))} value={data.repassword} placeholder="Re-enter your password" /></div>
-            {!matching && <p style={{ color: "#ff7b7b", marginTop: "0", marginBottom: "14px", fontWeight: "700", fontSize: "14px" }}>Password and Repassword should match</p>}
-            <button type="submit" style={buttonStyle}>Sign Up</button>
-            <div style={footerTextStyle}>Already have an account?<Link to="/login" style={linkStyle}>Login</Link></div>
+            <div className="flex flex-col gap-2 mb-[18px]">
+              <label className="text-[#dffff0] text-sm font-bold tracking-[0.3px]">Email</label>
+              <input type="email" className={inputClass} required minLength={11} maxLength={50} onChange={(e) => setData(prev => ({ ...prev, email: e.target.value }))} value={data.email} placeholder="Enter your email" />
+            </div>
+            <div className="flex flex-col gap-2 mb-[18px]">
+              <label className="text-[#dffff0] text-sm font-bold tracking-[0.3px]">Username</label>
+              <input type="text" className={inputClass} required minLength={2} maxLength={20} onChange={(e) => setData(prev => ({ ...prev, username: e.target.value }))} value={data.username} placeholder="Enter your username" />
+            </div>
+            <div className="flex flex-col gap-2 mb-[18px]">
+              <label className="text-[#dffff0] text-sm font-bold tracking-[0.3px]">Password</label>
+              <input type="password" className={inputClass} required minLength={5} maxLength={15} ref={passwordRef} onChange={(e) => setData(prev => ({ ...prev, password: e.target.value }))} value={data.password} placeholder="Enter your password" />
+            </div>
+            <div className="flex flex-col gap-2 mb-[18px]">
+              <label className="text-[#dffff0] text-sm font-bold tracking-[0.3px]">Confirm Password</label>
+              <input type="password" className={inputClass} required ref={repasswordRef} minLength={5} maxLength={15} onChange={(e) => setData(prev => ({ ...prev, repassword: e.target.value }))} value={data.repassword} placeholder="Re-enter your password" />
+            </div>
+            {!matching && <p className="text-[#ff7b7b] mt-0 mb-[14px] font-bold text-sm">Password and Repassword should match</p>}
+            <button type="submit" className="w-full h-[50px] rounded-[14px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-base font-extrabold cursor-pointer shadow-[0_12px_28px_rgba(0,200,83,0.28)] transition-all duration-300 mt-2.5">
+              Sign Up
+            </button>
+            <div className="mt-3 text-center text-white/80 text-sm">
+              Already have an account?<Link to="/login" className="text-[#39ff9c] no-underline font-bold ml-1.5">Login</Link>
+            </div>
           </form>
         </div>
       </main>

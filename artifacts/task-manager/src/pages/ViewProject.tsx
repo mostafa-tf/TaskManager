@@ -43,33 +43,51 @@ export const ViewProject = () => {
     } catch (error: any) { showMsg(error.message, true); }
   };
 
-  const inputStyle: React.CSSProperties = { height: "44px", borderRadius: "12px", border: "1px solid rgba(0,255,128,0.20)", background: "rgba(255,255,255,0.07)", color: "#ffffff", padding: "0 14px", outline: "none", fontSize: "15px", flex: 1 };
-  const cardStyle: React.CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "center", gap: "14px", padding: "14px 18px", borderRadius: "14px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,255,140,0.08)", marginBottom: "10px" };
-
-  if (!project) return <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #07110d 0%, #0b1d15 50%, #08110c 100%)", padding: "30px", color: "#fff" }}>Loading...</div>;
+  if (!project) return (
+    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px] text-white">Loading...</div>
+  );
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #07110d 0%, #0b1d15 50%, #08110c 100%)", padding: "30px" }}>
-      {message && <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}><div style={{ padding: "22px 28px", borderRadius: "20px", background: "rgba(15,15,15,0.98)", border: isError ? "1px solid rgba(255,77,79,0.45)" : "1px solid rgba(0,255,140,0.30)", color: isError ? "#ff9c9c" : "#60ff9c", fontWeight: "700", fontSize: "16px" }}>{message}</div></div>}
-      <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "24px" }}>
-        <button onClick={() => navigate("/projects/viewprojects")} style={{ width: "46px", height: "46px", borderRadius: "14px", border: "1px solid rgba(0,255,140,0.2)", background: "rgba(0,255,140,0.08)", color: "#dffff0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><FaArrowLeft size={18} /></button>
-        <div><h2 style={{ margin: 0, fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>{project.title}</h2><p style={{ margin: 0, color: "rgba(255,255,255,0.65)", fontSize: "14px" }}>{project.description}</p></div>
+    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px]">
+      {message && (
+        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
+        </div>
+      )}
+
+      <div className="flex items-center gap-[14px] mb-6">
+        <button onClick={() => navigate("/projects/viewprojects")} className="w-[46px] h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer flex items-center justify-center">
+          <FaArrowLeft size={18} />
+        </button>
+        <div>
+          <h2 className="m-0 text-[28px] font-extrabold text-white">{project.title}</h2>
+          <p className="m-0 text-white/65 text-sm">{project.description}</p>
+        </div>
       </div>
-      <div style={{ maxWidth: "600px" }}>
-        <h3 style={{ color: "#dffff0", fontWeight: "800", marginBottom: "16px" }}>Members</h3>
-        <form onSubmit={addMember} style={{ display: "flex", gap: "10px", marginBottom: "18px" }}>
-          <input type="email" value={addEmail} onChange={(e) => setAddEmail(e.target.value)} style={inputStyle} placeholder="Add member by email" />
-          <button type="submit" style={{ height: "44px", padding: "0 18px", borderRadius: "12px", border: "none", background: "linear-gradient(135deg, #00c853, #00e676)", color: "#08110c", fontWeight: "800", cursor: "pointer" }}>Add</button>
+
+      <div className="max-w-[600px]">
+        <h3 className="text-[#dffff0] font-extrabold mb-4">Members</h3>
+        <form onSubmit={addMember} className="flex gap-2.5 mb-[18px]">
+          <input
+            type="email"
+            value={addEmail}
+            onChange={(e) => setAddEmail(e.target.value)}
+            className="h-11 rounded-[12px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px] flex-1"
+            placeholder="Add member by email"
+          />
+          <button type="submit" className="h-11 px-[18px] rounded-[12px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] font-extrabold cursor-pointer">Add</button>
         </form>
         {(project.members || []).map((m: any) => (
-          <div style={cardStyle} key={m._id}>
+          <div key={m._id} className="flex justify-between items-center gap-[14px] px-[18px] py-[14px] rounded-[14px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.08)] mb-2.5">
             <div>
-              <p style={{ margin: 0, color: "#fff", fontWeight: "700" }}>{m.username}</p>
-              <p style={{ margin: 0, color: "rgba(255,255,255,0.55)", fontSize: "13px" }}>{m.email}</p>
+              <p className="m-0 text-white font-bold">{m.username}</p>
+              <p className="m-0 text-white/55 text-[13px]">{m.email}</p>
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <NavLink to={`/projects/projectmember/${m._id}`} style={{ height: "36px", padding: "0 12px", borderRadius: "10px", background: "linear-gradient(135deg,#1565c0,#1e88e5)", color: "#fff", fontSize: "13px", fontWeight: "700", textDecoration: "none", display: "flex", alignItems: "center" }}>View Tasks</NavLink>
-              <button onClick={() => removeMember(m._id)} style={{ width: "36px", height: "36px", borderRadius: "10px", border: "none", background: "linear-gradient(135deg,#c62828,#e53935)", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><MdDelete size={16} /></button>
+            <div className="flex gap-2">
+              <NavLink to={`/projects/projectmember/${m._id}`} className="h-9 px-3 rounded-[10px] bg-[linear-gradient(135deg,#1565c0,#1e88e5)] text-white text-[13px] font-bold no-underline flex items-center">View Tasks</NavLink>
+              <button onClick={() => removeMember(m._id)} className="w-9 h-9 rounded-[10px] border-none bg-[linear-gradient(135deg,#c62828,#e53935)] text-white cursor-pointer flex items-center justify-center">
+                <MdDelete size={16} />
+              </button>
             </div>
           </div>
         ))}

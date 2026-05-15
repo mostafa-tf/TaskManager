@@ -3,42 +3,17 @@ import { useNavigate } from "react-router-dom";
 
 const WelcomeNavbar = ({ page = "welcome" }: { page?: string }) => {
   const navigate = useNavigate();
-  const buttonstyle: React.CSSProperties = {
-    width: "60px",
-    height: "60px",
-    borderRadius: "30px",
-    fontSize: "30px",
-    position: "absolute",
-    left: "16px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "green",
-    border: "3px solid green",
-    cursor: "pointer",
-    background: "transparent",
-  };
   return (
-    <nav
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: "90px",
-        color: "cyan",
-        position: "relative",
-        fontSize: "30px",
-        backgroundColor: "black",
-        borderBottom: "1px solid #222",
-      }}
-    >
+    <nav className="flex items-center justify-center w-full h-[70px] text-[#00e676] relative text-2xl sm:text-3xl bg-[#07110d] border-b border-[#1a2e22]">
       {page !== "welcome" && (
-        <button style={buttonstyle} onClick={() => navigate(-1)}>
+        <button
+          className="w-[50px] h-[50px] rounded-full text-2xl absolute left-4 flex items-center justify-center text-[#00e676] border-2 border-[#00e676] cursor-pointer bg-transparent"
+          onClick={() => navigate(-1)}
+        >
           <FaArrowLeft />
         </button>
       )}
-      Task Manager App
+      <span className="font-extrabold tracking-wide">TaskFlow</span>
     </nav>
   );
 };

@@ -1,28 +1,41 @@
+import { useState } from "react";
 import DashboardNavbar from "../components/DashboardNavbar";
 import DashboardAside from "../components/DashboardAside";
 import { DashboardFooter } from "../components/DashboardFooter";
 import { Outlet } from "react-router-dom";
 
 const DashboardLayout = () => {
-  const griddiv: React.CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: "220px 1fr",
-    gridTemplateRows: "90px 1fr 140px",
-    gridTemplateAreas: `"nav nav" "aside main" "footer footer"`,
-    minHeight: "100vh",
-    width: "100%",
-    background: "linear-gradient(135deg, #07110d 0%, #0b1d15 50%, #08110c 100%)",
-  };
-  const mainStyle: React.CSSProperties = { gridArea: "main", padding: "30px", background: "transparent", minWidth: 0 };
-  const asideWrapper: React.CSSProperties = { gridArea: "aside", background: "rgba(0, 0, 0, 0.18)", borderRight: "1px solid rgba(0,255,140,0.12)", minHeight: "100%" };
-  const footerWrapper: React.CSSProperties = { gridArea: "footer" };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div style={griddiv}>
-      <DashboardNavbar />
-      <div style={asideWrapper}><DashboardAside /></div>
-      <main style={mainStyle}><Outlet /></main>
-      <div style={footerWrapper}><DashboardFooter /></div>
+    <div className="dashboard-grid">
+      <div className="[grid-area:nav]">
+        <DashboardNavbar onMenuClick={() => setSidebarOpen((o) => !o)} />
+      </div>
+
+      <div className="hidden lg:flex flex-col [grid-area:aside] bg-[#0b1210] border-r border-[#1f3d2e] min-h-0">
+        <DashboardAside />
+      </div>
+
+      {sidebarOpen && (
+        <div className="lg:hidden fixed inset-0 z-50">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setSidebarOpen(false)}
+          />
+          <div className="absolute left-0 top-0 h-full w-[240px] bg-[#0b1210] border-r border-[#1f3d2e] flex flex-col shadow-2xl">
+            <DashboardAside onNavClick={() => setSidebarOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      <main className="[grid-area:main] p-5 sm:p-[30px] min-w-0">
+        <Outlet />
+      </main>
+
+      <div className="[grid-area:footer]">
+        <DashboardFooter />
+      </div>
     </div>
   );
 };

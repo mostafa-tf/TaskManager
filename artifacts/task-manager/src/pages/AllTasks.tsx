@@ -17,7 +17,9 @@ export const AllTasks = () => {
   const showError = (message: string) => setErrorMsg(message || "Error From Server");
 
   useEffect(() => {
-    if (errorMsg) { const timer = setTimeout(() => setErrorMsg(""), 3000); return () => clearTimeout(timer); }
+    if (!errorMsg) return;
+    const timer = setTimeout(() => setErrorMsg(""), 3000);
+    return () => clearTimeout(timer);
   }, [errorMsg]);
 
   const filteredtasks = tasks.filter((task) => {
@@ -54,54 +56,50 @@ export const AllTasks = () => {
     } catch (error: any) { showError("Failed " + error.message); }
   };
 
-  const pageStyle: React.CSSProperties = { width: "100%", minHeight: "100%", boxSizing: "border-box" };
-  const headerStyle: React.CSSProperties = { display: "flex", alignItems: "center", justifyContent: "space-between", gap: "14px", flexWrap: "wrap", marginBottom: "24px" };
-  const titleWrap: React.CSSProperties = { display: "flex", alignItems: "center", gap: "12px" };
-  const iconWrap: React.CSSProperties = { width: "52px", height: "52px", borderRadius: "16px", background: "rgba(0,255,140,0.10)", border: "1px solid rgba(0,255,140,0.18)", display: "flex", alignItems: "center", justifyContent: "center", color: "#dffff0" };
-  const titleStyle: React.CSSProperties = { margin: 0, fontSize: "28px", fontWeight: "800", color: "#ffffff" };
-  const subtitleStyle: React.CSSProperties = { margin: 0, color: "rgba(255,255,255,0.65)", fontSize: "14px" };
-  const filterdiv: React.CSSProperties = { marginBottom: "24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", padding: "20px", borderRadius: "20px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(0,255,140,0.10)" };
-  const fieldStyle: React.CSSProperties = { display: "flex", flexDirection: "column", gap: "8px" };
-  const labelStyle: React.CSSProperties = { display: "flex", alignItems: "center", gap: "8px", color: "#dffff0", fontSize: "14px", fontWeight: "700", letterSpacing: "0.2px" };
-  const inputStyle: React.CSSProperties = { width: "100%", height: "46px", borderRadius: "14px", border: "1px solid rgba(0,255,140,0.16)", background: "rgba(255,255,255,0.07)", color: "#ffffff", padding: "0 14px", outline: "none", fontSize: "14px", boxSizing: "border-box" };
-  const tasksWrapper: React.CSSProperties = { display: "grid", gap: "18px" };
-  const emptyState: React.CSSProperties = { textAlign: "center", color: "#60ff9c", fontSize: "34px", fontWeight: "800", margin: "34px 0" };
-  const overlayStyle: React.CSSProperties = { position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 };
-  const alertBox: React.CSSProperties = { width: "min(420px, 90%)", padding: "22px 24px", borderRadius: "22px", background: "linear-gradient(135deg, rgba(40,20,20,0.98), rgba(20,20,20,0.98))", border: "1px solid rgba(255,77,79,0.45)", boxShadow: "0 24px 60px rgba(0,0,0,0.55)", color: "#ffffff", display: "flex", alignItems: "center", gap: "14px" };
-  const alertIconWrap: React.CSSProperties = { minWidth: "48px", height: "48px", borderRadius: "16px", background: "rgba(255,77,79,0.14)", border: "1px solid rgba(255,77,79,0.25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ff6b6b" };
+  const inputClass = "w-full h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.16)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-sm box-border";
 
   return (
-    <div style={pageStyle}>
+    <div className="w-full min-h-full box-border">
       {errorMsg && (
-        <div style={overlayStyle}>
-          <div style={alertBox}>
-            <div style={alertIconWrap}><MdErrorOutline size={28} /></div>
+        <div className="fixed inset-0 bg-black/45 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className="w-[min(420px,90%)] p-[22px_24px] rounded-[22px] bg-[linear-gradient(135deg,rgba(40,20,20,0.98),rgba(20,20,20,0.98))] border border-[rgba(255,77,79,0.45)] shadow-[0_24px_60px_rgba(0,0,0,0.55)] text-white flex items-center gap-[14px]">
+            <div className="min-w-[48px] h-[48px] rounded-2xl bg-[rgba(255,77,79,0.14)] border border-[rgba(255,77,79,0.25)] flex items-center justify-center text-[#ff6b6b]">
+              <MdErrorOutline size={28} />
+            </div>
             <div>
-              <h3 style={{ margin: "0 0 4px 0", fontSize: "17px", fontWeight: "800" }}>Something went wrong</h3>
-              <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.75)", lineHeight: "1.5" }}>{errorMsg}</p>
+              <h3 className="m-0 mb-1 text-[17px] font-extrabold">Something went wrong</h3>
+              <p className="m-0 text-sm text-white/75 leading-[1.5]">{errorMsg}</p>
             </div>
           </div>
         </div>
       )}
-      <div style={headerStyle}>
-        <div style={titleWrap}>
-          <div style={iconWrap}><RiTaskLine size={26} /></div>
-          <div><h2 style={titleStyle}>All Tasks</h2><p style={subtitleStyle}>View, filter, complete, and manage all your tasks in one place.</p></div>
+
+      <div className="flex items-center justify-between gap-[14px] flex-wrap mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-[52px] h-[52px] rounded-2xl bg-[rgba(0,255,140,0.10)] border border-[rgba(0,255,140,0.18)] flex items-center justify-center text-[#dffff0]">
+            <RiTaskLine size={26} />
+          </div>
+          <div>
+            <h2 className="m-0 text-[28px] font-extrabold text-white">All Tasks</h2>
+            <p className="m-0 text-white/65 text-sm">View, filter, complete, and manage all your tasks in one place.</p>
+          </div>
         </div>
       </div>
-      {notasks && <h1 style={emptyState}>No Tasks Found</h1>}
-      <div style={filterdiv}>
-        <div style={fieldStyle}>
-          <label style={labelStyle}><FaFilter />Search By Title</label>
-          <input type="text" value={titlefilter} onChange={(e) => setTitleFilter(e.target.value)} style={inputStyle} placeholder="Enter task title" />
+
+      {notasks && <h1 className="text-center text-[#60ff9c] text-[34px] font-extrabold my-[34px]">No Tasks Found</h1>}
+
+      <div className="mb-6 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 p-5 rounded-[20px] bg-[rgba(255,255,255,0.04)] border border-[rgba(0,255,140,0.10)]">
+        <div className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 text-[#dffff0] text-sm font-bold"><FaFilter />Search By Title</label>
+          <input type="text" value={titlefilter} onChange={(e) => setTitleFilter(e.target.value)} className={inputClass} placeholder="Enter task title" />
         </div>
-        <div style={fieldStyle}>
-          <label style={labelStyle}><MdDateRange />Filter By Date</label>
-          <DatePicker placeholderText="Select date" selected={calenderdate} dateFormat="yyyy-MM-dd" onChange={(d) => setCalenderDate(d)} className="custom-dark-datepicker" />
+        <div className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 text-[#dffff0] text-sm font-bold"><MdDateRange />Filter By Date</label>
+          <DatePicker placeholderText="Select date" selected={calenderdate} dateFormat="yyyy-MM-dd" onChange={(d: Date | null) => setCalenderDate(d)} className="custom-dark-datepicker" />
         </div>
-        <div style={fieldStyle}>
-          <label style={labelStyle}><MdLowPriority />Filter By Priority</label>
-          <select value={priorityfilter} onChange={(e) => setPriorityFilter(e.target.value)} style={inputStyle}>
+        <div className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 text-[#dffff0] text-sm font-bold"><MdLowPriority />Filter By Priority</label>
+          <select value={priorityfilter} onChange={(e) => setPriorityFilter(e.target.value)} className={inputClass}>
             <option value="">Filter By Priority</option>
             <option value="low">low</option>
             <option value="med">medium</option>
@@ -109,7 +107,8 @@ export const AllTasks = () => {
           </select>
         </div>
       </div>
-      <div style={tasksWrapper}>
+
+      <div className="grid gap-[18px]">
         {filteredtasks.map((task) => (
           <TaskStructure key={task._id} title={task.title} description={task.description} priority={task.priority} completed={task.isDone} isexpired={task.dueDate} completedat={task.completedAt} deletefun={() => deletetask(task._id)} onChange={() => switchcheckbox(task._id)} taskid={task._id} starthour={task.starthour} endhour={task.endhour} />
         ))}

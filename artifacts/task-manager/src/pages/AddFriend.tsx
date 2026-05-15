@@ -20,16 +20,25 @@ export const AddFriend = () => {
   return (
     <div>
       {message && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
-          <div style={{ padding: "22px 28px", borderRadius: "20px", background: "rgba(15,15,15,0.98)", border: isError ? "1px solid rgba(255,77,79,0.45)" : "1px solid rgba(0,255,140,0.30)", color: isError ? "#ff9c9c" : "#60ff9c", fontWeight: "700", fontSize: "16px" }}>{message}</div>
+        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
         </div>
       )}
-      <div style={{ maxWidth: "460px", padding: "28px", borderRadius: "20px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,255,140,0.10)" }}>
-        <h3 style={{ color: "#ffffff", fontWeight: "800", marginTop: 0, marginBottom: "20px" }}>Send Friend Request</h3>
+      <div className="max-w-[460px] p-7 rounded-[20px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.10)]">
+        <h3 className="text-white font-extrabold mt-0 mb-5">Send Friend Request</h3>
         <form onSubmit={handleSubmit}>
-          <label style={{ display: "block", color: "#caffdf", marginBottom: "8px", fontSize: "14px", fontWeight: "700" }}>Friend&apos;s Email</label>
-          <input type="email" required style={{ width: "100%", height: "46px", borderRadius: "12px", border: "1px solid rgba(0,255,128,0.20)", background: "rgba(255,255,255,0.07)", color: "#ffffff", padding: "0 14px", outline: "none", fontSize: "15px", boxSizing: "border-box", marginBottom: "16px" }} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email address" />
-          <button type="submit" style={{ width: "100%", height: "46px", borderRadius: "12px", border: "none", background: "linear-gradient(135deg, #00c853, #00e676)", color: "#08110c", fontSize: "15px", fontWeight: "800", cursor: "pointer" }}>Send Request</button>
+          <label className="block text-[#caffdf] mb-2 text-sm font-bold">Friend&apos;s Email</label>
+          <input
+            type="email"
+            required
+            className="w-full h-[46px] rounded-[12px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px] box-border mb-4"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter email address"
+          />
+          <button type="submit" className="w-full h-[46px] rounded-[12px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-[15px] font-extrabold cursor-pointer">
+            Send Request
+          </button>
         </form>
       </div>
     </div>

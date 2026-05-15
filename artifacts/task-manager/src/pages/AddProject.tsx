@@ -21,23 +21,40 @@ export const AddProject = () => {
     } catch (error: any) { showMsg(error.message, true); }
   };
 
-  const inputStyle: React.CSSProperties = { width: "100%", height: "48px", borderRadius: "14px", border: "1px solid rgba(0,255,128,0.20)", background: "rgba(255,255,255,0.07)", color: "#ffffff", padding: "0 14px", outline: "none", fontSize: "15px", boxSizing: "border-box" };
-  const labelStyle: React.CSSProperties = { display: "block", color: "#caffdf", marginBottom: "8px", fontSize: "14px", fontWeight: "700" };
-  const fieldStyle: React.CSSProperties = { marginBottom: "20px" };
+  const inputClass = "w-full h-12 rounded-[14px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px] box-border";
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #07110d 0%, #0b1d15 50%, #08110c 100%)", padding: "30px" }}>
-      {message && <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}><div style={{ padding: "22px 28px", borderRadius: "20px", background: "rgba(15,15,15,0.98)", border: isError ? "1px solid rgba(255,77,79,0.45)" : "1px solid rgba(0,255,140,0.30)", color: isError ? "#ff9c9c" : "#60ff9c", fontWeight: "700", fontSize: "16px" }}>{message}</div></div>}
-      <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "28px" }}>
-        <button onClick={() => navigate("/projects")} style={{ width: "46px", height: "46px", borderRadius: "14px", border: "1px solid rgba(0,255,140,0.2)", background: "rgba(0,255,140,0.08)", color: "#dffff0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><FaArrowLeft size={18} /></button>
-        <h2 style={{ margin: 0, fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>Create Project</h2>
+    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px]">
+      {message && (
+        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
+        </div>
+      )}
+
+      <div className="flex items-center gap-[14px] mb-7">
+        <button onClick={() => navigate("/projects")} className="w-[46px] h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer flex items-center justify-center">
+          <FaArrowLeft size={18} />
+        </button>
+        <h2 className="m-0 text-[28px] font-extrabold text-white">Create Project</h2>
       </div>
-      <div style={{ maxWidth: "500px", padding: "32px", borderRadius: "24px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,255,140,0.12)" }}>
+
+      <div className="max-w-[500px] p-8 rounded-3xl bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.12)]">
         <form onSubmit={handleSubmit}>
-          <div style={fieldStyle}><label style={labelStyle}>Project Title</label><input type="text" required minLength={2} maxLength={50} style={inputStyle} value={data.title} onChange={(e) => setData(p => ({ ...p, title: e.target.value }))} placeholder="Project title" /></div>
-          <div style={fieldStyle}><label style={labelStyle}>Description</label><textarea required style={{ ...inputStyle, height: "80px", padding: "10px 14px", resize: "vertical" }} value={data.description} onChange={(e) => setData(p => ({ ...p, description: e.target.value }))} placeholder="Describe the project" /></div>
-          <div style={fieldStyle}><label style={labelStyle}>Member Email</label><input type="email" style={inputStyle} value={data.memberEmail} onChange={(e) => setData(p => ({ ...p, memberEmail: e.target.value }))} placeholder="Add a member by email (optional)" /></div>
-          <button type="submit" style={{ width: "100%", height: "50px", borderRadius: "14px", border: "none", background: "linear-gradient(135deg, #00c853, #00e676)", color: "#08110c", fontSize: "16px", fontWeight: "800", cursor: "pointer" }}>Create Project</button>
+          <div className="mb-5">
+            <label className="block text-[#caffdf] mb-2 text-sm font-bold">Project Title</label>
+            <input type="text" required minLength={2} maxLength={50} className={inputClass} value={data.title} onChange={(e) => setData(p => ({ ...p, title: e.target.value }))} placeholder="Project title" />
+          </div>
+          <div className="mb-5">
+            <label className="block text-[#caffdf] mb-2 text-sm font-bold">Description</label>
+            <textarea required className="w-full h-20 rounded-[14px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] py-[10px] outline-none text-[15px] box-border resize-y" value={data.description} onChange={(e) => setData(p => ({ ...p, description: e.target.value }))} placeholder="Describe the project" />
+          </div>
+          <div className="mb-5">
+            <label className="block text-[#caffdf] mb-2 text-sm font-bold">Member Email</label>
+            <input type="email" className={inputClass} value={data.memberEmail} onChange={(e) => setData(p => ({ ...p, memberEmail: e.target.value }))} placeholder="Add a member by email (optional)" />
+          </div>
+          <button type="submit" className="w-full h-[50px] rounded-[14px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-base font-extrabold cursor-pointer">
+            Create Project
+          </button>
         </form>
       </div>
     </div>

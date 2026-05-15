@@ -34,26 +34,35 @@ export const ViewProjects = () => {
     } catch (error: any) { showMsg(error.message, true); }
   };
 
-  const cardStyle: React.CSSProperties = { padding: "20px 24px", borderRadius: "18px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(0,255,140,0.10)", marginBottom: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "14px" };
-
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #07110d 0%, #0b1d15 50%, #08110c 100%)", padding: "30px" }}>
-      {message && <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}><div style={{ padding: "22px 28px", borderRadius: "20px", background: "rgba(15,15,15,0.98)", border: isError ? "1px solid rgba(255,77,79,0.45)" : "1px solid rgba(0,255,140,0.30)", color: isError ? "#ff9c9c" : "#60ff9c", fontWeight: "700", fontSize: "16px" }}>{message}</div></div>}
-      <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "28px" }}>
-        <button onClick={() => navigate("/projects")} style={{ width: "46px", height: "46px", borderRadius: "14px", border: "1px solid rgba(0,255,140,0.2)", background: "rgba(0,255,140,0.08)", color: "#dffff0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><FaArrowLeft size={18} /></button>
-        <div style={{ width: "52px", height: "52px", borderRadius: "16px", background: "rgba(0,255,140,0.10)", display: "flex", alignItems: "center", justifyContent: "center", color: "#dffff0" }}><FaProjectDiagram size={24} /></div>
-        <div><h2 style={{ margin: 0, fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>My Projects</h2></div>
+    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px]">
+      {message && (
+        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
+        </div>
+      )}
+
+      <div className="flex items-center gap-[14px] mb-7">
+        <button onClick={() => navigate("/projects")} className="w-[46px] h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer flex items-center justify-center">
+          <FaArrowLeft size={18} />
+        </button>
+        <div className="w-[52px] h-[52px] rounded-2xl bg-[rgba(0,255,140,0.10)] flex items-center justify-center text-[#dffff0]"><FaProjectDiagram size={24} /></div>
+        <h2 className="m-0 text-[28px] font-extrabold text-white">My Projects</h2>
       </div>
-      {noProjects && <h2 style={{ color: "#60ff9c", fontWeight: "800" }}>No Projects Found</h2>}
+
+      {noProjects && <h2 className="text-[#60ff9c] font-extrabold">No Projects Found</h2>}
+
       {projects.map((p) => (
-        <div style={cardStyle} key={p._id}>
+        <div key={p._id} className="px-6 py-5 rounded-[18px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.10)] mb-3 flex justify-between items-center gap-[14px]">
           <div>
-            <h3 style={{ margin: "0 0 4px", color: "#ffffff", fontSize: "18px", fontWeight: "800" }}>{p.title}</h3>
-            <p style={{ margin: 0, color: "rgba(255,255,255,0.60)", fontSize: "13px" }}>{p.description}</p>
+            <h3 className="m-0 mb-1 text-white text-lg font-extrabold">{p.title}</h3>
+            <p className="m-0 text-white/60 text-[13px]">{p.description}</p>
           </div>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <NavLink to={`${p._id}`} style={{ height: "36px", padding: "0 14px", borderRadius: "10px", background: "linear-gradient(135deg,#1565c0,#1e88e5)", color: "#fff", fontSize: "13px", fontWeight: "700", textDecoration: "none", display: "flex", alignItems: "center" }}>View</NavLink>
-            <button onClick={() => deleteProject(p._id)} style={{ height: "36px", width: "40px", borderRadius: "10px", border: "none", background: "linear-gradient(135deg,#c62828,#e53935)", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><MdDelete size={18} /></button>
+          <div className="flex gap-2">
+            <NavLink to={`${p._id}`} className="h-9 px-[14px] rounded-[10px] bg-[linear-gradient(135deg,#1565c0,#1e88e5)] text-white text-[13px] font-bold no-underline flex items-center">View</NavLink>
+            <button onClick={() => deleteProject(p._id)} className="h-9 w-10 rounded-[10px] border-none bg-[linear-gradient(135deg,#c62828,#e53935)] text-white cursor-pointer flex items-center justify-center">
+              <MdDelete size={18} />
+            </button>
           </div>
         </div>
       ))}

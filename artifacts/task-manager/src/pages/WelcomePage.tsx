@@ -5,32 +5,35 @@ import { useNavigate } from "react-router-dom";
 function WelcomePage() {
   const navigate = useNavigate();
 
-  const buttonStyle = (type: string): React.CSSProperties => {
-    const baseStyle: React.CSSProperties = {
-      width: "220px", height: "52px", borderRadius: "14px", border: "none",
-      cursor: "pointer", fontSize: "17px", fontWeight: "700", letterSpacing: "0.5px",
-      transition: "all 0.3s ease", boxShadow: "0 8px 22px rgba(0,0,0,0.25)",
-    };
-    if (type === "login") return { ...baseStyle, background: "linear-gradient(135deg, #00c853, #00e676)", color: "#0d0d0d" };
-    return { ...baseStyle, background: "transparent", color: "#ffffff", border: "2px solid rgba(255,255,255,0.85)", backdropFilter: "blur(6px)" };
-  };
-
   return (
     <>
       <WelcomeNavbar />
-      <main style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", width: "100%", minHeight: "calc(100vh - 70px)", backgroundImage: `url(${tasksimage})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(rgba(6, 10, 18, 0.72), rgba(6, 10, 18, 0.82))" }} />
-        <div style={{ position: "relative", zIndex: 2, width: "min(90%, 520px)", padding: "50px 35px", borderRadius: "28px", background: "rgba(255,255,255,0.10)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", border: "1px solid rgba(255,255,255,0.18)", boxShadow: "0 20px 60px rgba(0,0,0,0.35)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "18px", textAlign: "center" }}>
-          <h1 style={{ margin: 0, fontSize: "42px", fontWeight: "800", color: "#ffffff", lineHeight: "1.2", textShadow: "0 4px 16px rgba(0,0,0,0.35)" }}>Welcome to TaskFlow</h1>
-          <p style={{ margin: 0, fontSize: "17px", lineHeight: "1.8", color: "rgba(255,255,255,0.88)", maxWidth: "420px" }}>Organize your tasks, boost your productivity, and manage your day with a modern smart workflow.</p>
-          <div style={{ width: "70px", height: "4px", borderRadius: "999px", background: "linear-gradient(90deg, #00c853, #ffffff)", margin: "10px 0 6px" }} />
-          <div style={{ display: "flex", flexDirection: "column", gap: "14px", width: "100%", alignItems: "center", marginTop: "10px" }}>
-            <button style={buttonStyle("login")} onClick={() => navigate("/login")}
-              onMouseOver={(e) => { (e.target as HTMLElement).style.transform = "translateY(-3px) scale(1.02)"; (e.target as HTMLElement).style.boxShadow = "0 14px 28px rgba(0, 200, 83, 0.35)"; }}
-              onMouseOut={(e) => { (e.target as HTMLElement).style.transform = "translateY(0) scale(1)"; (e.target as HTMLElement).style.boxShadow = "0 8px 22px rgba(0,0,0,0.25)"; }}>Login</button>
-            <button style={buttonStyle("signup")} onClick={() => navigate("/signup")}
-              onMouseOver={(e) => { (e.target as HTMLElement).style.transform = "translateY(-3px) scale(1.02)"; (e.target as HTMLElement).style.background = "rgba(255,255,255,0.12)"; }}
-              onMouseOut={(e) => { (e.target as HTMLElement).style.transform = "translateY(0) scale(1)"; (e.target as HTMLElement).style.background = "transparent"; }}>Sign Up</button>
+      <main
+        className="relative flex justify-center items-center w-full min-h-[calc(100vh-70px)] overflow-hidden bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${tasksimage})` }}
+      >
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(6,10,18,0.72),rgba(6,10,18,0.82))]" />
+        <div className="relative z-10 w-[min(90%,520px)] px-8 py-12 rounded-[28px] bg-[rgba(255,255,255,0.10)] backdrop-blur-[14px] border border-[rgba(255,255,255,0.18)] shadow-[0_20px_60px_rgba(0,0,0,0.35)] flex flex-col justify-center items-center gap-[18px] text-center">
+          <h1 className="m-0 text-4xl sm:text-[42px] font-extrabold text-white leading-[1.2] [text-shadow:0_4px_16px_rgba(0,0,0,0.35)]">
+            Welcome to TaskFlow
+          </h1>
+          <p className="m-0 text-base sm:text-[17px] leading-[1.8] text-white/88 max-w-[420px]">
+            Organize your tasks, boost your productivity, and manage your day with a modern smart workflow.
+          </p>
+          <div className="w-[70px] h-1 rounded-full bg-[linear-gradient(90deg,#00c853,#ffffff)] my-2" />
+          <div className="flex flex-col gap-[14px] w-full items-center mt-2">
+            <button
+              className="w-[220px] h-[52px] rounded-[14px] border-none cursor-pointer text-[17px] font-bold tracking-[0.5px] transition-all duration-300 shadow-[0_8px_22px_rgba(0,0,0,0.25)] bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#0d0d0d] hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_14px_28px_rgba(0,200,83,0.35)]"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </button>
+            <button
+              className="w-[220px] h-[52px] rounded-[14px] cursor-pointer text-[17px] font-bold tracking-[0.5px] transition-all duration-300 shadow-[0_8px_22px_rgba(0,0,0,0.25)] bg-transparent text-white border-2 border-white/85 backdrop-blur-[6px] hover:-translate-y-1 hover:scale-[1.02] hover:bg-[rgba(255,255,255,0.12)]"
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </button>
           </div>
         </div>
       </main>

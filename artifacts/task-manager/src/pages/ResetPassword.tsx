@@ -28,26 +28,24 @@ export const ResetPassword = () => {
     } catch (error: any) { setIsError(true); setMessage(error.message); }
   };
 
-  const pageStyle: React.CSSProperties = { width: "100%", minHeight: "calc(100vh - 70px)", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, rgb(7,14,10) 0%, rgb(10,24,17) 45%, rgb(6,10,8) 100%)", padding: "30px 20px" };
-  const cardStyle: React.CSSProperties = { width: "100%", maxWidth: "420px", padding: "38px 30px", borderRadius: "28px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(0,255,128,0.18)", boxShadow: "0 20px 60px rgba(0,0,0,0.45)", backdropFilter: "blur(14px)" };
-  const inputStyle: React.CSSProperties = { width: "100%", height: "48px", borderRadius: "14px", border: "1px solid rgba(0,255,128,0.20)", background: "rgba(255,255,255,0.07)", color: "#ffffff", padding: "0 14px", outline: "none", fontSize: "15px", boxSizing: "border-box", marginBottom: "18px" };
-  const buttonStyle: React.CSSProperties = { width: "100%", height: "50px", borderRadius: "14px", border: "none", background: "linear-gradient(135deg, #00c853, #00e676)", color: "#08110c", fontSize: "16px", fontWeight: "800", cursor: "pointer", marginTop: "8px" };
-  const labelStyle: React.CSSProperties = { display: "block", color: "#caffdf", marginBottom: "8px", fontSize: "14px", fontWeight: "700" };
+  const inputClass = "w-full h-12 rounded-[14px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px] box-border mb-[18px]";
 
   return (
     <>
       <WelcomeNavbar page="reset" />
-      <div style={pageStyle}>
-        <div style={cardStyle}>
-          <h2 style={{ color: "#ffffff", fontSize: "30px", fontWeight: "800", textAlign: "center", marginBottom: "10px" }}>Reset Password</h2>
-          <p style={{ color: "rgba(255,255,255,0.70)", textAlign: "center", marginBottom: "26px", fontSize: "15px" }}>Enter your new password below.</p>
-          {message && <p style={{ color: isError ? "#ff9c9c" : "#60ff9c", marginBottom: "16px", fontWeight: "700", textAlign: "center" }}>{message}</p>}
+      <div className="w-full min-h-[calc(100vh-70px)] flex items-center justify-center bg-[linear-gradient(135deg,rgb(7,14,10)_0%,rgb(10,24,17)_45%,rgb(6,10,8)_100%)] p-[30px_20px]">
+        <div className="w-full max-w-[420px] p-[38px_30px] rounded-[28px] bg-[rgba(255,255,255,0.06)] border border-[rgba(0,255,128,0.18)] shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-[14px]">
+          <h2 className="text-white text-[30px] font-extrabold text-center mb-2.5">Reset Password</h2>
+          <p className="text-white/70 text-center mb-[26px] text-[15px]">Enter your new password below.</p>
+          {message && <p className={`mb-4 font-bold text-center ${isError ? "text-[#ff9c9c]" : "text-[#60ff9c]"}`}>{message}</p>}
           <form onSubmit={handleSubmit}>
-            <label style={labelStyle}>New Password</label>
-            <input type="password" required minLength={5} maxLength={15} style={inputStyle} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter new password" />
-            <label style={labelStyle}>Confirm Password</label>
-            <input type="password" required minLength={5} maxLength={15} style={inputStyle} value={repassword} onChange={(e) => setRepassword(e.target.value)} placeholder="Confirm new password" />
-            <button type="submit" style={buttonStyle}>Reset Password</button>
+            <label className="block text-[#caffdf] mb-2 text-sm font-bold">New Password</label>
+            <input type="password" required minLength={5} maxLength={15} className={inputClass} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter new password" />
+            <label className="block text-[#caffdf] mb-2 text-sm font-bold">Confirm Password</label>
+            <input type="password" required minLength={5} maxLength={15} className={inputClass} value={repassword} onChange={(e) => setRepassword(e.target.value)} placeholder="Confirm new password" />
+            <button type="submit" className="w-full h-[50px] rounded-[14px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-base font-extrabold cursor-pointer mt-2">
+              Reset Password
+            </button>
           </form>
         </div>
       </div>

@@ -34,48 +34,47 @@ export const AdminDashboard = () => {
     } catch (error: any) { showMsg(error.message, true); }
   };
 
-  const rowStyle: React.CSSProperties = { display: "grid", gridTemplateColumns: "1fr 1fr 1fr 100px", gap: "12px", alignItems: "center", padding: "16px 20px", borderRadius: "14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(0,255,140,0.08)", marginBottom: "10px" };
-  const cellStyle: React.CSSProperties = { color: "rgba(255,255,255,0.9)", fontSize: "14px", fontWeight: "600", wordBreak: "break-all" };
-  const headerRowStyle: React.CSSProperties = { display: "grid", gridTemplateColumns: "1fr 1fr 1fr 100px", gap: "12px", padding: "10px 20px", marginBottom: "8px" };
-  const headerCell: React.CSSProperties = { color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.8px" };
-  const actionsBtns: React.CSSProperties = { display: "flex", gap: "8px", flexWrap: "wrap" };
-  const btn = (col: string): React.CSSProperties => ({ height: "36px", padding: "0 12px", borderRadius: "10px", border: "none", background: col, color: "#fff", fontSize: "13px", fontWeight: "700", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" });
-
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #07110d 0%, #0b1d15 50%, #08110c 100%)", padding: "30px" }}>
+    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px]">
       {message && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
-          <div style={{ padding: "22px 28px", borderRadius: "20px", background: "rgba(15,15,15,0.98)", border: isError ? "1px solid rgba(255,77,79,0.45)" : "1px solid rgba(0,255,140,0.30)", color: isError ? "#ff9c9c" : "#60ff9c", fontWeight: "700", fontSize: "16px" }}>{message}</div>
+        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
         </div>
       )}
-      <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "28px" }}>
-        <button onClick={() => navigate("/dashboard")} style={{ width: "46px", height: "46px", borderRadius: "14px", border: "1px solid rgba(0,255,140,0.2)", background: "rgba(0,255,140,0.08)", color: "#dffff0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><FaArrowLeft size={18} /></button>
-        <div style={{ width: "52px", height: "52px", borderRadius: "16px", background: "rgba(0,255,140,0.10)", display: "flex", alignItems: "center", justifyContent: "center", color: "#dffff0" }}><FaUsers size={26} /></div>
+
+      <div className="flex flex-wrap items-center gap-[14px] mb-7">
+        <button onClick={() => navigate("/dashboard")} className="w-[46px] h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer flex items-center justify-center">
+          <FaArrowLeft size={18} />
+        </button>
+        <div className="w-[52px] h-[52px] rounded-2xl bg-[rgba(0,255,140,0.10)] flex items-center justify-center text-[#dffff0]"><FaUsers size={26} /></div>
         <div>
-          <h2 style={{ margin: 0, fontSize: "28px", fontWeight: "800", color: "#ffffff" }}>Admin Dashboard</h2>
-          <p style={{ margin: 0, color: "rgba(255,255,255,0.65)", fontSize: "14px" }}>Manage all users and their accounts.</p>
+          <h2 className="m-0 text-[28px] font-extrabold text-white">Admin Dashboard</h2>
+          <p className="m-0 text-white/65 text-sm">Manage all users and their accounts.</p>
         </div>
-        <div style={{ marginLeft: "auto", display: "flex", gap: "12px" }}>
-          <button style={btn("linear-gradient(135deg,#1565c0,#1e88e5)")} onClick={() => navigate("feedbacks")}>View Feedbacks</button>
-          <button style={btn("linear-gradient(135deg,#00c853,#00e676)")} onClick={() => navigate("updateuser")}>Update User</button>
+        <div className="ml-auto flex gap-3">
+          <button className="h-9 px-3 rounded-[10px] border-none bg-[linear-gradient(135deg,#1565c0,#1e88e5)] text-white text-sm font-bold cursor-pointer flex items-center gap-1.5" onClick={() => navigate("feedbacks")}>View Feedbacks</button>
+          <button className="h-9 px-3 rounded-[10px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-sm font-bold cursor-pointer flex items-center gap-1.5" onClick={() => navigate("updateuser")}>Update User</button>
         </div>
       </div>
-      {noUsers && <h1 style={{ color: "#60ff9c", textAlign: "center", fontSize: "30px", fontWeight: "800" }}>No Users Found</h1>}
+
+      {noUsers && <h1 className="text-[#60ff9c] text-center text-[30px] font-extrabold">No Users Found</h1>}
+
       {users.length > 0 && (
-        <div style={{ borderRadius: "20px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(0,255,140,0.10)", padding: "16px" }}>
-          <div style={headerRowStyle}>
-            <span style={headerCell}>Username</span>
-            <span style={headerCell}>Email</span>
-            <span style={headerCell}>Role</span>
-            <span style={headerCell}>Actions</span>
+        <div className="rounded-[20px] bg-[rgba(255,255,255,0.04)] border border-[rgba(0,255,140,0.10)] p-4 overflow-x-auto">
+          <div className="grid grid-cols-[1fr_1fr_1fr_100px] gap-3 px-5 py-2.5 mb-2">
+            {["Username", "Email", "Role", "Actions"].map((h) => (
+              <span key={h} className="text-white/50 text-xs font-extrabold uppercase tracking-[0.8px]">{h}</span>
+            ))}
           </div>
           {users.map((user) => (
-            <div style={rowStyle} key={user._id}>
-              <span style={cellStyle}>{user.username}</span>
-              <span style={cellStyle}>{user.email}</span>
-              <span style={{ ...cellStyle, color: user.role === "admin" ? "#ffe082" : "#dffff0" }}>{user.role}</span>
-              <div style={actionsBtns}>
-                <button style={btn("linear-gradient(135deg,#c62828,#e53935)")} onClick={() => deleteUser(user._id)}><MdDelete size={16} /></button>
+            <div key={user._id} className="grid grid-cols-[1fr_1fr_1fr_100px] gap-3 items-center px-5 py-4 rounded-[14px] bg-[rgba(255,255,255,0.04)] border border-[rgba(0,255,140,0.08)] mb-2.5">
+              <span className="text-white/90 text-sm font-semibold break-all">{user.username}</span>
+              <span className="text-white/90 text-sm font-semibold break-all">{user.email}</span>
+              <span className={`text-sm font-semibold ${user.role === "admin" ? "text-[#ffe082]" : "text-[#dffff0]"}`}>{user.role}</span>
+              <div className="flex gap-2 flex-wrap">
+                <button className="h-9 px-3 rounded-[10px] border-none bg-[linear-gradient(135deg,#c62828,#e53935)] text-white text-sm font-bold cursor-pointer flex items-center gap-1.5" onClick={() => deleteUser(user._id)}>
+                  <MdDelete size={16} />
+                </button>
               </div>
             </div>
           ))}
