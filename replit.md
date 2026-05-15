@@ -1,45 +1,66 @@
-# [Project name]
+# TaskFlow — Task Manager App
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A full-stack task management web application reproduced from [mostafa-tf/TaskManager](https://github.com/mostafa-tf/TaskManager.git). Users can manage personal and project tasks, collaborate with friends, and track productivity via analytics.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080, proxied at /api)
+- `pnpm --filter @workspace/task-manager run dev` — run the frontend (port 18810, proxied at /)
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- pnpm workspaces, Node.js 24, TypeScript
+- Frontend: React + Vite + react-router-dom v7
+- Backend: Express 5 + MongoDB (Mongoose) + Socket.io
+- Auth: JWT (stored in localStorage)
+- UI: Custom dark theme CSS, react-icons, react-circular-progressbar, react-datepicker
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/api-server/src/` — Express backend
+  - `routes/` — users, tasks, feedbacks, friendship, projects, notifications
+  - `models/` — Mongoose models
+  - `middleware/` — JWT auth middleware
+  - `db.ts` — MongoDB connection
+  - `app.ts` — Express + Socket.io setup
+- `artifacts/task-manager/src/` — React frontend
+  - `pages/` — all page components
+  - `components/` — shared components (navbar, aside, footer, etc.)
+  - `App.tsx` — routes with react-router-dom BrowserRouter
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- All fetch calls use relative `/api/...` URLs; the Replit proxy routes `/api` to the backend.
+- Socket.io uses path `/api/socket.io` and connects to `"/"` from the client.
+- JWT stored in `localStorage`; auth header `Authorization: Bearer <token>` on every request.
+- MongoDB connection is awaited before server starts listening (in `index.ts`).
+- `connectdb()` moved out of `app.ts` into `index.ts` so the server only starts after DB is ready.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- User registration, login, forgot/reset password
+- Personal task CRUD with priority, due date, start/end hours
+- Done / undone task filters, analysis dashboard with progress charts
+- Friends system: send/accept/block requests
+- Project management with member roles
+- Real-time notifications via Socket.io
+- Admin dashboard for managing users and feedback
+- Profile management
+
+## Required Secrets
+
+- `MONGODB_URI` — MongoDB Atlas connection string (mongodb+srv://...)
+- `JWT_KEY` — Secret key for JWT signing
+- `SESSION_SECRET` — Express session secret
+- `MAIL_USER` — Email address for sending password reset emails
+- `MAIL_PASS` — Email password/app password for nodemailer
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Reproduce the original GitHub repo exactly — functionally identical.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- MongoDB Atlas must have Network Access set to allow all IPs (0.0.0.0/0) for Replit to connect.
+- The frontend dev server must allow all hosts (`server.host: '0.0.0.0'` in vite.config.ts).
+- Do NOT run `pnpm dev` at workspace root — use individual workflow commands.
