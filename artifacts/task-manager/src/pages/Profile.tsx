@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { IoPersonSharp } from "react-icons/io5";
 
 export const Profile = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ username: string; email: string } | null>(null);
   const [editing, setEditing] = useState(false);
-  const [updated, setUpdated] = useState<any>({});
+  const [updated, setUpdated] = useState<{ username: string; email: string }>({ username: "", email: "" });
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
@@ -16,7 +16,8 @@ export const Profile = () => {
         const res = await fetch("/api/users/profile", { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } });
         const data = await res.json();
         if (res.status !== 200) throw new Error(data.message);
-        setUser(data); setUpdated(data);
+        const profile = { username: data.username, email: data.email };
+        setUser(profile); setUpdated(profile);
       } catch (error: any) { showMsg(error.message, true); }
     };
     fetchProfile();
@@ -24,10 +25,12 @@ export const Profile = () => {
 
   const handleUpdate = async () => {
     try {
-      const res = await fetch("/api/users/profile", { method: "PUT", headers: { "Content-Type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` }, body: JSON.stringify(updated) });
+      const payload = { username: updated.username, email: updated.email };
+      const res = await fetch("/api/users/profile", { method: "PUT", headers: { "Content-Type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (res.status !== 200) throw new Error(data.message);
-      setUser(data); setEditing(false); showMsg("Profile updated!", false);
+      const profile = { username: data.username, email: data.email };
+      setUser(profile); setEditing(false); showMsg("Profile updated!", false);
     } catch (error: any) { showMsg(error.message, true); }
   };
 
@@ -54,30 +57,18 @@ export const Profile = () => {
       <div className="max-w-[500px] p-8 rounded-3xl bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.12)]">
         <div className="mb-4">
           <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Username</label>
-          <input type="text" className={inputClass} disabled={!editing} value={updated.username || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, username: e.target.value }))} />
+          <input type="text" className={inputClass} disabled={!editing} value={updated.username} onChange={(e) => setUpdated((p) => ({ ...p, username: e.target.value }))} />
         </div>
         <div className="mb-4">
           <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Email</label>
-          <input type="email" className={inputClass} disabled={!editing} value={updated.email || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, email: e.target.value }))} />
-        </div>
-        <div className="mb-4">
-          <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Phone</label>
-          <input type="text" className={inputClass} disabled={!editing} value={updated.phone || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, phone: e.target.value }))} />
-        </div>
-        <div className="mb-4">
-          <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Location</label>
-          <input type="text" className={inputClass} disabled={!editing} value={updated.location || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, location: e.target.value }))} />
-        </div>
-        <div className="mb-4">
-          <label className="block text-[#caffdf] mb-1.5 text-[13px] font-bold">Bio</label>
-          <textarea className="w-full h-[70px] rounded-[12px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] py-[10px] outline-none text-[15px] box-border resize-y disabled:opacity-60" disabled={!editing} value={updated.bio || ""} onChange={(e) => setUpdated((p: any) => ({ ...p, bio: e.target.value }))} />
+          <input type="email" className={inputClass} disabled={!editing} value={updated.email} onChange={(e) => setUpdated((p) => ({ ...p, email: e.target.value }))} />
         </div>
         <div className="flex gap-3 mt-2">
           {!editing
             ? <button className="h-[46px] px-6 rounded-[12px] border-none bg-[linear-gradient(135deg,#1565c0,#1e88e5)] text-white text-[15px] font-bold cursor-pointer" onClick={() => setEditing(true)}>Edit Profile</button>
             : <>
               <button className="h-[46px] px-6 rounded-[12px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-white text-[15px] font-bold cursor-pointer" onClick={handleUpdate}>Save Changes</button>
-              <button className="h-[46px] px-6 rounded-[12px] border-none bg-[rgba(255,255,255,0.12)] text-white text-[15px] font-bold cursor-pointer" onClick={() => { setEditing(false); setUpdated(user); }}>Cancel</button>
+              <button className="h-[46px] px-6 rounded-[12px] border-none bg-[rgba(255,255,255,0.12)] text-white text-[15px] font-bold cursor-pointer" onClick={() => { setEditing(false); setUpdated(user!); }}>Cancel</button>
             </>
           }
         </div>
