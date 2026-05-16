@@ -70,7 +70,7 @@ const DashboardNavbar = ({ onMenuClick }: DashboardNavbarProps) => {
 
       {isadminn && (
         <button
-          className="hidden lg:flex items-center gap-2 h-10 px-4 rounded-[10px] bg-[rgba(21,101,192,0.85)] text-[#dffff0] text-sm font-bold cursor-pointer border-none mr-3"
+          className="flex items-center gap-2 h-10 px-4 rounded-[10px] bg-[rgba(21,101,192,0.85)] text-[#dffff0] text-sm font-bold cursor-pointer border-none mr-3"
           onClick={() => navigate("/admindashboard")}
         >
           <FaUsers size={18} />
