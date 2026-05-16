@@ -1,56 +1,207 @@
-import { useState } from "react";
-import { MdFeedback } from "react-icons/md";
+import { useState, useEffect } from "react";
+import { FaStar } from "react-icons/fa";
+import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 
 export const Feedback = () => {
-  const [data, setData] = useState({ title: "", feedback: "" });
+  const [rating, setRating] = useState(0);
   const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false);
+  const [messageBox, setMessageBox] = useState({ show: false, type: "", title: "", message: "" });
 
-  const showMsg = (msg: string, err: boolean) => { setMessage(msg); setIsError(err); setTimeout(() => setMessage(""), 3000); };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("/api/feedbacks", { method: "POST", headers: { "Content-Type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` }, body: JSON.stringify(data) });
-      const resdata = await res.json();
-      if (res.status !== 201) throw new Error(resdata.message);
-      showMsg("Feedback submitted!", false);
-      setData({ title: "", feedback: "" });
-    } catch (error: any) { showMsg(error.message, true); }
+  const showBox = (type: string, title: string, message: string) => {
+    setMessageBox({ show: true, type, title, message });
   };
 
-  const inputClass = "w-full h-12 rounded-[14px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px] box-border";
+  useEffect(() => {
+    if (messageBox.show) {
+      const timer = setTimeout(() => {
+        setMessageBox({ show: false, type: "", title: "", message: "" });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [messageBox.show]);
+
+  const submitfeedback = async () => {
+    try {
+      const res = await fetch("/api/feedbacks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ rating, message }),
+      });
+      const data = await res.json();
+      if (res.status === 401) throw new Error(data.message || "You must login first");
+      if (res.status === 400) throw new Error(data.message || "Invalid data");
+      if (res.status === 500) throw new Error(data.message || "Server error");
+      if (res.status !== 201) throw new Error(data.message || "Something went wrong");
+      showBox("success", "Thank You ❤️", "Feedback submitted successfully");
+      setRating(0);
+      setMessage("");
+    } catch (error: any) {
+      showBox("error", "Submission Failed", error.message);
+    }
+  };
+
+  const feedbackdiv: React.CSSProperties = {
+    width: "100%",
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "radial-gradient(circle at top, rgba(0,255,140,0.10), transparent 30%), linear-gradient(135deg, #07110d 0%, #0b1d15 45%, #08110c 100%)",
+    padding: "30px 20px",
+    boxSizing: "border-box",
+  };
+
+  const feedbackform: React.CSSProperties = {
+    width: "100%",
+    maxWidth: "520px",
+    minHeight: "620px",
+    borderRadius: "30px",
+    border: "1px solid rgba(0,255,140,0.18)",
+    background: "rgba(255,255,255,0.06)",
+    backdropFilter: "blur(16px)",
+    WebkitBackdropFilter: "blur(16px)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    padding: "45px 32px 35px",
+    boxSizing: "border-box",
+    boxShadow: "0 25px 70px rgba(0,0,0,0.45)",
+  };
+
+  const titleStyle: React.CSSProperties = {
+    margin: 0,
+    fontSize: "34px",
+    fontWeight: "800",
+    color: "#ffffff",
+    textAlign: "center",
+  };
+
+  const subtitleStyle: React.CSSProperties = {
+    marginTop: "12px",
+    marginBottom: "28px",
+    color: "rgba(255,255,255,0.75)",
+    fontSize: "15px",
+    textAlign: "center",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    width: "100%",
+    color: "#d9ffe9",
+    fontSize: "15px",
+    fontWeight: "700",
+    marginBottom: "12px",
+    marginTop: "10px",
+  };
+
+  const starsWrapper: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "center",
+    gap: "12px",
+    marginBottom: "26px",
+  };
+
+  const textareaStyle: React.CSSProperties = {
+    width: "100%",
+    minHeight: "170px",
+    borderRadius: "18px",
+    border: "1px solid rgba(0,255,140,0.20)",
+    background: "rgba(255,255,255,0.08)",
+    color: "#ffffff",
+    padding: "16px",
+    outline: "none",
+    fontSize: "15px",
+    boxSizing: "border-box",
+    resize: "none",
+  };
+
+  const disabled = rating === 0 || message.length < 4;
+
+  const buttonStyle: React.CSSProperties = {
+    width: "100%",
+    height: "54px",
+    marginTop: "26px",
+    borderRadius: "16px",
+    border: "none",
+    background: disabled ? "rgba(255,255,255,0.12)" : "linear-gradient(135deg, #00c853, #00e676)",
+    color: disabled ? "rgba(255,255,255,0.45)" : "#08110c",
+    cursor: disabled ? "not-allowed" : "pointer",
+    fontSize: "16px",
+    fontWeight: "800",
+  };
+
+  const boxOverlay: React.CSSProperties = {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.35)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  };
+
+  const isError = messageBox.type === "error";
+
+  const boxStyle: React.CSSProperties = {
+    width: "min(430px, 90%)",
+    padding: "22px",
+    borderRadius: "24px",
+    background: "rgba(20,20,20,0.95)",
+    border: isError ? "1px solid rgba(255,77,79,0.45)" : "1px solid rgba(0,255,140,0.35)",
+    display: "flex",
+    gap: "15px",
+    color: "#fff",
+    alignItems: "center",
+  };
 
   return (
-    <div className="w-full min-h-full box-border">
-      {message && (
-        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
+    <div style={feedbackdiv}>
+      {messageBox.show && (
+        <div style={boxOverlay}>
+          <div style={boxStyle}>
+            {isError ? <MdErrorOutline size={30} color="#ff6b6b" /> : <MdCheckCircleOutline size={30} color="#60ff9c" />}
+            <div>
+              <h3 style={{ margin: "0 0 5px", fontSize: "18px", fontWeight: "800" }}>{messageBox.title}</h3>
+              <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.72)" }}>{messageBox.message}</p>
+            </div>
+          </div>
         </div>
       )}
 
-      <div className="flex items-center gap-3 mb-7">
-        <div className="w-[52px] h-[52px] rounded-2xl bg-[rgba(0,255,140,0.10)] border border-[rgba(0,255,140,0.18)] flex items-center justify-center text-[#dffff0]"><MdFeedback size={26} /></div>
-        <div>
-          <h2 className="m-0 text-[28px] font-extrabold text-white">Send Feedback</h2>
-          <p className="m-0 text-white/65 text-sm">We value your feedback and suggestions.</p>
-        </div>
-      </div>
+      <div style={feedbackform}>
+        <h2 style={titleStyle}>Share Your Experience</h2>
+        <p style={subtitleStyle}>Your feedback helps us improve the platform.</p>
 
-      <div className="max-w-[500px] p-8 rounded-3xl bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.12)]">
-        <form onSubmit={handleSubmit}>
-          <div className="flex flex-col mb-5">
-            <label className="block text-[#caffdf] mb-2 text-sm font-bold">Title</label>
-            <input type="text" required minLength={2} maxLength={50} className={inputClass} value={data.title} onChange={(e) => setData(p => ({ ...p, title: e.target.value }))} placeholder="Feedback title" />
-          </div>
-          <div className="flex flex-col mb-5">
-            <label className="block text-[#caffdf] mb-2 text-sm font-bold">Feedback</label>
-            <textarea required minLength={5} maxLength={500} className="w-full h-[120px] rounded-[14px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] py-3 outline-none text-[15px] box-border resize-y" value={data.feedback} onChange={(e) => setData(p => ({ ...p, feedback: e.target.value }))} placeholder="Write your feedback..." />
-          </div>
-          <button type="submit" className="w-full h-[50px] rounded-[14px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-base font-extrabold cursor-pointer">
-            Submit Feedback
-          </button>
-        </form>
+        <div style={labelStyle}>Rating</div>
+
+        <div style={starsWrapper}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <FaStar
+              key={star}
+              size={32}
+              style={{ color: rating >= star ? "#ffd54a" : "rgba(255,255,255,0.22)", cursor: "pointer" }}
+              onClick={() => setRating(star)}
+            />
+          ))}
+        </div>
+
+        <div style={labelStyle}>Message</div>
+
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          style={textareaStyle}
+          placeholder="Write your feedback..."
+        />
+
+        <button disabled={disabled} onClick={submitfeedback} style={buttonStyle}>
+          Submit Feedback
+        </button>
       </div>
     </div>
   );
