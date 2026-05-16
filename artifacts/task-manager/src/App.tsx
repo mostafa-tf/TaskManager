@@ -29,6 +29,7 @@ import { AddProject } from "./pages/AddProject";
 import { ViewProject } from "./pages/ViewProject";
 import { MemberPage } from "./pages/MemberPage";
 import { Notifications } from "./pages/Notifications";
+import { Logs } from "./pages/Logs";
 
 function App() {
   return (
@@ -146,6 +147,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Notifications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/logs"
+          element={
+            <ProtectedRoute>
+              <Logs />
             </ProtectedRoute>
           }
         />

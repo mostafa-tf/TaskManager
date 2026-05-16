@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { IoIosAddCircle } from "react-icons/io";
 import { FcStatistics } from "react-icons/fc";
 import { FaTasks } from "react-icons/fa";
-import { MdDone, MdPending } from "react-icons/md";
+import { MdDone, MdPending, MdOutlineHistory } from "react-icons/md";
 import { GiThreeFriends } from "react-icons/gi";
 
 interface DashboardAsideProps {
@@ -42,6 +42,10 @@ const DashboardAside = ({ onNavClick }: DashboardAsideProps) => {
       <NavLink to="/friendsdashboard" className={linkClass} onClick={onNavClick}>
         <GiThreeFriends size={20} />
         Friends
+      </NavLink>
+      <NavLink to="/logs" className={linkClass} onClick={onNavClick}>
+        <MdOutlineHistory size={20} />
+        Activity Logs
       </NavLink>
     </aside>
   );

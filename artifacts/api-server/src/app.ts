@@ -12,6 +12,7 @@ import friendshipRouter from "./routes/friendship";
 import projectsRouter from "./routes/projects";
 import notificationsRouter from "./routes/notifications";
 import healthRouter from "./routes/health";
+import logsRouter from "./routes/logs";
 
 const app: Express = express();
 
@@ -36,6 +37,7 @@ app.use("/api/feedbacks", feedbacksRouter);
 app.use("/api/friendship", friendshipRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/notifications", notificationsRouter);
+app.use("/api/logs", logsRouter);
 
 export const server = http.createServer(app);
 

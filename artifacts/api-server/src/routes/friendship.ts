@@ -4,6 +4,7 @@ import { Friendship } from "../models/Friendship";
 import { Notification } from "../models/Notification";
 import { verifytoken } from "../middlewares/verifytoken";
 import mongoose from "mongoose";
+import { createLog } from "../models/Log";
 
 const router = Router();
 
@@ -75,6 +76,9 @@ router.post("/addfriend", verifytoken, async (req: Request, res: Response) => {
       if (existing.status === "blocked") { res.status(400).json({ message: "cannot add, maybe blocked!" }); return; }
     }
     await Friendship.create({ requester: (req as any).user.id, receiver: req.body.receiver });
+    const senderUser = await User.findById((req as any).user.id);
+    await createLog((req as any).user.id, `You sent a friend request to ${receiverUser.username}`, "user", req.body.receiver);
+    await createLog(req.body.receiver, `${senderUser?.username} sent you a friend request`, "user", (req as any).user.id);
     res.status(200).json({ message: "friend request sent successfully" });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
@@ -158,6 +162,7 @@ router.put("/acceptuser", verifytoken, async (req: Request, res: Response) => {
       friendship.friendshipdate = new Date();
       await friendship.save();
       const receiver = await User.findById(friendship.receiver);
+      const requesterUser = await User.findById(req.body.userid);
       const notification = await Notification.create({
         type: "friend request accepted",
         message: `${receiver?.username} accepted your friend request`,
@@ -165,6 +170,8 @@ router.put("/acceptuser", verifytoken, async (req: Request, res: Response) => {
       });
       const io = req.app.get("io");
       io.to(`${req.body.userid}`).emit("request_accepted", notification);
+      await createLog(req.body.userid, `${receiver?.username} accepted your friend request`, "user", (req as any).user.id);
+      await createLog((req as any).user.id, `You accepted ${requesterUser?.username}'s friend request`, "user", req.body.userid);
       res.status(200).json({ message: "friend request accepted" }); return;
     }
     res.status(404).json({ message: "there must be a request first" });

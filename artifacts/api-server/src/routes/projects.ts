@@ -5,6 +5,7 @@ import { Task } from "../models/Task";
 import { User } from "../models/User";
 import { Notification } from "../models/Notification";
 import { verifytoken } from "../middlewares/verifytoken";
+import { createLog } from "../models/Log";
 
 const router = Router();
 
@@ -64,6 +65,8 @@ router.post("/assigntask", verifytoken, async (req: Request, res: Response) => {
     });
     const io = req.app.get("io");
     io.to(`${req.body.assignedto}`).emit("assigned_task", notification);
+    await createLog(req.body.assignedto, `${owner?.username} assigned you task "${task.title}" in project "${project?.name}"`, "user", (req as any).user.id);
+    await createLog((req as any).user.id, `You assigned task "${task.title}" to a member in project "${project?.name}"`, "user");
     res.status(201).json(task);
   } catch (err: any) {
     res.status(500).json({ message: err.message });

@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { Task } from "../models/Task";
 import { verifytoken } from "../middlewares/verifytoken";
 import { validatenewtask } from "../joivalidate";
+import { createLog } from "../models/Log";
 
 const router = Router();
 
@@ -48,6 +49,7 @@ router.post("/", verifytoken, async (req: Request, res: Response) => {
       starthour: req.body.starthour,
       endhour: req.body.endhour,
     });
+    await createLog((req as any).user.id, `You added a new task: "${task.title}"`);
     res.status(201).json(task);
   } catch (err: any) {
     res.status(500).json({ message: err.message });
@@ -73,6 +75,11 @@ router.put("/:taskid", verifytoken, async (req: Request, res: Response) => {
         completedAt: task.isDone ? null : new Date(),
         isDone: !task.isDone,
       });
+      if (!task.isDone) {
+        await createLog((req as any).user.id, `You completed task: "${task.title}"`);
+      } else {
+        await createLog((req as any).user.id, `You marked task "${task.title}" as pending`);
+      }
       res.status(200).json({ message: "update sucessfully" });
     } else {
       res.status(403).json({ message: "Cannot Change Task Not Yours" });
@@ -87,6 +94,7 @@ router.delete("/:taskid", verifytoken, async (req: Request, res: Response) => {
     const task = await Task.findById(req.params.taskid);
     if (task) {
       if (task.userId?.toString() === (req as any).user.id) {
+        await createLog((req as any).user.id, `You deleted task: "${task.title}"`);
         await Task.findByIdAndDelete(req.params.taskid);
         res.status(200).json({ message: "deleted sucesfully" });
       } else {
