@@ -13,10 +13,9 @@ export const AddFriend = () => {
   };
 
   useEffect(() => {
-    if (messageBox.show) {
-      const timer = setTimeout(() => setMessageBox({ show: false, type: "", title: "", message: "" }), 3000);
-      return () => clearTimeout(timer);
-    }
+    if (!messageBox.show) return;
+    const timer = setTimeout(() => setMessageBox({ show: false, type: "", title: "", message: "" }), 3000);
+    return () => clearTimeout(timer);
   }, [messageBox.show]);
 
   const fetchusers = async () => {

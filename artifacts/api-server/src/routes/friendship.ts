@@ -308,13 +308,13 @@ router.put("/block/:userid", verifytoken, async (req: Request, res: Response) =>
     });
     if (friendship) {
       friendship.requester = new mongoose.Types.ObjectId((req as any).user.id);
-      friendship.receiver = new mongoose.Types.ObjectId(req.params.userid);
+      friendship.receiver = new mongoose.Types.ObjectId(req.params.userid as string);
       friendship.status = "blocked";
       friendship.friendshipdate = null;
       await friendship.save();
       res.status(200).json({ message: "blocked successfully" }); return;
     }
-    await Friendship.create({ requester: (req as any).user.id, receiver: req.params.userid, status: "blocked" });
+    await Friendship.create({ requester: (req as any).user.id, receiver: req.params.userid as string, status: "blocked" });
     res.status(200).json({ message: "blocked successfully" });
   } catch (err: any) { res.status(500).json({ message: err.message }); }
 });
