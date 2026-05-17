@@ -4,7 +4,7 @@ import { RiTaskLine } from "react-icons/ri";
 import { GiThreeFriends } from "react-icons/gi";
 import { FcStatistics } from "react-icons/fc";
 import { FaProjectDiagram, FaBell } from "react-icons/fa";
-import { MdDone } from "react-icons/md";
+import { MdDone, MdOutlineHistory } from "react-icons/md";
 
 const features = [
   {
@@ -42,6 +42,12 @@ const features = [
     title: "Done & Pending Views",
     desc: "Quickly switch between completed and pending tasks. Filter by title, date, or priority.",
     color: "#69f0ae",
+  },
+  {
+    icon: <MdOutlineHistory size={28} />,
+    title: "Activity Audit Logs",
+    desc: "Every action leaves a trace. Review a full history of task changes, logins, and team activity across your workspace.",
+    color: "#b388ff",
   },
 ];
 
