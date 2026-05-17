@@ -13,23 +13,23 @@ const DashboardLayout = () => {
         <DashboardNavbar onMenuClick={() => setSidebarOpen((o) => !o)} />
       </div>
 
-      <div className="hidden lg:flex flex-col [grid-area:aside] bg-[#080b1a] border-r border-indigo-500/[0.12] min-h-0">
+      <div className="hidden lg:flex flex-col [grid-area:aside] bg-[#0b1210] border-r border-[#1f3d2e] min-h-0">
         <DashboardAside />
       </div>
 
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div
-            className="absolute inset-0 bg-black/65 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
-          <div className="absolute left-0 top-0 h-full w-[240px] bg-[#080b1a] border-r border-indigo-500/[0.18] flex flex-col shadow-[4px_0_30px_rgba(0,0,0,0.5)]">
+          <div className="absolute left-0 top-0 h-full w-[240px] bg-[#0b1210] border-r border-[#1f3d2e] flex flex-col shadow-2xl">
             <DashboardAside onNavClick={() => setSidebarOpen(false)} />
           </div>
         </div>
       )}
 
-      <main className="[grid-area:main] p-5 sm:p-[30px] min-w-0 bg-[#06070f]">
+      <main className="[grid-area:main] p-5 sm:p-[30px] min-w-0">
         <Outlet />
       </main>
 

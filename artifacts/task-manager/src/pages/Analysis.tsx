@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { FcStatistics } from "react-icons/fc";
 import { FaArrowLeft } from "react-icons/fa";
-import { MdOutlineAnalytics } from "react-icons/md";
 
 interface AnalysisStats {
   total: number;
@@ -13,10 +13,30 @@ interface AnalysisStats {
 }
 
 const statCards = [
-  { key: "total" as const, label: "Total Tasks", valueClass: "text-indigo-400", borderClass: "border-indigo-500/[0.20]", iconBg: "bg-indigo-500/[0.10]" },
-  { key: "done" as const, label: "Completed", valueClass: "text-emerald-400", borderClass: "border-emerald-500/[0.20]", iconBg: "bg-emerald-500/[0.10]" },
-  { key: "undone" as const, label: "Pending", valueClass: "text-amber-300", borderClass: "border-amber-500/[0.20]", iconBg: "bg-amber-500/[0.10]" },
-  { key: "expired" as const, label: "Expired", valueClass: "text-red-400", borderClass: "border-red-500/[0.20]", iconBg: "bg-red-500/[0.10]" },
+  {
+    key: "total" as const,
+    label: "Total Tasks",
+    valueClass: "text-[#00e676]",
+    borderClass: "border-[rgba(0,255,140,0.2)]",
+  },
+  {
+    key: "done" as const,
+    label: "Completed",
+    valueClass: "text-[#00e676]",
+    borderClass: "border-[rgba(0,230,118,0.2)]",
+  },
+  {
+    key: "undone" as const,
+    label: "Pending",
+    valueClass: "text-[#ffe082]",
+    borderClass: "border-[rgba(255,193,7,0.2)]",
+  },
+  {
+    key: "expired" as const,
+    label: "Expired",
+    valueClass: "text-[#ff9c9c]",
+    borderClass: "border-[rgba(255,82,82,0.2)]",
+  },
 ] as const;
 
 export const Analysis = () => {
@@ -39,27 +59,27 @@ export const Analysis = () => {
   const pct = stats ? Math.round((stats.done / (stats.total || 1)) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-[#06070f] p-[30px]">
+    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px]">
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={() => navigate("/dashboard")}
-          className="w-[46px] h-[46px] rounded-[14px] border border-indigo-500/[0.25] bg-indigo-500/[0.10] text-indigo-300 cursor-pointer flex items-center justify-center transition-all hover:bg-indigo-500/[0.18]"
+          className="w-[46px] h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer flex items-center justify-center"
         >
-          <FaArrowLeft size={17} />
+          <FaArrowLeft size={18} />
         </button>
-        <div className="w-[52px] h-[52px] rounded-2xl bg-indigo-500/[0.12] border border-indigo-500/[0.22] flex items-center justify-center text-indigo-300">
-          <MdOutlineAnalytics size={26} />
+        <div className="w-[52px] h-[52px] rounded-2xl bg-[rgba(0,255,140,0.10)] flex items-center justify-center">
+          <FcStatistics size={28} />
         </div>
         <div>
           <h2 className="m-0 text-[28px] font-extrabold text-white">Task Analysis</h2>
-          <p className="m-0 text-white/50 text-sm">Overview of your task completion progress.</p>
+          <p className="m-0 text-white/65 text-sm">Overview of your task completion progress.</p>
         </div>
       </div>
 
       {!stats ? (
-        <p className="text-white/50 text-center mt-16">Loading...</p>
+        <p className="text-white">Loading...</p>
       ) : (
-        <div className="max-w-[700px] mx-auto">
+        <div>
           <div className="flex justify-center mb-9">
             <div className="w-[200px] h-[200px]">
               <CircularProgressbar
@@ -67,8 +87,8 @@ export const Analysis = () => {
                 text={`${pct}%`}
                 styles={buildStyles({
                   textColor: "#ffffff",
-                  pathColor: "#6366f1",
-                  trailColor: "rgba(255,255,255,0.07)",
+                  pathColor: "#00e676",
+                  trailColor: "rgba(255,255,255,0.1)",
                   textSize: "22px",
                 })}
               />
@@ -76,15 +96,12 @@ export const Analysis = () => {
           </div>
 
           <div className="flex gap-5 flex-wrap justify-center">
-            {statCards.map(({ key, label, valueClass, borderClass, iconBg }) => (
+            {statCards.map(({ key, label, valueClass, borderClass }) => (
               <div
                 key={key}
-                className={`flex-1 min-w-[150px] py-6 px-5 rounded-[22px] bg-white/[0.04] border text-center shadow-[0_12px_35px_rgba(0,0,0,0.25)] ${borderClass}`}
+                className={`flex-1 min-w-[160px] py-6 px-5 rounded-[22px] bg-[rgba(255,255,255,0.05)] border text-center shadow-[0_12px_35px_rgba(0,0,0,0.25)] ${borderClass}`}
               >
-                <div className={`w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center mx-auto mb-3`}>
-                  <span className={`text-lg font-extrabold ${valueClass}`}>#</span>
-                </div>
-                <p className="text-white/60 font-bold text-sm mb-2">{label}</p>
+                <p className="text-[#dffff0] font-bold mb-2">{label}</p>
                 <h2 className={`m-0 text-[40px] font-extrabold ${valueClass}`}>{stats[key]}</h2>
               </div>
             ))}

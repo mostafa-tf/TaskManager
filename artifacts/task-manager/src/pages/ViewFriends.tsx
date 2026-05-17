@@ -63,45 +63,45 @@ export const ViewFriends = () => {
           placeholder="Search friends..."
           value={searchfilter}
           onChange={(e) => setSearchFilter(e.target.value)}
-          className="w-80 h-12 rounded-[14px] border border-indigo-500/[0.22] bg-white/[0.07] text-white px-[14px] outline-none text-[15px]"
+          className="w-80 h-12 rounded-[14px] border border-[rgba(0,255,140,0.18)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px]"
         />
       </div>
 
-      <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}>
+      <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
         {filteredFriends.length === 0 && (
           <div className="col-span-full flex flex-col items-center justify-center py-16 px-5 text-center">
-            <div className="w-[72px] h-[72px] rounded-2xl bg-indigo-500/[0.10] border border-indigo-500/[0.22] flex items-center justify-center mb-5">
-              <GiThreeFriends size={36} className="text-indigo-400" />
+            <div className="w-[72px] h-[72px] rounded-2xl bg-[rgba(234,128,252,0.08)] border border-[rgba(234,128,252,0.18)] flex items-center justify-center mb-5">
+              <GiThreeFriends size={36} className="text-[#ea80fc]" />
             </div>
             <h2 className="m-0 mb-2 text-[22px] font-extrabold text-white">No friends yet</h2>
-            <p className="m-0 text-white/50 text-[14px] max-w-[280px] leading-[1.7]">Head over to Add Friend to find and connect with people you know.</p>
+            <p className="m-0 text-white/55 text-[14px] max-w-[280px] leading-[1.7]">Head over to Add Friend to find and connect with people you know.</p>
           </div>
         )}
 
         {filteredFriends.map((friend) => (
-          <div key={friend._id} className="py-[22px] px-[18px] rounded-[20px] bg-white/[0.04] border border-indigo-500/[0.14] shadow-[0_12px_30px_rgba(0,0,0,0.25)] backdrop-blur-xl flex flex-col items-center gap-3 text-center transition-all hover:bg-indigo-500/[0.06]">
-            <div className="w-16 h-16 rounded-full bg-indigo-500/[0.12] border border-indigo-500/[0.22] flex items-center justify-center text-indigo-300">
-              <FaUserCircle size={32} />
+          <div key={friend._id} className="py-[22px] px-[18px] rounded-[20px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.14)] shadow-[0_12px_30px_rgba(0,0,0,0.25)] backdrop-blur-xl flex flex-col items-center gap-3 text-center">
+            <div className="w-16 h-16 rounded-full bg-[rgba(0,255,140,0.10)] border border-[rgba(0,255,140,0.20)] flex items-center justify-center text-[#dffff0] shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
+              <FaUserCircle size={34} />
             </div>
 
             <div className="text-xl font-extrabold text-white mt-0.5">{friend.username}</div>
 
-            <div className={`px-3 py-1.5 rounded-full text-[12px] font-bold ${friend.isActive ? "text-emerald-300 bg-emerald-500/[0.12] border border-emerald-500/[0.25]" : "text-white/50 bg-white/[0.07] border border-white/[0.08]"}`}>
+            <div className={`px-3 py-1.5 rounded-full text-[13px] font-bold ${friend.isActive ? "text-[#08110c] bg-gradient-to-br from-[#00c853] to-[#00e676]" : "text-white bg-[rgba(255,255,255,0.10)]"}`}>
               {friend.isActive ? "Online 🟢" : "Inactive ⚫"}
             </div>
 
-            <div className="text-white/55 text-sm leading-relaxed">{friend.friendshipdate}</div>
+            <div className="text-white/70 text-sm leading-relaxed">{friend.friendshipdate}</div>
 
             <div className="flex gap-2.5 mt-2 flex-wrap justify-center">
               <button
                 onClick={() => removefriend(friend._id)}
-                className="px-[14px] py-2 rounded-xl border-none bg-gradient-to-r from-red-700 to-red-500 text-white font-bold cursor-pointer flex items-center gap-1.5 text-sm transition-all hover:-translate-y-0.5"
+                className="px-[14px] py-2.5 rounded-xl border-none bg-gradient-to-br from-[#c62828] to-[#e53935] text-white font-bold cursor-pointer flex items-center gap-1.5"
               >
                 Remove <IoPersonRemove />
               </button>
               <button
                 onClick={() => blockfriend(friend._id)}
-                className="px-[14px] py-2 rounded-xl border-none bg-gradient-to-r from-orange-600 to-amber-500 text-white font-bold cursor-pointer flex items-center gap-1.5 text-sm transition-all hover:-translate-y-0.5"
+                className="px-[14px] py-2.5 rounded-xl border-none bg-gradient-to-br from-[#ef6c00] to-[#fb8c00] text-white font-bold cursor-pointer flex items-center gap-1.5"
               >
                 Block <FaUserSlash />
               </button>

@@ -43,64 +43,163 @@ export const Feedback = () => {
     }
   };
 
+  const feedbackdiv: React.CSSProperties = {
+    width: "100%",
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "radial-gradient(circle at top, rgba(0,255,140,0.10), transparent 30%), linear-gradient(135deg, #07110d 0%, #0b1d15 45%, #08110c 100%)",
+    padding: "30px 20px",
+    boxSizing: "border-box",
+  };
+
+  const feedbackform: React.CSSProperties = {
+    width: "100%",
+    maxWidth: "520px",
+    minHeight: "620px",
+    borderRadius: "30px",
+    border: "1px solid rgba(0,255,140,0.18)",
+    background: "rgba(255,255,255,0.06)",
+    backdropFilter: "blur(16px)",
+    WebkitBackdropFilter: "blur(16px)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    padding: "45px 32px 35px",
+    boxSizing: "border-box",
+    boxShadow: "0 25px 70px rgba(0,0,0,0.45)",
+  };
+
+  const titleStyle: React.CSSProperties = {
+    margin: 0,
+    fontSize: "34px",
+    fontWeight: "800",
+    color: "#ffffff",
+    textAlign: "center",
+  };
+
+  const subtitleStyle: React.CSSProperties = {
+    marginTop: "12px",
+    marginBottom: "28px",
+    color: "rgba(255,255,255,0.75)",
+    fontSize: "15px",
+    textAlign: "center",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    width: "100%",
+    color: "#d9ffe9",
+    fontSize: "15px",
+    fontWeight: "700",
+    marginBottom: "12px",
+    marginTop: "10px",
+  };
+
+  const starsWrapper: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "center",
+    gap: "12px",
+    marginBottom: "26px",
+  };
+
+  const textareaStyle: React.CSSProperties = {
+    width: "100%",
+    minHeight: "170px",
+    borderRadius: "18px",
+    border: "1px solid rgba(0,255,140,0.20)",
+    background: "rgba(255,255,255,0.08)",
+    color: "#ffffff",
+    padding: "16px",
+    outline: "none",
+    fontSize: "15px",
+    boxSizing: "border-box",
+    resize: "none",
+  };
+
   const disabled = rating === 0 || message.length < 4;
+
+  const buttonStyle: React.CSSProperties = {
+    width: "100%",
+    height: "54px",
+    marginTop: "26px",
+    borderRadius: "16px",
+    border: "none",
+    background: disabled ? "rgba(255,255,255,0.12)" : "linear-gradient(135deg, #00c853, #00e676)",
+    color: disabled ? "rgba(255,255,255,0.45)" : "#08110c",
+    cursor: disabled ? "not-allowed" : "pointer",
+    fontSize: "16px",
+    fontWeight: "800",
+  };
+
+  const boxOverlay: React.CSSProperties = {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.35)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  };
+
   const isError = messageBox.type === "error";
 
+  const boxStyle: React.CSSProperties = {
+    width: "min(430px, 90%)",
+    padding: "22px",
+    borderRadius: "24px",
+    background: "rgba(20,20,20,0.95)",
+    border: isError ? "1px solid rgba(255,77,79,0.45)" : "1px solid rgba(0,255,140,0.35)",
+    display: "flex",
+    gap: "15px",
+    color: "#fff",
+    alignItems: "center",
+  };
+
   return (
-    <div className="w-full min-h-full flex justify-center items-center p-[30px_20px] box-border">
+    <div style={feedbackdiv}>
       {messageBox.show && (
-        <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className={`w-[min(430px,90%)] p-[22px] rounded-3xl bg-[linear-gradient(135deg,rgba(12,10,30,0.98),rgba(6,7,15,0.98))] shadow-[0_24px_70px_rgba(0,0,0,0.55)] flex items-center gap-[15px] text-white border ${isError ? "border-red-500/[0.40]" : "border-emerald-500/[0.40]"}`}>
-            <div className={`min-w-[52px] h-[52px] rounded-[18px] flex items-center justify-center border ${isError ? "bg-red-500/[0.14] border-red-500/[0.25] text-red-400" : "bg-emerald-500/[0.14] border-emerald-500/[0.25] text-emerald-400"}`}>
-              {isError ? <MdErrorOutline size={30} /> : <MdCheckCircleOutline size={30} />}
-            </div>
+        <div style={boxOverlay}>
+          <div style={boxStyle}>
+            {isError ? <MdErrorOutline size={30} color="#ff6b6b" /> : <MdCheckCircleOutline size={30} color="#60ff9c" />}
             <div>
-              <h3 className="m-0 mb-[5px] text-lg font-extrabold">{messageBox.title}</h3>
-              <p className="m-0 text-sm text-white/65">{messageBox.message}</p>
+              <h3 style={{ margin: "0 0 5px", fontSize: "18px", fontWeight: "800" }}>{messageBox.title}</h3>
+              <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.72)" }}>{messageBox.message}</p>
             </div>
           </div>
         </div>
       )}
 
-      <div className="w-full max-w-[520px] min-h-[600px] rounded-[28px] border border-indigo-500/[0.18] bg-white/[0.04] backdrop-blur-[16px] flex flex-col justify-center items-center p-[45px_32px_35px] box-border shadow-[0_25px_70px_rgba(0,0,0,0.45)]">
-        <h2 className="m-0 text-white text-[32px] font-extrabold text-center tracking-[0.2px]">Share Your Experience</h2>
-        <p className="mt-3 mb-7 text-white/60 text-[15px] text-center leading-[1.7]">
-          Your feedback helps us improve the platform.
-        </p>
+      <div style={feedbackform}>
+        <h2 style={titleStyle}>Share Your Experience</h2>
+        <p style={subtitleStyle}>Your feedback helps us improve the platform.</p>
 
-        <div className="w-[60px] h-[3px] rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 mx-auto mb-7" />
+        <div style={labelStyle}>Rating</div>
 
-        <p className="w-full text-indigo-200 text-[15px] font-bold mb-3 mt-2">Rating</p>
-
-        <div className="flex justify-center gap-3 mb-7">
+        <div style={starsWrapper}>
           {[1, 2, 3, 4, 5].map((star) => (
             <FaStar
               key={star}
-              size={34}
-              style={{ color: rating >= star ? "#fbbf24" : "rgba(255,255,255,0.18)", cursor: "pointer", transition: "color 0.15s ease" }}
+              size={32}
+              style={{ color: rating >= star ? "#ffd54a" : "rgba(255,255,255,0.22)", cursor: "pointer" }}
               onClick={() => setRating(star)}
             />
           ))}
         </div>
 
-        <p className="w-full text-indigo-200 text-[15px] font-bold mb-3">Message</p>
+        <div style={labelStyle}>Message</div>
 
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="w-full min-h-[160px] rounded-[16px] border border-indigo-500/[0.22] bg-white/[0.07] text-white p-4 outline-none text-[15px] box-border resize-none leading-[1.7] focus:border-indigo-400/[0.45] transition-all"
+          style={textareaStyle}
           placeholder="Write your feedback..."
         />
 
-        <button
-          disabled={disabled}
-          onClick={submitfeedback}
-          className={`w-full h-[54px] mt-6 rounded-[16px] border-none text-[16px] font-extrabold transition-all ${
-            disabled
-              ? "bg-white/[0.08] text-white/35 cursor-not-allowed"
-              : "bg-gradient-to-r from-indigo-600 to-violet-600 text-white cursor-pointer shadow-[0_12px_28px_rgba(99,102,241,0.28)] hover:-translate-y-0.5"
-          }`}
-        >
+        <button disabled={disabled} onClick={submitfeedback} style={buttonStyle}>
           Submit Feedback
         </button>
       </div>

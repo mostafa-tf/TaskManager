@@ -69,43 +69,43 @@ export const IncomingRequests = () => {
     <div className="w-full box-border">
       {messageBox.show && (
         <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className={`w-[min(430px,90%)] p-[22px] rounded-3xl bg-[linear-gradient(135deg,rgba(12,10,30,0.98),rgba(6,7,15,0.98))] flex items-center gap-[15px] text-white shadow-[0_24px_70px_rgba(0,0,0,0.55)] border ${isError ? "border-red-500/[0.40]" : "border-emerald-500/[0.40]"}`}>
-            <div className={`min-w-[52px] h-[52px] rounded-[18px] flex items-center justify-center border ${isError ? "bg-red-500/[0.14] border-red-500/[0.25] text-red-400" : "bg-emerald-500/[0.14] border-emerald-500/[0.25] text-emerald-400"}`}>
+          <div className={`w-[min(430px,90%)] p-[22px] rounded-3xl flex items-center gap-[15px] text-white bg-[rgba(20,20,20,0.95)] ${isError ? "border border-[rgba(255,77,79,0.45)]" : "border border-[rgba(0,255,140,0.35)]"}`}>
+            <div className={`min-w-[52px] h-[52px] rounded-[18px] flex items-center justify-center ${isError ? "text-[#ff6b6b]" : "text-[#60ff9c]"}`}>
               {isError ? <MdErrorOutline size={30} /> : <MdCheckCircleOutline size={30} />}
             </div>
             <div>
-              <h3 className="m-0 mb-[5px] text-lg font-extrabold">{messageBox.title}</h3>
-              <p className="m-0 text-sm text-white/65">{messageBox.message}</p>
+              <h3 className="m-0">{messageBox.title}</h3>
+              <p className="m-0">{messageBox.message}</p>
             </div>
           </div>
         </div>
       )}
 
-      <h2 className="text-center text-white text-[26px] font-extrabold mb-6">Incoming Friend Requests</h2>
+      <h2 className="text-center text-white text-[28px] font-extrabold mb-6">Incoming Friend Requests</h2>
 
-      <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}>
+      <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
         {users.length === 0 && (
           <div className="col-span-full flex flex-col items-center justify-center py-16 px-5 text-center">
-            <div className="w-[72px] h-[72px] rounded-2xl bg-indigo-500/[0.10] border border-indigo-500/[0.22] flex items-center justify-center mb-5">
-              <GiThreeFriends size={36} className="text-indigo-400" />
+            <div className="w-[72px] h-[72px] rounded-2xl bg-[rgba(0,255,140,0.08)] border border-[rgba(0,255,140,0.16)] flex items-center justify-center mb-5">
+              <GiThreeFriends size={36} className="text-[#60ff9c]" />
             </div>
             <h2 className="m-0 mb-2 text-[22px] font-extrabold text-white">No incoming requests</h2>
-            <p className="m-0 text-white/50 text-[14px] max-w-[280px] leading-[1.7]">When someone sends you a friend request, it will appear here for you to accept or reject.</p>
+            <p className="m-0 text-white/55 text-[14px] max-w-[280px] leading-[1.7]">When someone sends you a friend request, it will appear here for you to accept or reject.</p>
           </div>
         )}
 
         {users.map((user) => (
-          <div key={user._id} className="py-[22px] px-[18px] rounded-[20px] bg-white/[0.04] border border-indigo-500/[0.14] shadow-[0_12px_30px_rgba(0,0,0,0.25)] backdrop-blur-xl flex flex-col items-center gap-3.5 text-center">
-            <div className="w-16 h-16 rounded-full bg-indigo-500/[0.12] border border-indigo-500/[0.22] flex items-center justify-center text-indigo-300">
-              <FaUserCircle size={32} />
+          <div key={user._id} className="py-[22px] px-[18px] rounded-[20px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.14)] shadow-[0_12px_30px_rgba(0,0,0,0.25)] backdrop-blur-xl flex flex-col items-center gap-3.5 text-center">
+            <div className="w-16 h-16 rounded-full bg-[rgba(0,255,140,0.10)] border border-[rgba(0,255,140,0.20)] flex items-center justify-center text-[#dffff0]">
+              <FaUserCircle size={34} />
             </div>
             <div className="text-xl font-extrabold text-white">{user.username}</div>
-            <div className="text-white/55 text-sm">Wants to connect with you</div>
+            <div className="text-white/70 text-sm">Wants to connect with you</div>
             <div className="flex gap-2.5 mt-2">
-              <button onClick={() => acceptuser(user._id)} className="px-[14px] py-2 rounded-xl border-none bg-gradient-to-r from-emerald-600 to-emerald-400 text-white font-extrabold cursor-pointer flex items-center gap-1.5 text-sm transition-all hover:-translate-y-0.5">
+              <button onClick={() => acceptuser(user._id)} className="px-[14px] py-2.5 rounded-xl border-none bg-gradient-to-br from-[#00c853] to-[#00e676] text-[#08110c] font-extrabold cursor-pointer flex items-center gap-1.5">
                 <FaUserCheck /> Accept
               </button>
-              <button onClick={() => rejectuser(user._id)} className="px-[14px] py-2 rounded-xl border-none bg-gradient-to-r from-red-700 to-red-500 text-white font-extrabold cursor-pointer flex items-center gap-1.5 text-sm transition-all hover:-translate-y-0.5">
+              <button onClick={() => rejectuser(user._id)} className="px-[14px] py-2.5 rounded-xl border-none bg-gradient-to-br from-[#c62828] to-[#e53935] text-white font-extrabold cursor-pointer flex items-center gap-1.5">
                 <FaUserTimes /> Reject
               </button>
             </div>

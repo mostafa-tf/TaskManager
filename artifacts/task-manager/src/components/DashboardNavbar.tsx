@@ -58,17 +58,10 @@ const DashboardNavbar = ({ onMenuClick }: DashboardNavbarProps) => {
     fetchUnread();
   }, []);
 
-  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `hidden sm:flex items-center gap-1.5 h-9 px-3 rounded-[10px] text-sm font-bold no-underline transition-all ${
-      isActive
-        ? "bg-indigo-500/[0.18] text-indigo-300 border border-indigo-500/[0.30]"
-        : "text-white/70 hover:bg-white/[0.07] border border-transparent hover:text-white"
-    }`;
-
   return (
-    <nav className="[grid-area:nav] bg-[#080b1a] border-b border-indigo-500/[0.15] h-full flex items-center px-4 relative shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
+    <nav className="[grid-area:nav] bg-[#07110d] border-b border-[#1f3d2e] h-full flex items-center px-4 relative">
       <button
-        className="lg:hidden w-9 h-9 flex items-center justify-center rounded-[10px] border border-indigo-500/[0.25] bg-indigo-500/[0.10] text-indigo-300 cursor-pointer mr-3 transition-all hover:bg-indigo-500/[0.18]"
+        className="lg:hidden w-9 h-9 flex items-center justify-center rounded-[10px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer mr-3"
         onClick={onMenuClick}
         aria-label="Toggle menu"
       >
@@ -77,39 +70,51 @@ const DashboardNavbar = ({ onMenuClick }: DashboardNavbarProps) => {
 
       {isadminn && (
         <button
-          className="flex items-center gap-2 h-9 px-3 rounded-[10px] bg-indigo-600/[0.75] text-white text-sm font-bold cursor-pointer border-none mr-3 transition-all hover:bg-indigo-600/[0.90]"
+          className="flex items-center gap-2 h-10 px-4 rounded-[10px] bg-[rgba(21,101,192,0.85)] text-[#dffff0] text-sm font-bold cursor-pointer border-none mr-3"
           onClick={() => navigate("/admindashboard")}
         >
-          <FaUsers size={16} />
+          <FaUsers size={18} />
           <span>Users</span>
         </button>
       )}
 
-      <span className="font-extrabold text-lg sm:text-xl tracking-wide mx-auto bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+      <span className="text-[#00e676] font-extrabold text-lg sm:text-xl tracking-wide mx-auto">
         Dashboard
       </span>
 
       <div className="flex items-center gap-1 sm:gap-2">
-        <NavLink to="profile" className={navLinkClass}>
-          <IoPersonSharp size={15} />
+        <NavLink
+          to="profile"
+          className={({ isActive }) =>
+            `hidden sm:flex items-center gap-1.5 h-9 px-3 rounded-[10px] text-sm font-bold no-underline transition-all ${isActive ? "bg-[rgba(0,255,140,0.14)] text-[#00ff9d] border border-[rgba(0,255,140,0.22)]" : "text-[#dffff0] hover:bg-[rgba(255,255,255,0.07)] border border-transparent"}`
+          }
+        >
+          <IoPersonSharp size={16} />
           <span className="hidden md:inline">Profile</span>
         </NavLink>
 
-        <NavLink to="feedback" className={navLinkClass}>
-          <MdFeedback size={15} />
+        <NavLink
+          to="feedback"
+          className={({ isActive }) =>
+            `hidden sm:flex items-center gap-1.5 h-9 px-3 rounded-[10px] text-sm font-bold no-underline transition-all ${isActive ? "bg-[rgba(0,255,140,0.14)] text-[#00ff9d] border border-[rgba(0,255,140,0.22)]" : "text-[#dffff0] hover:bg-[rgba(255,255,255,0.07)] border border-transparent"}`
+          }
+        >
+          <MdFeedback size={16} />
           <span className="hidden md:inline">Feedback</span>
         </NavLink>
 
         <NavLink
           to="/projects"
-          className={navLinkClass}
+          className={({ isActive }) =>
+            `hidden sm:flex items-center gap-1.5 h-9 px-3 rounded-[10px] text-sm font-bold no-underline transition-all ${isActive ? "bg-[rgba(0,255,140,0.14)] text-[#00ff9d] border border-[rgba(0,255,140,0.22)]" : "text-[#dffff0] hover:bg-[rgba(255,255,255,0.07)] border border-transparent"}`
+          }
         >
-          <FaProjectDiagram size={14} />
+          <FaProjectDiagram size={15} />
           <span className="hidden md:inline">Projects</span>
         </NavLink>
 
         <button
-          className="relative w-9 h-9 flex items-center justify-center rounded-[10px] border border-indigo-500/[0.22] bg-indigo-500/[0.08] text-indigo-300 cursor-pointer transition-all hover:bg-indigo-500/[0.16]"
+          className="relative w-9 h-9 flex items-center justify-center rounded-[10px] border border-[rgba(0,255,140,0.18)] bg-[rgba(0,255,140,0.06)] text-[#dffff0] cursor-pointer"
           onClick={() => navigate("/notifications")}
           aria-label="Notifications"
         >
@@ -122,10 +127,10 @@ const DashboardNavbar = ({ onMenuClick }: DashboardNavbarProps) => {
         </button>
 
         <button
-          className="flex items-center gap-1.5 h-9 px-3 rounded-[10px] bg-red-700/[0.70] hover:bg-red-600/[0.80] text-white text-sm font-bold cursor-pointer border-none transition-all"
+          className="flex items-center gap-1.5 h-9 px-3 rounded-[10px] bg-[rgba(198,40,40,0.75)] text-white text-sm font-bold cursor-pointer border-none"
           onClick={logout}
         >
-          <IoIosLogOut size={17} />
+          <IoIosLogOut size={18} />
           <span className="hidden sm:inline">Logout</span>
         </button>
       </div>

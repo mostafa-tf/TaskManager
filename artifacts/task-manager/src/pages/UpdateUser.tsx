@@ -21,43 +21,37 @@ export const UpdateUser = () => {
     } catch (error: any) { showMsg(error.message, true); }
   };
 
-  const inputClass = "w-full h-12 rounded-xl border border-indigo-500/[0.22] bg-white/[0.07] text-white px-[14px] outline-none text-[15px] box-border";
+  const inputClass = "w-full h-12 rounded-[14px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px] box-border";
 
   return (
-    <div className="min-h-screen bg-[#06070f] p-[30px]">
+    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px]">
       {message && (
         <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(10,10,25,0.98)] border font-bold text-base shadow-[0_20px_50px_rgba(0,0,0,0.5)] ${isError ? "border-red-500/[0.40] text-red-300" : "border-emerald-500/[0.35] text-emerald-300"}`}>{message}</div>
+          <div className={`px-7 py-[22px] rounded-[20px] bg-[rgba(15,15,15,0.98)] border font-bold text-base ${isError ? "border-[rgba(255,77,79,0.45)] text-[#ff9c9c]" : "border-[rgba(0,255,140,0.30)] text-[#60ff9c]"}`}>{message}</div>
         </div>
       )}
 
       <div className="flex items-center gap-[14px] mb-7">
-        <button
-          onClick={() => navigate("/admindashboard")}
-          className="w-[46px] h-[46px] rounded-[14px] border border-indigo-500/[0.25] bg-indigo-500/[0.10] text-indigo-300 cursor-pointer flex items-center justify-center transition-all hover:bg-indigo-500/[0.18]"
-        >
-          <FaArrowLeft size={17} />
+        <button onClick={() => navigate("/admindashboard")} className="w-[46px] h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer flex items-center justify-center">
+          <FaArrowLeft size={18} />
         </button>
         <h2 className="m-0 text-[28px] font-extrabold text-white">Update User Role</h2>
       </div>
 
-      <div className="max-w-[460px] p-8 rounded-3xl bg-white/[0.04] border border-indigo-500/[0.14]">
+      <div className="max-w-[460px] p-8 rounded-3xl bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.12)]">
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
-            <label className="block text-indigo-200 mb-2 text-sm font-bold">User Email</label>
+            <label className="block text-[#caffdf] mb-2 text-sm font-bold">User Email</label>
             <input type="email" required className={inputClass} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter user email" />
           </div>
           <div className="mb-5">
-            <label className="block text-indigo-200 mb-2 text-sm font-bold">New Role</label>
-            <select className={`${inputClass} cursor-pointer`} value={role} onChange={(e) => setRole(e.target.value)}>
+            <label className="block text-[#caffdf] mb-2 text-sm font-bold">New Role</label>
+            <select className={inputClass} value={role} onChange={(e) => setRole(e.target.value)}>
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
           </div>
-          <button
-            type="submit"
-            className="w-full h-[50px] rounded-[14px] border-none bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-base font-extrabold cursor-pointer shadow-[0_12px_28px_rgba(99,102,241,0.28)] transition-all hover:-translate-y-0.5"
-          >
+          <button type="submit" className="w-full h-[50px] rounded-[14px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-base font-extrabold cursor-pointer">
             Update Role
           </button>
         </form>

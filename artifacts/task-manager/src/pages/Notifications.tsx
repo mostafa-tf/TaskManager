@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaBell } from "react-icons/fa";
 import { io, Socket } from "socket.io-client";
-import { MdDeleteOutline } from "react-icons/md";
 
 export const Notifications = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -52,60 +51,47 @@ export const Notifications = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#06070f] p-[30px]">
+    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px]">
       {message && (
         <div className="fixed inset-0 bg-black/25 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className="px-7 py-5 rounded-[20px] bg-[rgba(12,10,30,0.98)] border border-indigo-500/[0.35] text-indigo-300 font-bold text-base shadow-[0_20px_50px_rgba(0,0,0,0.5)]">{message}</div>
+          <div className="px-7 py-5 rounded-[20px] bg-[rgba(15,15,15,0.98)] border border-[rgba(0,255,140,0.30)] text-[#60ff9c] font-bold text-base">{message}</div>
         </div>
       )}
 
       <div className="flex items-center gap-[14px] mb-7">
-        <button onClick={() => navigate("/dashboard")} className="w-[46px] h-[46px] rounded-[14px] border border-indigo-500/[0.25] bg-indigo-500/[0.10] text-indigo-300 cursor-pointer flex items-center justify-center transition-all hover:bg-indigo-500/[0.18]">
-          <FaArrowLeft size={17} />
+        <button onClick={() => navigate("/dashboard")} className="w-[46px] h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer flex items-center justify-center">
+          <FaArrowLeft size={18} />
         </button>
-        <div className="w-[52px] h-[52px] rounded-2xl bg-indigo-500/[0.12] border border-indigo-500/[0.22] flex items-center justify-center text-indigo-300">
-          <FaBell size={22} />
-        </div>
+        <div className="w-[52px] h-[52px] rounded-2xl bg-[rgba(0,255,140,0.10)] flex items-center justify-center text-[#dffff0]"><FaBell size={24} /></div>
         <div>
           <h2 className="m-0 text-[28px] font-extrabold text-white">Notifications</h2>
-          <p className="m-0 text-white/50 text-sm">Stay updated with your latest activity.</p>
+          <p className="m-0 text-white/65 text-sm">Stay updated with your latest activity.</p>
         </div>
       </div>
 
-      {noNotifications && (
-        <div className="flex flex-col items-center justify-center py-16 px-5 text-center">
-          <div className="w-[72px] h-[72px] rounded-2xl bg-indigo-500/[0.10] border border-indigo-500/[0.20] flex items-center justify-center mb-5">
-            <FaBell size={30} className="text-indigo-400" />
-          </div>
-          <h2 className="m-0 mb-2 text-[22px] font-extrabold text-white">No notifications</h2>
-          <p className="m-0 text-white/45 text-[14px] max-w-[280px] leading-[1.7]">You're all caught up! New notifications will appear here.</p>
-        </div>
-      )}
+      {noNotifications && <h2 className="text-[#60ff9c] font-extrabold">No Notifications</h2>}
 
-      <div className="max-w-[800px] flex flex-col gap-2.5">
-        {notifications.map((n) => (
-          <div
-            key={n._id}
-            className={`px-5 py-4 rounded-2xl flex justify-between items-center gap-[14px] transition-all ${n.read ? "bg-white/[0.03] border border-white/[0.06]" : "bg-indigo-500/[0.07] border border-indigo-500/[0.20]"}`}
-          >
-            <div className="flex-1 min-w-0">
-              {!n.read && <div className="w-2 h-2 rounded-full bg-indigo-400 mb-1.5" />}
-              <p className="m-0 mb-1 text-white font-bold text-[15px]">{n.message}</p>
-              <p className="m-0 text-white/40 text-xs">{new Date(n.createdAt).toLocaleString()}</p>
-            </div>
-            <div className="flex gap-2 shrink-0">
-              {!n.read && (
-                <button onClick={() => markRead(n._id)} className="h-[34px] px-3 rounded-[10px] border border-indigo-500/[0.28] bg-indigo-500/[0.12] text-indigo-300 text-xs font-bold cursor-pointer transition-all hover:bg-indigo-500/[0.20]">
-                  Mark Read
-                </button>
-              )}
-              <button onClick={() => deleteNotification(n._id)} className="h-[34px] w-9 rounded-[10px] border border-red-500/[0.20] bg-red-500/[0.10] text-red-400 cursor-pointer flex items-center justify-center transition-all hover:bg-red-500/[0.18]">
-                <MdDeleteOutline size={17} />
+      {notifications.map((n) => (
+        <div
+          key={n._id}
+          className={`px-5 py-4 rounded-2xl mb-2.5 flex justify-between items-center gap-[14px] ${n.read ? "bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]" : "bg-[rgba(0,255,140,0.07)] border border-[rgba(0,255,140,0.18)]"}`}
+        >
+          <div>
+            <p className="m-0 mb-1 text-white font-bold text-[15px]">{n.message}</p>
+            <p className="m-0 text-white/50 text-xs">{new Date(n.createdAt).toLocaleString()}</p>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            {!n.read && (
+              <button onClick={() => markRead(n._id)} className="h-[34px] px-3 rounded-[10px] border-none bg-[rgba(0,255,140,0.15)] text-[#60ff9c] text-xs font-bold cursor-pointer">
+                Mark Read
               </button>
-            </div>
+            )}
+            <button onClick={() => deleteNotification(n._id)} className="h-[34px] w-9 rounded-[10px] border-none bg-[rgba(198,40,40,0.35)] text-[#ff9c9c] cursor-pointer flex items-center justify-center">
+              ×
+            </button>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };

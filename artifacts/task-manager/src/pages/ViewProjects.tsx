@@ -41,40 +41,42 @@ export const ViewProjects = () => {
   const isError = messageBox.type === "error";
 
   return (
-    <div className="min-h-screen bg-[#06070f] text-white">
+    <div className="min-h-screen text-white" style={{ background: "radial-gradient(circle at top, rgba(0,255,140,0.12), transparent 35%), #050a08" }}>
       {messageBox.show && (
         <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className={`w-[min(430px,90%)] p-[22px] rounded-3xl bg-[linear-gradient(135deg,rgba(12,10,30,0.98),rgba(6,7,15,0.98))] flex items-center gap-[15px] text-white shadow-[0_24px_70px_rgba(0,0,0,0.55)] border ${isError ? "border-red-500/[0.40]" : "border-emerald-500/[0.40]"}`}>
-            <div className={`min-w-[52px] h-[52px] rounded-[18px] flex items-center justify-center border ${isError ? "bg-red-500/[0.14] border-red-500/[0.25] text-red-400" : "bg-emerald-500/[0.14] border-emerald-500/[0.25] text-emerald-400"}`}>
+          <div className={`w-[min(430px,90%)] p-[22px] rounded-[24px] flex items-center gap-[15px] text-white shadow-[0_24px_70px_rgba(0,0,0,0.55)] ${isError ? "border border-[rgba(255,77,79,0.45)]" : "border border-[rgba(0,255,140,0.35)]"}`}
+            style={{ background: "linear-gradient(135deg, rgba(22,22,22,0.98), rgba(12,12,12,0.98))" }}>
+            <div className={`min-w-[52px] h-[52px] rounded-[18px] flex items-center justify-center ${isError ? "bg-[rgba(255,77,79,0.14)] border border-[rgba(255,77,79,0.25)] text-[#ff6b6b]" : "bg-[rgba(0,255,140,0.12)] border border-[rgba(0,255,140,0.22)] text-[#60ff9c]"}`}>
               {isError ? <MdErrorOutline size={30} /> : <MdCheckCircleOutline size={30} />}
             </div>
             <div>
               <h3 className="m-0 mb-[5px] text-lg font-extrabold">{messageBox.title}</h3>
-              <p className="m-0 text-sm text-white/65">{messageBox.message}</p>
+              <p className="m-0 text-sm leading-relaxed text-white/70">{messageBox.message}</p>
             </div>
           </div>
         </div>
       )}
 
-      <nav className="h-[90px] relative flex items-center justify-center bg-[rgba(5,5,18,0.95)] border-b border-indigo-500/[0.16] shadow-[0_8px_28px_rgba(0,0,0,0.35)] backdrop-blur-[10px]">
+      <nav className="h-[95px] relative flex items-center justify-center border-b border-[rgba(0,255,140,0.14)] shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
+        style={{ background: "rgba(5,10,8,0.95)", backdropFilter: "blur(10px)" }}>
         <button onClick={() => navigate(-1)}
-          className="w-[52px] h-[52px] rounded-full absolute left-6 flex items-center justify-center text-indigo-300 border border-indigo-500/[0.22] bg-white/[0.06] cursor-pointer hover:bg-indigo-500/[0.12] transition-all">
-          <FaArrowLeft size={19} />
+          className="w-[56px] h-[56px] rounded-full absolute left-6 flex items-center justify-center text-[#dffff0] border border-[rgba(0,255,140,0.18)] bg-[rgba(255,255,255,0.06)] cursor-pointer text-[22px]">
+          <FaArrowLeft />
         </button>
-        <h1 className="text-[32px] font-extrabold m-0 bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">View Projects</h1>
+        <h1 className="text-[34px] font-extrabold m-0 tracking-[0.5px]">View Projects</h1>
       </nav>
 
       <main className="px-6 py-[45px]">
-        {loading && <h2 className="text-center text-white/50 mt-[60px]">Loading projects...</h2>}
+        {loading && <h2 className="text-center text-[#dffff0] mt-[60px]">Loading projects...</h2>}
 
         {!loading && projects.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 px-5 text-center">
-            <div className="w-[72px] h-[72px] rounded-2xl bg-indigo-500/[0.10] border border-indigo-500/[0.22] flex items-center justify-center mb-5">
-              <FaProjectDiagram size={28} className="text-indigo-400" />
+            <div className="w-[72px] h-[72px] rounded-2xl bg-[rgba(64,196,255,0.08)] border border-[rgba(64,196,255,0.18)] flex items-center justify-center mb-5">
+              <FaProjectDiagram size={30} className="text-[#40c4ff]" />
             </div>
             <h2 className="m-0 mb-2 text-[24px] font-extrabold text-white">No projects yet</h2>
-            <p className="m-0 mb-6 text-white/50 text-[15px] max-w-[320px] leading-[1.7]">Create your first project, invite friends as contributors, and start assigning tasks together.</p>
-            <a href="/projects/addproject" className="h-11 px-6 rounded-[12px] no-underline text-white font-extrabold text-sm flex items-center bg-gradient-to-r from-indigo-600 to-violet-600 shadow-[0_8px_20px_rgba(99,102,241,0.28)]">+ Create a project</a>
+            <p className="m-0 mb-6 text-white/55 text-[15px] max-w-[320px] leading-[1.7]">Create your first project, invite friends as contributors, and start assigning tasks together.</p>
+            <a href="/projects/addproject" className="h-11 px-6 rounded-[12px] no-underline text-[#08110c] font-extrabold text-sm flex items-center" style={{ background: "linear-gradient(135deg, #00c853, #00e676)" }}>+ Create a project</a>
           </div>
         )}
 
@@ -86,22 +88,23 @@ export const ViewProjects = () => {
                 <NavLink
                   key={project._id}
                   to={`${project._id}`}
-                  className="min-h-[160px] no-underline text-white rounded-[22px] p-6 flex flex-col justify-between border border-indigo-500/[0.16] shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition-all duration-200 hover:border-indigo-500/[0.28] hover:-translate-y-1 bg-white/[0.04]"
+                  className="min-h-[170px] no-underline text-white rounded-[22px] p-6 flex flex-col justify-between border border-[rgba(0,255,140,0.16)] shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition-all duration-200"
+                  style={{ background: "linear-gradient(145deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03))" }}
                   onClick={() => {
                     localStorage.setItem("projectid", project._id);
                     localStorage.setItem("role", isOwner ? "owner" : "member");
                   }}
                 >
                   <div className="flex justify-between items-start gap-[14px]">
-                    <h2 className="m-0 text-[22px] font-extrabold">{project.name}</h2>
-                    <span className={`px-3 py-[6px] rounded-full border text-[12px] font-extrabold ${isOwner ? "text-indigo-300 border-indigo-500/[0.35] bg-indigo-500/[0.10]" : "text-amber-300 border-amber-500/[0.35] bg-amber-500/[0.08]"}`}>
+                    <h2 className="m-0 text-[24px] font-extrabold">{project.name}</h2>
+                    <span className={`px-3 py-[7px] rounded-full border bg-[rgba(255,255,255,0.06)] text-[13px] font-extrabold ${isOwner ? "text-[#39ff9f] border-[rgba(57,255,159,0.35)]" : "text-[#ffd36b] border-[rgba(255,211,107,0.35)]"}`}>
                       {isOwner ? "Owner" : "Member"}
                     </span>
                   </div>
                   {project.description && (
-                    <p className="text-white/55 text-[14px] leading-relaxed">{project.description}</p>
+                    <p className="text-[#b8cfc4] text-[15px] leading-relaxed">{project.description}</p>
                   )}
-                  <p className="m-0 text-indigo-400 font-extrabold text-sm">Open project →</p>
+                  <p className="m-0 text-[#39ff9f] font-extrabold">Open project →</p>
                 </NavLink>
               );
             })}
