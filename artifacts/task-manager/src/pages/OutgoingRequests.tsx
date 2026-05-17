@@ -53,41 +53,41 @@ export const OutgoingRequests = () => {
     <div className="w-full box-border">
       {messageBox.show && (
         <div className="fixed inset-0 bg-black/35 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className={`w-[min(430px,90%)] p-[22px] rounded-3xl flex items-center gap-[15px] text-white shadow-[0_24px_70px_rgba(0,0,0,0.55)] bg-gradient-to-br from-[rgba(22,22,22,0.98)] to-[rgba(12,12,12,0.98)] ${isError ? "border border-[rgba(255,77,79,0.45)]" : "border border-[rgba(0,255,140,0.35)]"}`}>
-            <div className={`min-w-[52px] h-[52px] rounded-[18px] flex items-center justify-center ${isError ? "bg-[rgba(255,77,79,0.14)] border border-[rgba(255,77,79,0.25)] text-[#ff6b6b]" : "bg-[rgba(0,255,140,0.12)] border border-[rgba(0,255,140,0.22)] text-[#60ff9c]"}`}>
+          <div className={`w-[min(430px,90%)] p-[22px] rounded-3xl bg-[linear-gradient(135deg,rgba(12,10,30,0.98),rgba(6,7,15,0.98))] flex items-center gap-[15px] text-white shadow-[0_24px_70px_rgba(0,0,0,0.55)] border ${isError ? "border-red-500/[0.40]" : "border-emerald-500/[0.40]"}`}>
+            <div className={`min-w-[52px] h-[52px] rounded-[18px] flex items-center justify-center border ${isError ? "bg-red-500/[0.14] border-red-500/[0.25] text-red-400" : "bg-emerald-500/[0.14] border-emerald-500/[0.25] text-emerald-400"}`}>
               {isError ? <MdErrorOutline size={30} /> : <MdCheckCircleOutline size={30} />}
             </div>
             <div>
               <h3 className="m-0 mb-[5px] text-lg font-extrabold">{messageBox.title}</h3>
-              <p className="m-0 text-sm leading-relaxed text-white/70">{messageBox.message}</p>
+              <p className="m-0 text-sm text-white/65">{messageBox.message}</p>
             </div>
           </div>
         </div>
       )}
 
-      <h2 className="text-center text-white text-[28px] font-extrabold mb-6">Outgoing Friend Requests</h2>
+      <h2 className="text-center text-white text-[26px] font-extrabold mb-6">Outgoing Friend Requests</h2>
 
-      <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
+      <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}>
         {users.length === 0 && (
           <div className="col-span-full flex flex-col items-center justify-center py-16 px-5 text-center">
-            <div className="w-[72px] h-[72px] rounded-2xl bg-[rgba(0,255,140,0.08)] border border-[rgba(0,255,140,0.16)] flex items-center justify-center mb-5">
-              <GiThreeFriends size={36} className="text-[#60ff9c]" />
+            <div className="w-[72px] h-[72px] rounded-2xl bg-indigo-500/[0.10] border border-indigo-500/[0.22] flex items-center justify-center mb-5">
+              <GiThreeFriends size={36} className="text-indigo-400" />
             </div>
             <h2 className="m-0 mb-2 text-[22px] font-extrabold text-white">No pending requests</h2>
-            <p className="m-0 text-white/55 text-[14px] max-w-[280px] leading-[1.7]">You haven't sent any friend requests yet. Find people to connect with in Add Friend.</p>
+            <p className="m-0 text-white/50 text-[14px] max-w-[280px] leading-[1.7]">You haven't sent any friend requests yet. Find people to connect with in Add Friend.</p>
           </div>
         )}
 
         {users.map((user) => (
-          <div key={user._id} className="py-[22px] px-[18px] rounded-[20px] bg-[rgba(255,255,255,0.05)] border border-[rgba(0,255,140,0.14)] shadow-[0_12px_30px_rgba(0,0,0,0.25)] backdrop-blur-xl flex flex-col items-center gap-3.5 text-center">
-            <div className="w-16 h-16 rounded-full bg-[rgba(0,255,140,0.10)] border border-[rgba(0,255,140,0.20)] flex items-center justify-center text-[#dffff0]">
-              <FaUserCircle size={34} />
+          <div key={user._id} className="py-[22px] px-[18px] rounded-[20px] bg-white/[0.04] border border-indigo-500/[0.14] shadow-[0_12px_30px_rgba(0,0,0,0.25)] backdrop-blur-xl flex flex-col items-center gap-3.5 text-center">
+            <div className="w-16 h-16 rounded-full bg-indigo-500/[0.12] border border-indigo-500/[0.22] flex items-center justify-center text-indigo-300">
+              <FaUserCircle size={32} />
             </div>
             <div className="text-xl font-extrabold text-white">{user.username}</div>
-            <div className="text-white/70 text-sm">Friend request sent</div>
+            <div className="text-white/55 text-sm">Friend request sent</div>
             <button
               onClick={() => undorequest(user._id)}
-              className="px-[14px] py-2.5 rounded-xl border-none bg-gradient-to-br from-[#ef6c00] to-[#fb8c00] text-white font-extrabold cursor-pointer flex items-center gap-1.5"
+              className="px-[14px] py-2 rounded-xl border-none bg-gradient-to-r from-orange-600 to-amber-500 text-white font-extrabold cursor-pointer flex items-center gap-1.5 text-sm transition-all hover:-translate-y-0.5"
             >
               <FaUndo /> Undo Request
             </button>

@@ -66,7 +66,6 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* LIGHT MODE */
 :root {
   --button-outline: rgba(0,0,0, .10);
   --badge-outline: rgba(0,0,0, .05);
@@ -111,30 +110,23 @@
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
   --radius: .5rem;
-  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-2xs: 0px 2px 0px 0px rgba(0,0,0,0);
+  --shadow-xs: 0px 2px 0px 0px rgba(0,0,0,0);
+  --shadow-sm: 0px 2px 0px 0px rgba(0,0,0,0), 0px 1px 2px -1px rgba(0,0,0,0);
+  --shadow: 0px 2px 0px 0px rgba(0,0,0,0), 0px 1px 2px -1px rgba(0,0,0,0);
+  --shadow-md: 0px 2px 0px 0px rgba(0,0,0,0), 0px 2px 4px -1px rgba(0,0,0,0);
+  --shadow-lg: 0px 2px 0px 0px rgba(0,0,0,0), 0px 4px 6px -1px rgba(0,0,0,0);
+  --shadow-xl: 0px 2px 0px 0px rgba(0,0,0,0), 0px 8px 10px -1px rgba(0,0,0,0);
+  --shadow-2xl: 0px 2px 0px 0px rgba(0,0,0,0);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
   --sidebar-primary-border: hsl(var(--sidebar-primary));
-  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --sidebar-accent-border: hsl(var(--sidebar-accent));
-  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --primary-border: hsl(var(--primary));
-  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --secondary-border: hsl(var(--secondary));
-  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --muted-border: hsl(var(--muted));
-  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --accent-border: hsl(var(--accent));
-  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --destructive-border: hsl(var(--destructive));
-  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
 .dark {
@@ -177,14 +169,14 @@
   --chart-3: red;
   --chart-4: red;
   --chart-5: red;
-  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-2xs: 0px 2px 0px 0px rgba(0,0,0,0);
+  --shadow-xs: 0px 2px 0px 0px rgba(0,0,0,0);
+  --shadow-sm: 0px 2px 0px 0px rgba(0,0,0,0), 0px 1px 2px -1px rgba(0,0,0,0);
+  --shadow: 0px 2px 0px 0px rgba(0,0,0,0), 0px 1px 2px -1px rgba(0,0,0,0);
+  --shadow-md: 0px 2px 0px 0px rgba(0,0,0,0), 0px 2px 4px -1px rgba(0,0,0,0);
+  --shadow-lg: 0px 2px 0px 0px rgba(0,0,0,0), 0px 4px 6px -1px rgba(0,0,0,0);
+  --shadow-xl: 0px 2px 0px 0px rgba(0,0,0,0), 0px 8px 10px -1px rgba(0,0,0,0);
+  --shadow-2xl: 0px 2px 0px 0px rgba(0,0,0,0);
 }
 
 @layer base {
@@ -194,7 +186,7 @@
 
   body {
     @apply font-sans antialiased;
-    background: #07110d;
+    background: #06070f;
     color: #ffffff;
   }
 }
@@ -207,7 +199,7 @@
   grid-template-areas: "nav nav" "aside main" "footer footer";
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #07110d 0%, #0b1d15 50%, #08110c 100%);
+  background: #06070f;
 }
 
 @media (max-width: 1023px) {
@@ -218,37 +210,38 @@
   }
 }
 
+/* Indigo-themed datepicker */
 .custom-dark-datepicker {
   width: 100%;
   height: 46px;
-  border-radius: 14px;
-  border: 1px solid rgba(0, 255, 128, 0.20);
+  border-radius: 12px;
+  border: 1px solid rgba(99, 102, 241, 0.25);
   background: rgba(255, 255, 255, 0.07);
   color: #ffffff;
   padding: 0 14px;
   outline: none;
-  font-size: 15px;
+  font-size: 14px;
   box-sizing: border-box;
 }
 
 .react-datepicker {
-  background-color: #0b1d15 !important;
-  border: 1px solid rgba(0,255,140,0.25) !important;
+  background-color: #0d0f2a !important;
+  border: 1px solid rgba(99, 102, 241, 0.30) !important;
   border-radius: 14px !important;
   color: #ffffff !important;
   font-family: inherit !important;
 }
 
 .react-datepicker__header {
-  background-color: rgba(0,255,140,0.10) !important;
-  border-bottom: 1px solid rgba(0,255,140,0.15) !important;
+  background-color: rgba(99, 102, 241, 0.12) !important;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.18) !important;
   border-radius: 14px 14px 0 0 !important;
 }
 
 .react-datepicker__current-month,
 .react-datepicker__day-name,
 .react-datepicker-time__header {
-  color: #dffff0 !important;
+  color: #c7d2fe !important;
 }
 
 .react-datepicker__day {
@@ -256,23 +249,23 @@
 }
 
 .react-datepicker__day:hover {
-  background-color: rgba(0,255,140,0.18) !important;
+  background-color: rgba(99, 102, 241, 0.22) !important;
   border-radius: 8px !important;
 }
 
 .react-datepicker__day--selected,
 .react-datepicker__day--keyboard-selected {
-  background-color: #00c853 !important;
-  color: #08110c !important;
+  background-color: #6366f1 !important;
+  color: #ffffff !important;
   border-radius: 8px !important;
 }
 
 .react-datepicker__day--outside-month {
-  color: rgba(255,255,255,0.30) !important;
+  color: rgba(255,255,255,0.25) !important;
 }
 
 .react-datepicker__navigation-icon::before {
-  border-color: #dffff0 !important;
+  border-color: #a5b4fc !important;
 }
 
 .react-datepicker-popper {

@@ -6,139 +6,46 @@ import { FaEye } from "react-icons/fa6";
 export const ProjectDashboard = () => {
   const navigate = useNavigate();
 
-  const pageStyle: React.CSSProperties = {
-    width: "100%",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "40px 20px",
-    boxSizing: "border-box",
-    background: "radial-gradient(circle at top, rgba(0,255,140,0.10), transparent 28%), linear-gradient(135deg, #07110d 0%, #0b1d15 45%, #08110c 100%)",
-    position: "relative",
-  };
-
-  const backBtn: React.CSSProperties = {
-    position: "absolute",
-    top: "24px",
-    left: "24px",
-    width: "46px",
-    height: "46px",
-    borderRadius: "14px",
-    border: "1px solid rgba(0,255,140,0.2)",
-    background: "rgba(0,255,140,0.08)",
-    color: "#dffff0",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
-  const iconWrap: React.CSSProperties = {
-    width: "70px", height: "70px", borderRadius: "50%",
-    background: "rgba(0,255,140,0.10)", border: "2px solid rgba(0,255,140,0.20)",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    color: "#dffff0", marginBottom: "16px",
-  };
-
-  const titleStyle: React.CSSProperties = {
-    margin: 0, color: "#ffffff", fontSize: "34px", fontWeight: "800", textAlign: "center",
-  };
-
-  const subtitleStyle: React.CSSProperties = {
-    marginTop: "10px", marginBottom: "36px",
-    color: "rgba(255,255,255,0.65)", fontSize: "15px", textAlign: "center",
-  };
-
-  const dividerStyle: React.CSSProperties = {
-    width: "60px", height: "3px", borderRadius: "999px",
-    background: "linear-gradient(90deg, #00c853, #b7ffd5)", margin: "0 auto 36px",
-  };
-
-  const cardsWrapper: React.CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: "20px",
-    width: "100%",
-    maxWidth: "520px",
-  };
-
-  const cardBase: React.CSSProperties = {
-    padding: "34px 24px",
-    borderRadius: "24px",
-    background: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(0,255,140,0.14)",
-    cursor: "pointer",
-    textAlign: "center",
-    boxShadow: "0 18px 50px rgba(0,0,0,0.30)",
-    backdropFilter: "blur(12px)",
-    WebkitBackdropFilter: "blur(12px)",
-    transition: "all 0.2s ease",
-    boxSizing: "border-box",
-  };
-
-  const cardIconWrap: React.CSSProperties = {
-    width: "58px", height: "58px", borderRadius: "18px",
-    background: "rgba(0,255,140,0.10)", border: "1px solid rgba(0,255,140,0.18)",
-    display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px",
-  };
-
-  const cardTitle: React.CSSProperties = {
-    margin: "0 0 8px", color: "#ffffff", fontSize: "18px", fontWeight: "800",
-  };
-
-  const cardDesc: React.CSSProperties = {
-    margin: 0, color: "rgba(255,255,255,0.55)", fontSize: "13px", lineHeight: "1.6",
-  };
-
   return (
-    <div style={pageStyle}>
-      <button style={backBtn} onClick={() => navigate("/dashboard")}>
-        <FaArrowLeft size={18} />
+    <div className="min-h-screen bg-[#06070f] flex flex-col justify-center items-center px-5 py-[50px] relative">
+      <button
+        className="absolute top-6 left-6 w-[46px] h-[46px] rounded-[14px] border border-indigo-500/[0.25] bg-indigo-500/[0.10] text-indigo-300 cursor-pointer flex items-center justify-center transition-all hover:bg-indigo-500/[0.18]"
+        onClick={() => navigate("/dashboard")}
+      >
+        <FaArrowLeft size={17} />
       </button>
 
-      <div style={iconWrap}>
+      <div className="w-[70px] h-[70px] rounded-full bg-indigo-500/[0.12] border-2 border-indigo-500/[0.24] flex items-center justify-center text-indigo-300 mb-4">
         <FaProjectDiagram size={30} />
       </div>
 
-      <h2 style={titleStyle}>Projects</h2>
-      <p style={subtitleStyle}>Manage your collaborative projects.</p>
-      <div style={dividerStyle} />
+      <h2 className="m-0 text-white text-[34px] font-extrabold text-center tracking-[-0.2px]">Projects</h2>
+      <p className="mt-[10px] mb-9 text-white/55 text-[15px] text-center leading-[1.7]">
+        Manage your collaborative projects.
+      </p>
+      <div className="w-[60px] h-[3px] rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 mx-auto mb-9" />
 
-      <div style={cardsWrapper}>
+      <div className="grid gap-5 w-full max-w-[520px]" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
         <div
-          style={cardBase}
+          className="p-[34px_24px] rounded-[24px] bg-white/[0.04] border border-indigo-500/[0.16] cursor-pointer text-center shadow-[0_18px_50px_rgba(0,0,0,0.28)] backdrop-blur-[12px] transition-all hover:bg-indigo-500/[0.07] hover:-translate-y-1 box-border"
           onClick={() => navigate("viewprojects")}
-          onMouseOver={(e) => {
-            (e.currentTarget as HTMLDivElement).style.background = "rgba(0,255,140,0.08)";
-            (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)";
-          }}
-          onMouseOut={(e) => {
-            (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.06)";
-            (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
-          }}
         >
-          <div style={cardIconWrap}><FaEye size={26} color="#00e676" /></div>
-          <h3 style={cardTitle}>View Projects</h3>
-          <p style={cardDesc}>See all your existing projects and their members</p>
+          <div className="w-[58px] h-[58px] rounded-[18px] bg-indigo-500/[0.12] border border-indigo-500/[0.22] flex items-center justify-center mx-auto mb-4">
+            <FaEye size={24} className="text-indigo-400" />
+          </div>
+          <h3 className="m-0 mb-2 text-white text-[18px] font-extrabold">View Projects</h3>
+          <p className="m-0 text-white/50 text-[13px] leading-[1.6]">See all your existing projects and their members</p>
         </div>
 
         <div
-          style={cardBase}
+          className="p-[34px_24px] rounded-[24px] bg-white/[0.04] border border-indigo-500/[0.16] cursor-pointer text-center shadow-[0_18px_50px_rgba(0,0,0,0.28)] backdrop-blur-[12px] transition-all hover:bg-indigo-500/[0.07] hover:-translate-y-1 box-border"
           onClick={() => navigate("addproject")}
-          onMouseOver={(e) => {
-            (e.currentTarget as HTMLDivElement).style.background = "rgba(0,255,140,0.08)";
-            (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)";
-          }}
-          onMouseOut={(e) => {
-            (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.06)";
-            (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
-          }}
         >
-          <div style={cardIconWrap}><IoIosAddCircle size={28} color="#00e676" /></div>
-          <h3 style={cardTitle}>Add Project</h3>
-          <p style={cardDesc}>Create a new project and invite your team</p>
+          <div className="w-[58px] h-[58px] rounded-[18px] bg-violet-500/[0.12] border border-violet-500/[0.22] flex items-center justify-center mx-auto mb-4">
+            <IoIosAddCircle size={28} className="text-violet-400" />
+          </div>
+          <h3 className="m-0 mb-2 text-white text-[18px] font-extrabold">Add Project</h3>
+          <p className="m-0 text-white/50 text-[13px] leading-[1.6]">Create a new project and invite your team</p>
         </div>
       </div>
     </div>

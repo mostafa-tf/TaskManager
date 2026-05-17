@@ -2,17 +2,19 @@ import { NavLink } from "react-router-dom";
 
 export const DashboardFooter = () => {
   return (
-    <footer className="[grid-area:footer] bg-[#07110d] border-t border-[rgba(0,255,140,0.12)] px-6 py-8">
+    <footer className="[grid-area:footer] bg-[#080b1a] border-t border-indigo-500/[0.12] px-6 py-8">
       <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8">
         <div>
-          <h3 className="text-[#00e676] font-extrabold text-lg mb-2 tracking-wide">TaskFlow</h3>
-          <p className="text-white/55 text-sm leading-relaxed">
+          <h3 className="font-extrabold text-lg mb-2 tracking-wide bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+            TaskFlow
+          </h3>
+          <p className="text-white/45 text-sm leading-relaxed">
             Organize smarter, achieve more. Your personal task and productivity hub.
           </p>
         </div>
 
         <div>
-          <h4 className="text-[#dffff0] font-bold text-sm uppercase tracking-widest mb-3">Quick Links</h4>
+          <h4 className="text-white/60 font-bold text-xs uppercase tracking-widest mb-3">Quick Links</h4>
           <ul className="flex flex-col gap-2">
             {[
               { to: "/dashboard", label: "Dashboard" },
@@ -23,7 +25,7 @@ export const DashboardFooter = () => {
               <li key={to}>
                 <NavLink
                   to={to}
-                  className="text-white/55 hover:text-[#00e676] text-sm no-underline transition-colors duration-200"
+                  className="text-white/45 hover:text-indigo-400 text-sm no-underline transition-colors duration-200"
                 >
                   {label}
                 </NavLink>
@@ -34,7 +36,7 @@ export const DashboardFooter = () => {
 
         <div className="flex flex-col justify-between">
           <div>
-            <h4 className="text-[#dffff0] font-bold text-sm uppercase tracking-widest mb-3">Account</h4>
+            <h4 className="text-white/60 font-bold text-xs uppercase tracking-widest mb-3">Account</h4>
             <ul className="flex flex-col gap-2">
               {[
                 { to: "/dashboard/profile", label: "Profile" },
@@ -44,7 +46,7 @@ export const DashboardFooter = () => {
                 <li key={to}>
                   <NavLink
                     to={to}
-                    className="text-white/55 hover:text-[#00e676] text-sm no-underline transition-colors duration-200"
+                    className="text-white/45 hover:text-indigo-400 text-sm no-underline transition-colors duration-200"
                   >
                     {label}
                   </NavLink>
@@ -55,8 +57,8 @@ export const DashboardFooter = () => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto mt-8 pt-5 border-t border-[rgba(0,255,140,0.08)] text-center">
-        <p className="text-white/35 text-xs">
+      <div className="max-w-5xl mx-auto mt-8 pt-5 border-t border-indigo-500/[0.08] text-center">
+        <p className="text-white/25 text-xs">
           &copy; {new Date().getFullYear()} TaskFlow. All rights reserved.
         </p>
       </div>

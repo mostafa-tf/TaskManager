@@ -28,22 +28,33 @@ export const ResetPassword = () => {
     } catch (error: any) { setIsError(true); setMessage(error.message); }
   };
 
-  const inputClass = "w-full h-12 rounded-[14px] border border-[rgba(0,255,128,0.20)] bg-[rgba(255,255,255,0.07)] text-white px-[14px] outline-none text-[15px] box-border mb-[18px]";
+  const inputClass = "w-full h-12 rounded-xl border border-indigo-500/[0.22] bg-white/[0.07] text-white px-[14px] outline-none text-[15px] box-border mb-[18px] transition-all focus:border-indigo-400/[0.50]";
 
   return (
     <>
       <WelcomeNavbar page="reset" />
-      <div className="w-full min-h-[calc(100vh-70px)] flex items-center justify-center bg-[linear-gradient(135deg,rgb(7,14,10)_0%,rgb(10,24,17)_45%,rgb(6,10,8)_100%)] p-[30px_20px]">
-        <div className="w-full max-w-[420px] p-[38px_30px] rounded-[28px] bg-[rgba(255,255,255,0.06)] border border-[rgba(0,255,128,0.18)] shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-[14px]">
-          <h2 className="text-white text-[30px] font-extrabold text-center mb-2.5">Reset Password</h2>
-          <p className="text-white/70 text-center mb-[26px] text-[15px]">Enter your new password below.</p>
-          {message && <p className={`mb-4 font-bold text-center ${isError ? "text-[#ff9c9c]" : "text-[#60ff9c]"}`}>{message}</p>}
+      <div className="w-full min-h-[calc(100vh-70px)] flex items-center justify-center bg-[#06070f] p-[30px_20px]">
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(99,102,241,0.06), transparent 60%)" }}
+        />
+        <div className="w-full max-w-[420px] p-[38px_30px] rounded-[28px] bg-white/[0.05] border border-indigo-500/[0.18] shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-[14px] relative z-10">
+          <h2 className="text-white text-[30px] font-extrabold text-center mb-2.5 tracking-[0.4px]">Reset Password</h2>
+          <p className="text-white/55 text-center mb-[26px] text-[15px] leading-[1.7]">Enter your new password below.</p>
+          {message && (
+            <p className={`mb-4 font-bold text-center text-sm rounded-xl px-4 py-3 ${isError ? "text-red-300 bg-red-500/[0.09] border border-red-500/[0.30]" : "text-emerald-300 bg-emerald-500/[0.09] border border-emerald-500/[0.28]"}`}>
+              {message}
+            </p>
+          )}
           <form onSubmit={handleSubmit}>
-            <label className="block text-[#caffdf] mb-2 text-sm font-bold">New Password</label>
+            <label className="block text-indigo-200 mb-2 text-sm font-bold">New Password</label>
             <input type="password" required minLength={5} maxLength={15} className={inputClass} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter new password" />
-            <label className="block text-[#caffdf] mb-2 text-sm font-bold">Confirm Password</label>
+            <label className="block text-indigo-200 mb-2 text-sm font-bold">Confirm Password</label>
             <input type="password" required minLength={5} maxLength={15} className={inputClass} value={repassword} onChange={(e) => setRepassword(e.target.value)} placeholder="Confirm new password" />
-            <button type="submit" className="w-full h-[50px] rounded-[14px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-base font-extrabold cursor-pointer mt-2">
+            <button
+              type="submit"
+              className="w-full h-[50px] rounded-[14px] border-none bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-base font-extrabold cursor-pointer shadow-[0_12px_28px_rgba(99,102,241,0.28)] transition-all hover:-translate-y-0.5 mt-2"
+            >
               Reset Password
             </button>
           </form>
