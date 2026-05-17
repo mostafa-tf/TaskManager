@@ -1,6 +1,6 @@
 # TaskFlow — Task Manager App
 
-A full-stack task management web application reproduced from [mostafa-tf/TaskManager](https://github.com/mostafa-tf/TaskManager.git). Users can manage personal and project tasks, collaborate with friends, track activity audit logs, and monitor productivity via analytics.
+A full-stack task management web application reproduced from [mostafa-tf/TaskManager](https://github.com/mostafa-tf/TaskManager.git). Users can manage personal and project tasks, collaborate with friends,activity audit logs, and track productivity via analytics.
 
 ## Run & Operate
 
@@ -18,7 +18,7 @@ A full-stack task management web application reproduced from [mostafa-tf/TaskMan
 ## Where things live
 
 - `artifacts/api-server/src/` — Express backend
-  - `routes/` — users, tasks, feedbacks, friendship, projects, notifications, logs
+  - `routes/` — users, tasks, feedbacks, friendship, projects, notifications
   - `models/` — Mongoose models
   - `middleware/` — JWT auth middleware
   - `db.ts` — MongoDB connection
@@ -46,8 +46,7 @@ A full-stack task management web application reproduced from [mostafa-tf/TaskMan
 - Real-time notifications via Socket.io
 - Admin dashboard for managing users and feedback
 - Profile management
-- Audit Logs to ensure safety and traceability
-
+- Audit Logs To Ensure Safety
 ## Required Secrets
 
 - `MONGODB_URI` — MongoDB Atlas connection string (mongodb+srv://...)
