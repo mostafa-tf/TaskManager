@@ -1,7 +1,49 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaBell } from "react-icons/fa";
+import { FaArrowLeft, FaBell, FaClock } from "react-icons/fa";
+import { FaProjectDiagram } from "react-icons/fa";
+import { GiThreeFriends } from "react-icons/gi";
+import { RiTaskLine } from "react-icons/ri";
 import { io, Socket } from "socket.io-client";
+
+const typeConfig: Record<string, { icon: JSX.Element; label: string; color: string; bg: string; border: string }> = {
+  "assigned project": {
+    icon: <FaProjectDiagram size={20} />,
+    label: "Project",
+    color: "#40c4ff",
+    bg: "rgba(64,196,255,0.12)",
+    border: "rgba(64,196,255,0.28)",
+  },
+  "assigned task": {
+    icon: <RiTaskLine size={22} />,
+    label: "Task",
+    color: "#00e676",
+    bg: "rgba(0,230,118,0.12)",
+    border: "rgba(0,230,118,0.28)",
+  },
+  "friend request accepted": {
+    icon: <GiThreeFriends size={22} />,
+    label: "Friend",
+    color: "#ea80fc",
+    bg: "rgba(234,128,252,0.12)",
+    border: "rgba(234,128,252,0.28)",
+  },
+  "task expiration": {
+    icon: <FaClock size={18} />,
+    label: "Expiring",
+    color: "#ff9800",
+    bg: "rgba(255,152,0,0.12)",
+    border: "rgba(255,152,0,0.28)",
+  },
+};
+
+const defaultConfig = {
+  icon: <FaBell size={18} />,
+  label: "Alert",
+  color: "#ffffff",
+  bg: "rgba(255,255,255,0.08)",
+  border: "rgba(255,255,255,0.18)",
+};
 
 export const Notifications = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -33,65 +75,126 @@ export const Notifications = () => {
       setNoNotifications(false);
       showMsg("New notification received!");
     });
+    socketRef.current.on("project_invitation", (notification: any) => {
+      setNotifications((prev) => [notification, ...prev]);
+      setNoNotifications(false);
+      showMsg("You've been added to a project!");
+    });
+    socketRef.current.on("assigned_task", (notification: any) => {
+      setNotifications((prev) => [notification, ...prev]);
+      setNoNotifications(false);
+      showMsg("A new task has been assigned to you!");
+    });
+    socketRef.current.on("request_accepted", (notification: any) => {
+      setNotifications((prev) => [notification, ...prev]);
+      setNoNotifications(false);
+      showMsg("A friend request was accepted!");
+    });
     return () => { socketRef.current?.disconnect(); };
   }, []);
 
   const markRead = async (id: string) => {
     try {
       await fetch(`/api/notifications/${id}/read`, { method: "PUT", headers: { authorization: `Bearer ${localStorage.getItem("token")}` } });
-      await fetchNotifications();
+      setNotifications((prev) => prev.map((n) => n._id === id ? { ...n, isRead: true } : n));
     } catch { }
   };
 
   const deleteNotification = async (id: string) => {
     try {
       await fetch(`/api/notifications/${id}`, { method: "DELETE", headers: { authorization: `Bearer ${localStorage.getItem("token")}` } });
-      await fetchNotifications();
+      setNotifications((prev) => prev.filter((n) => n._id !== id));
+      if (notifications.length <= 1) setNoNotifications(true);
     } catch { }
   };
 
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
   return (
-    <div className="min-h-screen bg-[linear-gradient(135deg,#07110d_0%,#0b1d15_50%,#08110c_100%)] p-[30px]">
+    <div style={{ minHeight: "100vh", background: "radial-gradient(circle at top, rgba(0,255,140,0.08), transparent 24%), linear-gradient(135deg, #07110d 0%, #0b1d15 45%, #08110c 100%)", color: "#fff" }}>
       {message && (
-        <div className="fixed inset-0 bg-black/25 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className="px-7 py-5 rounded-[20px] bg-[rgba(15,15,15,0.98)] border border-[rgba(0,255,140,0.30)] text-[#60ff9c] font-bold text-base">{message}</div>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.25)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
+          <div style={{ padding: "18px 28px", borderRadius: "20px", background: "rgba(15,15,15,0.98)", border: "1px solid rgba(0,255,140,0.30)", color: "#60ff9c", fontWeight: "800", fontSize: "15px" }}>{message}</div>
         </div>
       )}
 
-      <div className="flex items-center gap-[14px] mb-7">
-        <button onClick={() => navigate("/dashboard")} className="w-[46px] h-[46px] rounded-[14px] border border-[rgba(0,255,140,0.2)] bg-[rgba(0,255,140,0.08)] text-[#dffff0] cursor-pointer flex items-center justify-center">
-          <FaArrowLeft size={18} />
+      <nav style={{ height: "95px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", background: "rgba(5,10,8,0.95)", borderBottom: "1px solid rgba(0,255,140,0.14)", boxShadow: "0 10px 30px rgba(0,0,0,0.35)", backdropFilter: "blur(10px)" }}>
+        <button onClick={() => navigate("/dashboard")}
+          style={{ width: "56px", height: "56px", borderRadius: "50%", position: "absolute", left: "24px", display: "flex", alignItems: "center", justifyContent: "center", color: "#dffff0", border: "1px solid rgba(0,255,140,0.18)", background: "rgba(255,255,255,0.06)", cursor: "pointer", fontSize: "20px" }}>
+          <FaArrowLeft />
         </button>
-        <div className="w-[52px] h-[52px] rounded-2xl bg-[rgba(0,255,140,0.10)] flex items-center justify-center text-[#dffff0]"><FaBell size={24} /></div>
-        <div>
-          <h2 className="m-0 text-[28px] font-extrabold text-white">Notifications</h2>
-          <p className="m-0 text-white/65 text-sm">Stay updated with your latest activity.</p>
-        </div>
-      </div>
-
-      {noNotifications && <h2 className="text-[#60ff9c] font-extrabold">No Notifications</h2>}
-
-      {notifications.map((n) => (
-        <div
-          key={n._id}
-          className={`px-5 py-4 rounded-2xl mb-2.5 flex justify-between items-center gap-[14px] ${n.read ? "bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]" : "bg-[rgba(0,255,140,0.07)] border border-[rgba(0,255,140,0.18)]"}`}
-        >
-          <div>
-            <p className="m-0 mb-1 text-white font-bold text-[15px]">{n.message}</p>
-            <p className="m-0 text-white/50 text-xs">{new Date(n.createdAt).toLocaleString()}</p>
+        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+          <div style={{ width: "44px", height: "44px", borderRadius: "14px", background: "rgba(0,255,140,0.10)", border: "1px solid rgba(0,255,140,0.18)", display: "flex", alignItems: "center", justifyContent: "center", color: "#dffff0" }}>
+            <FaBell size={20} />
           </div>
-          <div className="flex gap-2 shrink-0">
-            {!n.read && (
-              <button onClick={() => markRead(n._id)} className="h-[34px] px-3 rounded-[10px] border-none bg-[rgba(0,255,140,0.15)] text-[#60ff9c] text-xs font-bold cursor-pointer">
-                Mark Read
-              </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ fontSize: "28px", fontWeight: "800", letterSpacing: "0.4px" }}>Notifications</span>
+            {unreadCount > 0 && (
+              <span style={{ padding: "3px 10px", borderRadius: "999px", background: "rgba(0,230,118,0.18)", border: "1px solid rgba(0,230,118,0.30)", color: "#00e676", fontSize: "13px", fontWeight: "800" }}>
+                {unreadCount} new
+              </span>
             )}
-            <button onClick={() => deleteNotification(n._id)} className="h-[34px] w-9 rounded-[10px] border-none bg-[rgba(198,40,40,0.35)] text-[#ff9c9c] cursor-pointer flex items-center justify-center">
-              ×
-            </button>
           </div>
         </div>
-      ))}
+      </nav>
+
+      <main style={{ maxWidth: "780px", margin: "0 auto", padding: "28px 20px 50px" }}>
+        {noNotifications && notifications.length === 0 && (
+          <div style={{ textAlign: "center", paddingTop: "60px" }}>
+            <div style={{ width: "70px", height: "70px", borderRadius: "50%", background: "rgba(0,255,140,0.08)", border: "1px solid rgba(0,255,140,0.14)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 18px", color: "rgba(255,255,255,0.25)" }}>
+              <FaBell size={28} />
+            </div>
+            <h2 style={{ margin: 0, color: "rgba(255,255,255,0.45)", fontWeight: "700", fontSize: "20px" }}>No notifications yet</h2>
+            <p style={{ margin: "8px 0 0", color: "rgba(255,255,255,0.30)", fontSize: "14px" }}>You're all caught up!</p>
+          </div>
+        )}
+
+        {notifications.map((n) => {
+          const cfg = typeConfig[n.type] || defaultConfig;
+          return (
+            <div key={n._id} style={{
+              display: "flex", alignItems: "center", gap: "14px",
+              padding: "16px 18px", borderRadius: "18px", marginBottom: "10px",
+              background: n.isRead ? "rgba(255,255,255,0.04)" : "rgba(0,255,140,0.05)",
+              border: n.isRead ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(0,255,140,0.16)",
+            }}>
+              <div style={{ minWidth: "46px", height: "46px", borderRadius: "14px", background: cfg.bg, border: `1px solid ${cfg.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: cfg.color, flexShrink: 0 }}>
+                {cfg.icon}
+              </div>
+
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "5px", flexWrap: "wrap" }}>
+                  <span style={{ padding: "2px 9px", borderRadius: "999px", background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color, fontSize: "11px", fontWeight: "800", letterSpacing: "0.5px", textTransform: "uppercase" }}>
+                    {cfg.label}
+                  </span>
+                  {!n.isRead && (
+                    <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#00e676", display: "inline-block" }} />
+                  )}
+                </div>
+                <p style={{ margin: 0, color: n.isRead ? "rgba(255,255,255,0.72)" : "#ffffff", fontWeight: n.isRead ? "500" : "700", fontSize: "15px", lineHeight: "1.5" }}>
+                  {n.message}
+                </p>
+                <p style={{ margin: "5px 0 0", color: "rgba(255,255,255,0.35)", fontSize: "12px" }}>
+                  {new Date(n.createdAt).toLocaleString()}
+                </p>
+              </div>
+
+              <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+                {!n.isRead && (
+                  <button onClick={() => markRead(n._id)}
+                    style={{ height: "34px", padding: "0 12px", borderRadius: "10px", border: "none", background: "rgba(0,255,140,0.12)", color: "#60ff9c", fontSize: "12px", fontWeight: "800", cursor: "pointer" }}>
+                    Mark Read
+                  </button>
+                )}
+                <button onClick={() => deleteNotification(n._id)}
+                  style={{ height: "34px", width: "34px", borderRadius: "10px", border: "none", background: "rgba(198,40,40,0.25)", color: "#ff9c9c", cursor: "pointer", fontSize: "18px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  ×
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </main>
     </div>
   );
 };

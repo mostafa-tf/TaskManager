@@ -1,11 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaUserPlus } from "react-icons/fa";
 import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 
 export const ViewProject = () => {
   const [project, setProject] = useState<any>({});
   const [tasks, setTasks] = useState<any>({});
+  const [friends, setFriends] = useState<any[]>([]);
+  const [selectedFriend, setSelectedFriend] = useState("");
+  const [addingFriend, setAddingFriend] = useState(false);
   const [messageBox, setMessageBox] = useState({ show: false, type: "", title: "", message: "" });
   const navigate = useNavigate();
   const { projectid } = useParams();
@@ -28,7 +31,7 @@ export const ViewProject = () => {
         body: JSON.stringify({ status }),
       });
       if (!res.ok) { const d = await res.json(); throw new Error(d.message); }
-      showBox("success", "Task Updated", "Task updated successfully");
+      showBox("success", "Task Updated", "Task status updated successfully");
       fetchcontributertasks();
     } catch (error: any) {
       showBox("error", "Update Failed", error.message);
@@ -61,7 +64,8 @@ export const ViewProject = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      showBox("success", "Task Assigned", "Task assigned successfully");
+      showBox("success", "Task Assigned", "Task assigned and notification sent to the member");
+      setTaskInfo((prev) => ({ ...prev, title: "", description: "", priority: "", dueDate: "", assignedto: "" }));
       await fetchmembers();
     } catch (error: any) {
       showBox("error", "Assign Failed", error.message);
@@ -96,16 +100,47 @@ export const ViewProject = () => {
     }
   };
 
+  const fetchFriends = async () => {
+    try {
+      const res = await fetch("/api/friendship/viewfriends", {
+        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      const data = await res.json();
+      if (res.ok) setFriends(data);
+    } catch { }
+  };
+
+  const addFriendAsMember = async () => {
+    if (!selectedFriend) return;
+    setAddingFriend(true);
+    try {
+      const res = await fetch(`/api/projects/${projectid}/members`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` },
+        body: JSON.stringify({ userId: selectedFriend }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      showBox("success", "Member Added", "Friend added as contributor and notified successfully");
+      setSelectedFriend("");
+      await fetchmembers();
+      await fetchFriends();
+    } catch (error: any) {
+      showBox("error", "Failed", error.message);
+    } finally {
+      setAddingFriend(false);
+    }
+  };
+
   useEffect(() => {
     fetchmembers();
-    if (localStorage.getItem("role") === "member") {
-      fetchcontributertasks();
-    }
+    if (localStorage.getItem("role") === "member") fetchcontributertasks();
+    if (localStorage.getItem("role") === "owner") fetchFriends();
   }, []);
 
   const isError = messageBox.type === "error";
-
   const inputClass = "w-full box-border px-[15px] py-[13px] rounded-[14px] border border-[rgba(0,255,140,0.18)] bg-[rgba(255,255,255,0.06)] text-white outline-none text-[15px]";
+  const availableFriends = friends.filter((f) => !project.members?.some((m: any) => m.userId === f._id));
 
   return (
     <div className="min-h-screen text-white" style={{ background: "radial-gradient(circle at top, rgba(0,255,140,0.12), transparent 35%), #050a08" }}>
@@ -134,6 +169,7 @@ export const ViewProject = () => {
       </nav>
 
       <main className="px-6 py-[35px] max-w-[1150px] mx-auto">
+        {/* Project Info */}
         {project.projectName && (
           <section className="rounded-[22px] p-[22px] mb-[26px] border border-[rgba(0,255,140,0.16)] shadow-[0_18px_45px_rgba(0,0,0,0.35)]"
             style={{ background: "linear-gradient(145deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03))" }}>
@@ -145,6 +181,7 @@ export const ViewProject = () => {
           </section>
         )}
 
+        {/* Members list */}
         {localStorage.getItem("role") === "owner" && project.members && project.members.length === 0 && (
           <h2 className="text-center text-[#dffff0]">No Members Found</h2>
         )}
@@ -154,16 +191,14 @@ export const ViewProject = () => {
             <h2 className="m-0 mb-[18px] text-[24px]">Project Members</h2>
             <div className="grid gap-[18px]" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(245px, 1fr))" }}>
               {project.members.map((member: any) => (
-                <div
-                  key={member.userId}
+                <div key={member.userId}
                   className="rounded-[20px] p-[18px] border border-[rgba(0,255,140,0.16)] shadow-[0_18px_45px_rgba(0,0,0,0.35)] cursor-pointer"
                   style={{ background: "linear-gradient(145deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03))" }}
                   onClick={() => {
                     if (!member.userId) return;
                     localStorage.setItem("projectid", project.projectId);
                     navigate(`/projects/projectmember/${member.userId}`);
-                  }}
-                >
+                  }}>
                   <div className="flex justify-between items-center gap-[10px]">
                     <h3 className="m-0 text-[21px]">{member.username}</h3>
                     <span className={`px-[10px] py-[6px] rounded-full border bg-[rgba(255,255,255,0.06)] font-extrabold text-[12px] ${member.isActive ? "text-[#39ff9f] border-[rgba(57,255,159,0.35)]" : "text-[#ffd36b] border-[rgba(255,211,107,0.35)]"}`}>
@@ -182,8 +217,62 @@ export const ViewProject = () => {
           </section>
         )}
 
+        {/* Add Friend as Contributor */}
         {localStorage.getItem("role") === "owner" && (
-          <form onSubmit={handlesubmit} className="mt-[30px] p-6 rounded-[22px] border border-[rgba(0,255,140,0.16)] shadow-[0_18px_45px_rgba(0,0,0,0.35)]"
+          <section className="mb-7 p-6 rounded-[22px] border border-[rgba(64,196,255,0.18)] shadow-[0_18px_45px_rgba(0,0,0,0.30)]"
+            style={{ background: "linear-gradient(145deg, rgba(64,196,255,0.06), rgba(255,255,255,0.02))" }}>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-[44px] h-[44px] rounded-[14px] flex items-center justify-center border border-[rgba(64,196,255,0.28)] bg-[rgba(64,196,255,0.10)] text-[#40c4ff]">
+                <FaUserPlus size={18} />
+              </div>
+              <div>
+                <h2 className="m-0 text-[22px] font-extrabold">Add Friend as Contributor</h2>
+                <p className="m-0 text-white/50 text-sm">Select an accepted friend — they'll be added and notified instantly.</p>
+              </div>
+            </div>
+
+            {availableFriends.length === 0 ? (
+              <p className="text-white/40 text-sm italic m-0">
+                {friends.length === 0
+                  ? "You have no accepted friends yet. Add friends first to invite them here."
+                  : "All your friends are already members of this project."}
+              </p>
+            ) : (
+              <div className="flex gap-3 flex-wrap items-end">
+                <div className="flex-1 min-w-[200px]">
+                  <label className="block mb-2 text-[#a8d8ff] font-bold text-sm">Select Friend</label>
+                  <select
+                    value={selectedFriend}
+                    onChange={(e) => setSelectedFriend(e.target.value)}
+                    className="w-full box-border px-[15px] py-[13px] rounded-[14px] border border-[rgba(64,196,255,0.22)] bg-[rgba(255,255,255,0.06)] text-white outline-none text-[15px] cursor-pointer"
+                  >
+                    <option value="">— Choose a friend —</option>
+                    {availableFriends.map((f) => (
+                      <option key={f._id} value={f._id}>{f.username} ({f.email})</option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  onClick={addFriendAsMember}
+                  disabled={!selectedFriend || addingFriend}
+                  style={{
+                    height: "50px", padding: "0 24px", borderRadius: "14px", border: "none",
+                    fontSize: "15px", fontWeight: "800",
+                    background: (!selectedFriend || addingFriend) ? "rgba(255,255,255,0.10)" : "linear-gradient(135deg, #0288d1, #40c4ff)",
+                    color: (!selectedFriend || addingFriend) ? "rgba(255,255,255,0.35)" : "#030f1a",
+                    cursor: (!selectedFriend || addingFriend) ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {addingFriend ? "Adding..." : "Add as Contributor"}
+                </button>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Assign Task form */}
+        {localStorage.getItem("role") === "owner" && (
+          <form onSubmit={handlesubmit} className="mt-[10px] p-6 rounded-[22px] border border-[rgba(0,255,140,0.16)] shadow-[0_18px_45px_rgba(0,0,0,0.35)]"
             style={{ background: "linear-gradient(145deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03))" }}>
             <h2 className="m-0 mb-[18px] text-[24px]">Assign A Task</h2>
 
@@ -226,6 +315,7 @@ export const ViewProject = () => {
           </form>
         )}
 
+        {/* Member task board */}
         {localStorage.getItem("role") === "member" && (
           <div className="grid gap-5 items-start" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
             {statusColumns.map((col) => {

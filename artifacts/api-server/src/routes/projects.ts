@@ -179,12 +179,27 @@ router.post("/:projectid/members", verifytoken, async (req: Request, res: Respon
     const project = await Project.findById(req.params.projectid);
     if (!project) { res.status(404).json({ message: "project not found" }); return; }
     if (project.owner?.toString() !== (req as any).user.id) { res.status(403).json({ message: "only owner can add members" }); return; }
-    const user = await User.findOne({ email: req.body.email });
+    let user;
+    if (req.body.userId) {
+      user = await User.findById(req.body.userId);
+    } else if (req.body.email) {
+      user = await User.findOne({ email: req.body.email });
+    }
     if (!user) { res.status(404).json({ message: "user not found" }); return; }
-    const alreadyMember = (project.members as any[]).some((m) => m.userId.toString() === user._id.toString());
+    const alreadyMember = (project.members as any[]).some((m) => m.userId.toString() === user!._id.toString());
     if (alreadyMember) { res.status(400).json({ message: "user already a member" }); return; }
     (project.members as any[]).push({ userId: user._id, role: "member" });
     await project.save();
+    const owner = await User.findById((req as any).user.id);
+    const notification = await Notification.create({
+      type: "assigned project",
+      message: `${owner?.username} added you to project "${project.name}"`,
+      receiver: user._id,
+      sender: (req as any).user.id,
+      projectid: project._id,
+    });
+    const io = req.app.get("io");
+    io.to(`${user._id}`).emit("project_invitation", notification);
     res.status(200).json({ message: "member added" });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
