@@ -4,7 +4,7 @@ const notificationSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ["friend request accepted", "assigned task", "assigned project", "task expiration"],
+      enum: ["friend request", "friend request accepted", "assigned task", "assigned project", "task expiration"],
       required: true,
     },
     message: { type: String, default: "" },

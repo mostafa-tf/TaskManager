@@ -7,6 +7,13 @@ import { RiTaskLine } from "react-icons/ri";
 import { useSocket } from "../contexts/SocketContext";
 
 const typeConfig: Record<string, { icon: JSX.Element; label: string; color: string; bg: string; border: string }> = {
+  "friend request": {
+    icon: <GiThreeFriends size={22} />,
+    label: "Friend Request",
+    color: "#f48fb1",
+    bg: "rgba(244,143,177,0.12)",
+    border: "rgba(244,143,177,0.28)",
+  },
   "assigned project": {
     icon: <FaProjectDiagram size={20} />,
     label: "Project",
@@ -87,6 +94,11 @@ export const Notifications = () => {
       setNoNotifications(false);
       showMsg("A new task has been assigned to you!");
     };
+    const onFriendRequest = (notification: any) => {
+      setNotifications((prev) => [notification, ...prev]);
+      setNoNotifications(false);
+      showMsg("You have a new friend request!");
+    };
     const onRequestAccepted = (notification: any) => {
       setNotifications((prev) => [notification, ...prev]);
       setNoNotifications(false);
@@ -100,12 +112,14 @@ export const Notifications = () => {
 
     socket.on("project_invitation", onProjectInvitation);
     socket.on("assigned_task", onAssignedTask);
+    socket.on("friend_request", onFriendRequest);
     socket.on("request_accepted", onRequestAccepted);
     socket.on("notification", onNotification);
 
     return () => {
       socket.off("project_invitation", onProjectInvitation);
       socket.off("assigned_task", onAssignedTask);
+      socket.off("friend_request", onFriendRequest);
       socket.off("request_accepted", onRequestAccepted);
       socket.off("notification", onNotification);
     };

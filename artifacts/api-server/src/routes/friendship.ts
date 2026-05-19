@@ -71,12 +71,29 @@ router.post("/addfriend", verifytoken, async (req: Request, res: Response) => {
         existing.requester = new mongoose.Types.ObjectId((req as any).user.id);
         existing.receiver = new mongoose.Types.ObjectId(req.body.receiver);
         await existing.save();
+        const senderUserRej = await User.findById((req as any).user.id);
+        const notifRej = await Notification.create({
+          type: "friend request",
+          message: `${senderUserRej?.username} sent you a friend request`,
+          receiver: req.body.receiver,
+          sender: (req as any).user.id,
+        });
+        const ioRej = req.app.get("io");
+        ioRej.to(`${req.body.receiver}`).emit("friend_request", notifRej);
         res.status(200).json({ message: "friend request sent" }); return;
       }
       if (existing.status === "blocked") { res.status(400).json({ message: "cannot add, maybe blocked!" }); return; }
     }
     await Friendship.create({ requester: (req as any).user.id, receiver: req.body.receiver });
     const senderUser = await User.findById((req as any).user.id);
+    const notification = await Notification.create({
+      type: "friend request",
+      message: `${senderUser?.username} sent you a friend request`,
+      receiver: req.body.receiver,
+      sender: (req as any).user.id,
+    });
+    const io = req.app.get("io");
+    io.to(`${req.body.receiver}`).emit("friend_request", notification);
     await createLog((req as any).user.id, `You sent a friend request to ${receiverUser.username}`, "user", req.body.receiver);
     await createLog(req.body.receiver, `${senderUser?.username} sent you a friend request`, "user", (req as any).user.id);
     res.status(200).json({ message: "friend request sent successfully" });
