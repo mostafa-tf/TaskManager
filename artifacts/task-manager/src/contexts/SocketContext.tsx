@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { io, Socket } from "socket.io-client";
 
 interface SocketContextType {
@@ -21,7 +21,7 @@ const getUserIdFromToken = (): string | null => {
 };
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
-  const socketRef = useRef<Socket | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -30,23 +30,24 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const userId = getUserIdFromToken();
     if (!userId) return;
 
-    socketRef.current = io("/", {
+    const newSocket = io("/", {
       path: "/api/socket.io",
       auth: { token },
     });
 
-    socketRef.current.on("connect", () => {
-      socketRef.current?.emit("joinUserRoom", userId);
+    newSocket.on("connect", () => {
+      newSocket.emit("joinUserRoom", userId);
     });
 
+    setSocket(newSocket);
+
     return () => {
-      socketRef.current?.disconnect();
-      socketRef.current = null;
+      newSocket.disconnect();
     };
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket: socketRef.current }}>
+    <SocketContext.Provider value={{ socket }}>
       {children}
     </SocketContext.Provider>
   );
