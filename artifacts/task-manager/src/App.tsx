@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SocketProvider } from "./contexts/SocketContext";
 import WelcomePage from "./pages/WelcomePage";
 import LoginPage from "./pages/Login";
 import SignUp from "./pages/SignUp";
@@ -33,133 +34,135 @@ import { Logs } from "./pages/Logs";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<WelcomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route
-          path="/admindashboard"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/resetpassword" element={<ResetPassword />} />
-        <Route
-          path="/admindashboard/feedbacks"
-          element={
-            <ProtectedRoute>
-              <FeedbacksDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route
-          path="/admindashboard/updateuser"
-          element={
-            <ProtectedRoute>
-              <UpdateUser />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AllTasks />} />
-          <Route path="donetasks" element={<DoneTasks />} />
-          <Route path="undonetasks" element={<UnDoneTasks />} />
-          <Route path="addtask" element={<AddTasks />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="edittask" element={<EditTask />} />
-          <Route path="feedback" element={<Feedback />} />
-        </Route>
-        <Route
-          path="/analysis"
-          element={
-            <ProtectedRoute>
-              <Analysis />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/friendsdashboard"
-          element={
-            <ProtectedRoute>
-              <FriendsDashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AddFriend />} />
-          <Route path="viewfriends" element={<ViewFriends />} />
-          <Route path="incomingrequests" element={<IncomingRequests />} />
-          <Route path="outgoingrequests" element={<OutgoingRequests />} />
-          <Route path="blockedusers" element={<BlockedUsers />} />
-        </Route>
-        <Route
-          path="/projects"
-          element={
-            <ProtectedRoute>
-              <ProjectDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/projects/viewprojects"
-          element={
-            <ProtectedRoute>
-              <ViewProjects />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/projects/addproject"
-          element={
-            <ProtectedRoute>
-              <AddProject />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/projects/viewprojects/:projectid"
-          element={
-            <ProtectedRoute>
-              <ViewProject />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/projects/projectmember/:memberid"
-          element={
-            <ProtectedRoute>
-              <MemberPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/notifications"
-          element={
-            <ProtectedRoute>
-              <Notifications />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/logs"
-          element={
-            <ProtectedRoute>
-              <Logs />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <SocketProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<WelcomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route
+            path="/admindashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/resetpassword" element={<ResetPassword />} />
+          <Route
+            path="/admindashboard/feedbacks"
+            element={
+              <ProtectedRoute>
+                <FeedbacksDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route
+            path="/admindashboard/updateuser"
+            element={
+              <ProtectedRoute>
+                <UpdateUser />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AllTasks />} />
+            <Route path="donetasks" element={<DoneTasks />} />
+            <Route path="undonetasks" element={<UnDoneTasks />} />
+            <Route path="addtask" element={<AddTasks />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="edittask" element={<EditTask />} />
+            <Route path="feedback" element={<Feedback />} />
+          </Route>
+          <Route
+            path="/analysis"
+            element={
+              <ProtectedRoute>
+                <Analysis />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/friendsdashboard"
+            element={
+              <ProtectedRoute>
+                <FriendsDashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AddFriend />} />
+            <Route path="viewfriends" element={<ViewFriends />} />
+            <Route path="incomingrequests" element={<IncomingRequests />} />
+            <Route path="outgoingrequests" element={<OutgoingRequests />} />
+            <Route path="blockedusers" element={<BlockedUsers />} />
+          </Route>
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute>
+                <ProjectDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/viewprojects"
+            element={
+              <ProtectedRoute>
+                <ViewProjects />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/addproject"
+            element={
+              <ProtectedRoute>
+                <AddProject />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/viewprojects/:projectid"
+            element={
+              <ProtectedRoute>
+                <ViewProject />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/projectmember/:memberid"
+            element={
+              <ProtectedRoute>
+                <MemberPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/logs"
+            element={
+              <ProtectedRoute>
+                <Logs />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </SocketProvider>
   );
 }
 

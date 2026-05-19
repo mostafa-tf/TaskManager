@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaBell, FaClock } from "react-icons/fa";
 import { FaProjectDiagram } from "react-icons/fa";
 import { GiThreeFriends } from "react-icons/gi";
 import { RiTaskLine } from "react-icons/ri";
-import { io, Socket } from "socket.io-client";
+import { useSocket } from "../contexts/SocketContext";
 
 const typeConfig: Record<string, { icon: JSX.Element; label: string; color: string; bg: string; border: string }> = {
   "assigned project": {
@@ -49,15 +49,21 @@ export const Notifications = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [noNotifications, setNoNotifications] = useState(false);
   const [message, setMessage] = useState("");
-  const socketRef = useRef<Socket | null>(null);
+  const { socket } = useSocket();
   const navigate = useNavigate();
 
-  const showMsg = (msg: string) => { setMessage(msg); setTimeout(() => setMessage(""), 3000); };
+  const showMsg = (msg: string) => {
+    setMessage(msg);
+    setTimeout(() => setMessage(""), 3000);
+  };
 
   const fetchNotifications = async () => {
-    setNoNotifications(false); setNotifications([]);
+    setNoNotifications(false);
+    setNotifications([]);
     try {
-      const res = await fetch("/api/notifications", { headers: { authorization: `Bearer ${localStorage.getItem("token")}` } });
+      const res = await fetch("/api/notifications", {
+        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       const data = await res.json();
       if (res.status === 404) setNoNotifications(true);
       else if (res.status === 200) setNotifications(data);
@@ -66,45 +72,66 @@ export const Notifications = () => {
 
   useEffect(() => {
     fetchNotifications();
-    socketRef.current = io("/", {
-      path: "/api/socket.io",
-      auth: { token: localStorage.getItem("token") },
-    });
-    socketRef.current.on("notification", (notification: any) => {
-      setNotifications((prev) => [notification, ...prev]);
-      setNoNotifications(false);
-      showMsg("New notification received!");
-    });
-    socketRef.current.on("project_invitation", (notification: any) => {
+  }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const onProjectInvitation = (notification: any) => {
       setNotifications((prev) => [notification, ...prev]);
       setNoNotifications(false);
       showMsg("You've been added to a project!");
-    });
-    socketRef.current.on("assigned_task", (notification: any) => {
+    };
+    const onAssignedTask = (notification: any) => {
       setNotifications((prev) => [notification, ...prev]);
       setNoNotifications(false);
       showMsg("A new task has been assigned to you!");
-    });
-    socketRef.current.on("request_accepted", (notification: any) => {
+    };
+    const onRequestAccepted = (notification: any) => {
       setNotifications((prev) => [notification, ...prev]);
       setNoNotifications(false);
       showMsg("A friend request was accepted!");
-    });
-    return () => { socketRef.current?.disconnect(); };
-  }, []);
+    };
+    const onNotification = (notification: any) => {
+      setNotifications((prev) => [notification, ...prev]);
+      setNoNotifications(false);
+      showMsg("New notification received!");
+    };
+
+    socket.on("project_invitation", onProjectInvitation);
+    socket.on("assigned_task", onAssignedTask);
+    socket.on("request_accepted", onRequestAccepted);
+    socket.on("notification", onNotification);
+
+    return () => {
+      socket.off("project_invitation", onProjectInvitation);
+      socket.off("assigned_task", onAssignedTask);
+      socket.off("request_accepted", onRequestAccepted);
+      socket.off("notification", onNotification);
+    };
+  }, [socket]);
 
   const markRead = async (id: string) => {
     try {
-      await fetch(`/api/notifications/${id}/read`, { method: "PUT", headers: { authorization: `Bearer ${localStorage.getItem("token")}` } });
+      await fetch(`/api/notifications/${id}/read`, {
+        method: "PUT",
+        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setNotifications((prev) => prev.map((n) => n._id === id ? { ...n, isRead: true } : n));
     } catch { }
   };
 
   const deleteNotification = async (id: string) => {
     try {
-      await fetch(`/api/notifications/${id}`, { method: "DELETE", headers: { authorization: `Bearer ${localStorage.getItem("token")}` } });
-      setNotifications((prev) => prev.filter((n) => n._id !== id));
-      if (notifications.length <= 1) setNoNotifications(true);
+      await fetch(`/api/notifications/${id}`, {
+        method: "DELETE",
+        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setNotifications((prev) => {
+        const updated = prev.filter((n) => n._id !== id);
+        if (updated.length === 0) setNoNotifications(true);
+        return updated;
+      });
     } catch { }
   };
 
