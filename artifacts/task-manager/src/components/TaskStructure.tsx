@@ -24,7 +24,8 @@ export const TaskStructure = ({
 }: TaskStructureProps) => {
   const curtime = new Date();
   const [year, month, day] = isexpired.slice(0, 10).split("-").map(Number);
-  const taskdate = new Date(year, month - 1, day + 1, 0, 0, 0);
+  const [endH, endM] = (endhour || "23:59").split(":").map(Number);
+  const taskdate = new Date(year, month - 1, day, endH, endM, 0);
 
   const expirestime = (curdate: Date, tdate: Date) => {
     const diff = Math.floor((tdate.getTime() - curdate.getTime()) / 1000);
