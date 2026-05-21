@@ -113,7 +113,7 @@ export const TaskStructure = ({
         <div className="flex-1 min-w-[160px]">
           {completed && completedat && (
             <p className="m-0 text-sm font-bold leading-[1.7] text-[#7dffb2]">
-              Completed At: {completedat.slice(0, 19).replace("T", " ")}
+              Completed At: {(() => { const d = new Date(completedat); d.setHours(d.getHours() + 3); return d.toISOString().slice(0, 19).replace("T", " "); })()}
             </p>
           )}
           {taskdate < curtime && !completed && (
