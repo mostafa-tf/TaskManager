@@ -193,16 +193,17 @@ export const AdminDashboard = () => {
 
       {users.length > 0 && (
         <div className="rounded-[20px] bg-[rgba(255,255,255,0.04)] border border-[rgba(0,255,140,0.10)] p-4 overflow-x-auto">
-          <div className="grid grid-cols-[1fr_1fr_1fr_120px] gap-3 px-5 py-2.5 mb-2">
-            {["Username", "Email", "Role", "Actions"].map((h) => (
+          <div className="grid grid-cols-[1fr_1fr_1fr_140px_120px] gap-3 px-5 py-2.5 mb-2">
+            {["Username", "Email", "Role", "Registered", "Actions"].map((h) => (
               <span key={h} className="text-white/50 text-xs font-extrabold uppercase tracking-[0.8px]">{h}</span>
             ))}
           </div>
           {users.map((user) => (
-            <div key={user._id} className="grid grid-cols-[1fr_1fr_1fr_120px] gap-3 items-center px-5 py-4 rounded-[14px] bg-[rgba(255,255,255,0.04)] border border-[rgba(0,255,140,0.08)] mb-2.5">
+            <div key={user._id} className="grid grid-cols-[1fr_1fr_1fr_140px_120px] gap-3 items-center px-5 py-4 rounded-[14px] bg-[rgba(255,255,255,0.04)] border border-[rgba(0,255,140,0.08)] mb-2.5">
               <span className="text-white/90 text-sm font-semibold break-all">{user.username}</span>
               <span className="text-white/90 text-sm font-semibold break-all">{user.email}</span>
               <span className={`text-sm font-semibold ${user.role === "admin" ? "text-[#ffe082]" : "text-[#dffff0]"}`}>{user.role}</span>
+              <span className="text-white/70 text-sm font-semibold">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}</span>
               <div className="flex gap-2">
                 <button
                   className="h-9 px-3 rounded-[10px] border-none bg-[linear-gradient(135deg,#c62828,#e53935)] text-white text-sm font-bold cursor-pointer flex items-center gap-1.5"
