@@ -90,6 +90,40 @@ router.put("/logout", verifytoken, async (req: Request, res: Response) => {
   res.status(200).json({ message: "succesfully logout" });
 });
 
+router.put("/changepassword", verifytoken, async (req: Request, res: Response) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) { res.status(400).json({ message: "Both passwords are required" }); return; }
+    if (newPassword.length < 6) { res.status(400).json({ message: "New password must be at least 6 characters" }); return; }
+    const user = await User.findById((req as any).user.id);
+    if (!user) { res.status(404).json({ message: "User not found" }); return; }
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) { res.status(400).json({ message: "Current password is incorrect" }); return; }
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(newPassword, salt);
+    await User.findByIdAndUpdate(user._id, { $set: { password: hashed } });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: process.env.MAIL_USER, pass: process.env.MAIL_PASS },
+    });
+    await transporter.sendMail({
+      from: process.env.MAIL_USER,
+      to: user.email,
+      subject: "Your password has been changed",
+      html: `<div style="font-family:sans-serif;max-width:480px;margin:auto;padding:32px;background:#f9f9f9;border-radius:12px;border:1px solid #e0e0e0">
+        <h2 style="color:#1b5e20;margin-bottom:8px">Password Changed</h2>
+        <p style="color:#333">Hi <strong>${user.username}</strong>,</p>
+        <p style="color:#333">Your TaskFlow account password was successfully changed.</p>
+        <p style="color:#333">If you did not make this change, please reset your password immediately or contact support.</p>
+        <p style="color:#888;font-size:13px;margin-top:24px">— The TaskFlow Team</p>
+      </div>`,
+    });
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.get("/checkrole", verifytoken, async (req: Request, res: Response) => {
   try {
     const user = await User.findById((req as any).user.id);
