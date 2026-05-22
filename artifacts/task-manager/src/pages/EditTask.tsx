@@ -98,7 +98,7 @@ export const EditTask = () => {
     color: "#ffffff", padding: "0 14px", outline: "none", fontSize: "15px", boxSizing: "border-box",
   };
 
-  const selectStyle: React.CSSProperties = { ...inputStyle, cursor: "pointer" };
+  const selectStyle: React.CSSProperties = { ...inputStyle, cursor: "pointer", backgroundColor: "#0b1a12", colorScheme: "dark" };
 
   const textareaStyle: React.CSSProperties = {
     width: "100%", minHeight: "120px", borderRadius: "16px",
@@ -180,9 +180,9 @@ export const EditTask = () => {
             <label style={labelStyle}>Priority</label>
             <select style={selectStyle} value={task.priority || "low"}
               onChange={(e) => setTask((p: any) => ({ ...p, priority: e.target.value }))}>
-              <option value="low">Low Priority</option>
-              <option value="med">Medium Priority</option>
-              <option value="high">High Priority</option>
+              <option value="low" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Low Priority</option>
+              <option value="med" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Medium Priority</option>
+              <option value="high" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>High Priority</option>
             </select>
           </div>
 

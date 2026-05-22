@@ -139,6 +139,8 @@ export const AddTasks = () => {
   const selectStyle: React.CSSProperties = {
     ...inputStyle,
     cursor: "pointer",
+    backgroundColor: "#0b1a12",
+    colorScheme: "dark",
   };
 
   const textareaStyle: React.CSSProperties = {
@@ -277,10 +279,10 @@ export const AddTasks = () => {
               onChange={(e) => setTaskInfo((prev) => ({ ...prev, priority: e.target.value }))}
               style={selectStyle}
             >
-              <option value="">Select Priority</option>
-              <option value="low">Low Priority</option>
-              <option value="medium">Medium Priority</option>
-              <option value="high">High Priority</option>
+              <option value="" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Select Priority</option>
+              <option value="low" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Low Priority</option>
+              <option value="medium" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Medium Priority</option>
+              <option value="high" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>High Priority</option>
             </select>
           </div>
 
