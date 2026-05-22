@@ -1,0 +1,14 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "PhDkP_tsAFBoHWK-mLobR"
+uri = "file://screenshots/landing.jpg"
+type = "image"
+title = "TaskFlow — Landing Page"
+
+[[outputs]]
+id = "6DMdQhhdkupwwquhg-w1j"
+uri = "file://screenshots/login.jpg"
+type = "image"
+title = "TaskFlow — Login Page"
