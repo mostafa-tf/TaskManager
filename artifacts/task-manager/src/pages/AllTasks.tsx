@@ -108,11 +108,11 @@ export const AllTasks = () => {
         </div>
         <div className="flex flex-col gap-2">
           <label className="flex items-center gap-2 text-[#dffff0] text-sm font-bold"><MdLowPriority />Filter By Priority</label>
-          <select value={priorityfilter} onChange={(e) => setPriorityFilter(e.target.value)} className={inputClass}>
-            <option value="">Filter By Priority</option>
-            <option value="low">low</option>
-            <option value="med">medium</option>
-            <option value="high">high</option>
+          <select value={priorityfilter} onChange={(e) => setPriorityFilter(e.target.value)} className={inputClass} style={{ backgroundColor: "#0b1a12", colorScheme: "dark" }}>
+            <option value="" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Filter By Priority</option>
+            <option value="low" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>low</option>
+            <option value="med" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>medium</option>
+            <option value="high" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>high</option>
           </select>
         </div>
       </div>
