@@ -244,11 +244,12 @@ export const ViewProject = () => {
                   <select
                     value={selectedFriend}
                     onChange={(e) => setSelectedFriend(e.target.value)}
-                    className="w-full box-border px-[15px] py-[13px] rounded-[14px] border border-[rgba(64,196,255,0.22)] bg-[rgba(255,255,255,0.06)] text-white outline-none text-[15px] cursor-pointer"
+                    className="w-full box-border px-[15px] py-[13px] rounded-[14px] border border-[rgba(64,196,255,0.22)] text-white outline-none text-[15px] cursor-pointer"
+                    style={{ backgroundColor: "#0b1a12", colorScheme: "dark" }}
                   >
-                    <option value="">— Choose a friend —</option>
+                    <option value="" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>— Choose a friend —</option>
                     {availableFriends.map((f) => (
-                      <option key={f._id} value={f._id}>{f.username} ({f.email})</option>
+                      <option key={f._id} value={f._id} style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>{f.username} ({f.email})</option>
                     ))}
                   </select>
                 </div>
@@ -287,11 +288,12 @@ export const ViewProject = () => {
 
             <label className="block mb-2 mt-[14px] text-[#dffff0] font-extrabold">Task Priority</label>
             <select className={inputClass} value={taskinfo.priority}
-              onChange={(e) => setTaskInfo((prev) => ({ ...prev, priority: e.target.value }))} required>
-              <option value="">Select Priority</option>
-              <option value="low">Low Priority</option>
-              <option value="medium">Medium Priority</option>
-              <option value="high">High Priority</option>
+              onChange={(e) => setTaskInfo((prev) => ({ ...prev, priority: e.target.value }))} required
+              style={{ backgroundColor: "#0b1a12", colorScheme: "dark" }}>
+              <option value="" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Select Priority</option>
+              <option value="low" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Low Priority</option>
+              <option value="medium" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Medium Priority</option>
+              <option value="high" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>High Priority</option>
             </select>
 
             <label className="block mb-2 mt-[14px] text-[#dffff0] font-extrabold">Description</label>
@@ -301,10 +303,11 @@ export const ViewProject = () => {
 
             <label className="block mb-2 mt-[14px] text-[#dffff0] font-extrabold">Assign To</label>
             <select className={inputClass} value={taskinfo.assignedto}
-              onChange={(e) => setTaskInfo((prev) => ({ ...prev, assignedto: e.target.value }))} required>
-              <option value="">Select A Member</option>
+              onChange={(e) => setTaskInfo((prev) => ({ ...prev, assignedto: e.target.value }))} required
+              style={{ backgroundColor: "#0b1a12", colorScheme: "dark" }}>
+              <option value="" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Select A Member</option>
               {project.members && project.members.map((member: any) => (
-                <option key={member.userId} value={member.userId}>{member.username}</option>
+                <option key={member.userId} value={member.userId} style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>{member.username}</option>
               ))}
             </select>
 
