@@ -349,3 +349,13 @@
     inset: -1px;
   }
 }
+
+/* Force dark background on all native select dropdowns */
+select {
+  color-scheme: dark;
+}
+
+select option {
+  background-color: #0b1a12 !important;
+  color: #ffffff !important;
+}
