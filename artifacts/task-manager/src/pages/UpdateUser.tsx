@@ -46,9 +46,9 @@ export const UpdateUser = () => {
           </div>
           <div className="mb-5">
             <label className="block text-[#caffdf] mb-2 text-sm font-bold">New Role</label>
-            <select className={inputClass} value={role} onChange={(e) => setRole(e.target.value)}>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
+            <select className={inputClass} value={role} onChange={(e) => setRole(e.target.value)} style={{ backgroundColor: "#0b1a12", colorScheme: "dark" }}>
+              <option value="user" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>User</option>
+              <option value="admin" style={{ backgroundColor: "#0b1a12", color: "#ffffff" }}>Admin</option>
             </select>
           </div>
           <button type="submit" className="w-full h-[50px] rounded-[14px] border-none bg-[linear-gradient(135deg,#00c853,#00e676)] text-[#08110c] text-base font-extrabold cursor-pointer">
