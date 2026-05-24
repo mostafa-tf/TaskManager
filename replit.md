@@ -55,6 +55,32 @@ A full-stack task management web application reproduced from [mostafa-tf/TaskMan
 - Profile management: edit username/email, change password with email notification
 - Audit Logs to ensure safety and traceability
 
+## Sentiment Analysis (Feedbacks Dashboard)
+
+Admin-only feature in `FeedbacksDashboard.tsx`. A "Sentiment Analysis" button above the feedback table toggles to a full analysis view showing per-feedback sentiment badges and a summary panel.
+
+**Algorithm: VADER-inspired weighted lexicon with negation detection**
+
+```
+1. Tokenize the message (lowercase, strip punctuation, split by spaces)
+2. For each token:
+   - If it is a negation word (not, never, no, neither, nor, barely, hardly, scarcely, without)
+     → activate a 3-word negation window
+   - If the token exists in the weighted lexicon:
+     → add its score (flipped if inside negation window)
+3. Normalize: final score = total / number of matched words
+4. Classify:
+   - score > 0.3  → Positive
+   - score < −0.3 → Negative
+   - otherwise    → Neutral
+```
+
+Lexicon contains ~60 words. Positive words scored +1 to +3 (e.g. `great: 3`, `good: 2`, `clean: 1`). Negative words scored −1 to −3 (e.g. `terrible: -3`, `slow: -2`, `issue: -1`). Negation example: *"not good"* → score −2 instead of +2.
+
+Output: colored badge per feedback (green/yellow/red) + score value + summary cards showing count and percentage per sentiment class. Fully frontend, no library, no API call.
+
+Reference: Hutto, C.J. & Gilbert, E.E. (2014). *VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text.*
+
 ## Real-time Notifications
 
 - `SocketContext.tsx` uses `useState` (not `useRef`) so socket instance propagates via React context
