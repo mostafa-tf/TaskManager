@@ -95,7 +95,7 @@ export const Logs = () => {
       )}
 
       {!loading && logs.length > 0 && (
-        <div className="flex flex-col gap-3 max-w-[800px]">
+        <div className="flex flex-col gap-3 max-w-[800px] mx-auto">
           {logs.map((log) => (
             <div
               key={log._id}

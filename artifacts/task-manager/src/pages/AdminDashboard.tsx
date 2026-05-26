@@ -20,6 +20,7 @@ export const AdminDashboard = () => {
   const [isError, setIsError] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editRole, setEditRole] = useState("user");
+  const [usernameFilter, setUsernameFilter] = useState("");
   const navigate = useNavigate();
 
   const showMsg = (msg: string, err: boolean) => {
@@ -193,12 +194,32 @@ export const AdminDashboard = () => {
 
       {users.length > 0 && (
         <div className="rounded-[20px] bg-[rgba(255,255,255,0.04)] border border-[rgba(0,255,140,0.10)] p-4 overflow-x-auto">
+          <div className="mb-4 px-1">
+            <input
+              type="text"
+              placeholder="Filter by username..."
+              value={usernameFilter}
+              onChange={(e) => setUsernameFilter(e.target.value)}
+              style={{
+                width: "260px",
+                height: "40px",
+                borderRadius: "12px",
+                border: "1px solid rgba(0,255,140,0.20)",
+                background: "rgba(255,255,255,0.07)",
+                color: "#ffffff",
+                padding: "0 14px",
+                outline: "none",
+                fontSize: "14px",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
           <div className="grid grid-cols-[1fr_1fr_1fr_140px_120px] gap-3 px-5 py-2.5 mb-2">
             {["Username", "Email", "Role", "Registered", "Actions"].map((h) => (
               <span key={h} className="text-white/50 text-xs font-extrabold uppercase tracking-[0.8px]">{h}</span>
             ))}
           </div>
-          {users.map((user) => (
+          {users.filter((u) => u.username.toLowerCase().includes(usernameFilter.toLowerCase())).map((user) => (
             <div key={user._id} className="grid grid-cols-[1fr_1fr_1fr_140px_120px] gap-3 items-center px-5 py-4 rounded-[14px] bg-[rgba(255,255,255,0.04)] border border-[rgba(0,255,140,0.08)] mb-2.5">
               <span className="text-white/90 text-sm font-semibold break-all">{user.username}</span>
               <span className="text-white/90 text-sm font-semibold break-all">{user.email}</span>
