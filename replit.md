@@ -2,6 +2,10 @@
 
 A full-stack task management web application reproduced from [mostafa-tf/TaskManager](https://github.com/mostafa-tf/TaskManager.git). Users can manage personal and project tasks, collaborate with friends, track activity audit logs, and monitor productivity via analytics.
 
+## Demonstration
+
+📹 [Watch the full demo on Google Drive](https://drive.google.com/file/d/1gp-gPlHlvm6GAQ9Tfdmhyx5xqWWj0YOj/view?usp=drivesdk)
+
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080, proxied at /api)
