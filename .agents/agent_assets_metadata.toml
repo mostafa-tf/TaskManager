@@ -18,3 +18,9 @@ id = "vBUa2YdEW6nzK2IXw4orP"
 uri = "file://TaskFlow-Progress-Report.docx"
 type = "word_document"
 title = "TaskFlow — Weekly Progress Report"
+
+[[outputs]]
+id = "Wrevxh7dqE1rur2kxxvtz"
+uri = "file://TaskFlow-Progress-Report.pdf"
+type = "pdf"
+title = "TaskFlow — Progress Report (PDF)"
