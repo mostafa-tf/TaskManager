@@ -1,12 +1,11 @@
 import PDFDocument from "pdfkit";
-import { createWriteStream } from "fs";
+import { createWriteStream, readFileSync, existsSync } from "fs";
 
-const doc = new PDFDocument({ margin: 60, size: "A4" });
+const doc = new PDFDocument({ margin: 60, size: "A4", autoFirstPage: true });
 doc.pipe(createWriteStream("TaskFlow-Progress-Report.pdf"));
 
 const GREEN = "#1B5E20";
 const BLACK = "#212121";
-const W = 495;
 
 const h1 = (text) => {
   doc.moveDown(0.6)
@@ -49,6 +48,29 @@ const divider = () => {
   const y = doc.y;
   doc.moveTo(60, y).lineTo(555, y).strokeColor("#C8E6C9").lineWidth(1).stroke();
   doc.moveDown(0.6);
+};
+
+const imgLabel = (label) => {
+  doc.moveDown(0.3)
+     .font("Helvetica-Bold").fontSize(10).fillColor(GREEN)
+     .text(label, { align: "center" })
+     .moveDown(0.4);
+};
+
+const addImage = (filepath, label, w = 430) => {
+  if (!existsSync(filepath)) return;
+  const img = readFileSync(filepath);
+  const pageW = 495;
+  const x = 60 + (pageW - w) / 2;
+
+  // check if we need a new page
+  if (doc.y + 220 > doc.page.height - doc.page.margins.bottom) {
+    doc.addPage();
+  }
+
+  imgLabel(label);
+  doc.image(img, x, doc.y, { width: w, align: "center" });
+  doc.moveDown(12);
 };
 
 // ── Title ────────────────────────────────────────────────────────────
@@ -123,6 +145,13 @@ divider();
 // ── 4. Demonstration ──────────────────────────────────────────────────
 h1("4. Demonstration");
 kv("Demo Video", "https://drive.google.com/file/d/1gp-gPlHlvm6GAQ9Tfdmhyx5xqWWj0YOj/view?usp=drivesdk");
+doc.moveDown(0.5);
+
+// Screenshots
+addImage("screenshots/home.jpg",   "Home Page");
+addImage("screenshots/login.jpg",  "Login Page");
+addImage("screenshots/signup.jpg", "Sign Up Page");
+
 divider();
 
 // ── 5. Challenges ─────────────────────────────────────────────────────
@@ -139,7 +168,7 @@ const challenges = [
 ];
 
 const colWidths = [220, 275];
-const rowH = 36;
+const rowH = 38;
 const startX = 60;
 let tableY = doc.y;
 
@@ -152,12 +181,10 @@ challenges.forEach(([left, right], i) => {
   doc.rect(startX + colWidths[0], tableY, colWidths[1], rowH).fillAndStroke(bg, "#C8E6C9");
 
   doc.font(isHeader ? "Helvetica-Bold" : "Helvetica").fontSize(9.5).fillColor(fg)
-     .text(left, startX + 5, tableY + 6, { width: colWidths[0] - 10, lineGap: 1 });
+     .text(left, startX + 5, tableY + 8, { width: colWidths[0] - 10, lineGap: 1 });
 
-  const textH = doc.heightOfString(right, { width: colWidths[1] - 10 });
-  const cellY = tableY + Math.max(0, (rowH - textH) / 2);
   doc.font(isHeader ? "Helvetica-Bold" : "Helvetica").fontSize(9.5).fillColor(fg)
-     .text(right, startX + colWidths[0] + 5, cellY, { width: colWidths[1] - 10, lineGap: 1 });
+     .text(right, startX + colWidths[0] + 5, tableY + 8, { width: colWidths[1] - 10, lineGap: 1 });
 
   tableY += rowH;
 });
@@ -167,7 +194,7 @@ divider();
 
 // ── 6. Deployment Checklist ───────────────────────────────────────────
 h1("6. Deployment Checklist");
-const checks = [
+[
   "Application runs without errors",
   "MongoDB Atlas connected and seeded",
   "All environment variables configured (MONGODB_URI, JWT_KEY, SESSION_SECRET, MAIL_USER, MAIL_PASS)",
@@ -176,8 +203,7 @@ const checks = [
   "Socket.io proxied correctly through /api/socket.io",
   "Full end-to-end testing completed",
   "Live at https://taskflow.replit.app",
-];
-checks.forEach(check);
+].forEach(check);
 
 doc.end();
 console.log("Done: TaskFlow-Progress-Report.pdf");
