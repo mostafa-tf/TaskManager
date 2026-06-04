@@ -12,3 +12,9 @@ id = "6DMdQhhdkupwwquhg-w1j"
 uri = "file://screenshots/login.jpg"
 type = "image"
 title = "TaskFlow — Login Page"
+
+[[outputs]]
+id = "vBUa2YdEW6nzK2IXw4orP"
+uri = "file://TaskFlow-Progress-Report.docx"
+type = "word_document"
+title = "TaskFlow — Weekly Progress Report"
