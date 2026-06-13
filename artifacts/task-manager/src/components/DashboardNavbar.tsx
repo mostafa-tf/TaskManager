@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { FaUsers, FaBars } from "react-icons/fa";
 import { FaProjectDiagram } from "react-icons/fa";
 import { MdFeedback, MdNotifications } from "react-icons/md";
+import { MdLightMode, MdDarkMode } from "react-icons/md";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface DashboardNavbarProps {
   onMenuClick?: () => void;
@@ -21,6 +23,7 @@ const DashboardNavbar = ({ onMenuClick }: DashboardNavbarProps) => {
   const [isadminn, setIsAdmin] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
+  const { isDark, toggleTheme } = useTheme();
 
   const logout = async () => {
     await fetch("/api/users/logout", {
@@ -124,6 +127,14 @@ const DashboardNavbar = ({ onMenuClick }: DashboardNavbarProps) => {
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>
           )}
+        </button>
+
+        <button
+          onClick={toggleTheme}
+          title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          className="w-9 h-9 flex items-center justify-center rounded-[10px] border border-[rgba(0,255,140,0.18)] bg-[rgba(0,255,140,0.06)] text-[#dffff0] cursor-pointer"
+        >
+          {isDark ? <MdLightMode size={18} /> : <MdDarkMode size={18} />}
         </button>
 
         <button

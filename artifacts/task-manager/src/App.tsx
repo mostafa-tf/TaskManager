@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SocketProvider } from "./contexts/SocketContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import WelcomePage from "./pages/WelcomePage";
 import LoginPage from "./pages/Login";
 import SignUp from "./pages/SignUp";
@@ -34,6 +35,7 @@ import { Logs } from "./pages/Logs";
 
 function App() {
   return (
+    <ThemeProvider>
     <SocketProvider>
       <BrowserRouter>
         <Routes>
@@ -163,6 +165,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </SocketProvider>
+    </ThemeProvider>
   );
 }
 

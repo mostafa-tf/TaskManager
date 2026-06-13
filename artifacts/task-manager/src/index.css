@@ -359,3 +359,138 @@ select option {
   background-color: #0b1a12 !important;
   color: #ffffff !important;
 }
+
+/* ── LIGHT MODE ───────────────────────────────────────────────────────── */
+
+html.light body {
+  background: #f0faf5 !important;
+  color: #0d2116 !important;
+}
+
+/* Dashboard grid background */
+html.light .dashboard-grid {
+  background: linear-gradient(135deg, #f0faf5 0%, #e6f5ec 50%, #f0faf5 100%) !important;
+}
+
+/* Page-level full-screen backgrounds (all pages use these dark gradient classes) */
+html.light [class*="07110d"],
+html.light [class*="0b1d15"],
+html.light [class*="08110c"],
+html.light [class*="0b1a12"] {
+  background: linear-gradient(135deg, #f0faf5 0%, #e6f5ec 50%, #f0faf5 100%) !important;
+}
+
+/* Navbars specifically */
+html.light nav[class*="07110d"],
+html.light nav[class*="1a2e22"],
+html.light nav[class*="1f3d2e"] {
+  background: #eaf7f0 !important;
+  border-color: rgba(0, 150, 80, 0.22) !important;
+}
+
+/* Card / panel backgrounds */
+html.light [class*="rgba(255,255,255,0.04)"],
+html.light [class*="rgba(255,255,255,0.05)"],
+html.light [class*="rgba(255,255,255,0.06)"] {
+  background: rgba(0, 120, 60, 0.06) !important;
+}
+
+/* Input / field backgrounds */
+html.light [class*="rgba(255,255,255,0.07)"],
+html.light [class*="rgba(255,255,255,0.08)"],
+html.light [class*="rgba(255,255,255,0.09)"],
+html.light [class*="rgba(255,255,255,0.10)"],
+html.light [class*="rgba(255,255,255,0.12)"],
+html.light [class*="rgba(255,255,255,0.14)"] {
+  background: rgba(0, 120, 60, 0.08) !important;
+}
+
+/* Dark overlay backgrounds (modals, backdrops) */
+html.light [class*="bg-black"] {
+  background: rgba(200, 240, 220, 0.7) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Modal / popup card backgrounds */
+html.light [class*="rgba(10,20,15"],
+html.light [class*="rgba(15,15,15"],
+html.light [class*="rgba(5,15,10"] {
+  background: #ffffff !important;
+  border-color: rgba(0, 150, 80, 0.2) !important;
+}
+
+/* White text → dark green */
+html.light .text-white {
+  color: #0d2116 !important;
+}
+html.light [class*="text-white\/"] {
+  color: rgba(13, 33, 22, 0.85) !important;
+}
+
+/* Light-colored text tokens (#dffff0, #caffdf, #eafff4, #60ff9c stays green) */
+html.light [class*="text-[#dffff0]"],
+html.light [class*="text-[#caffdf]"],
+html.light [class*="text-[#eafff4]"] {
+  color: #1a4a2e !important;
+}
+
+/* rgba(255,255,255,...) text */
+html.light [class*="text-[rgba(255"] {
+  color: rgba(13, 33, 22, 0.8) !important;
+}
+
+/* Dark aside sidebar */
+html.light aside {
+  background: #eaf7f0 !important;
+}
+
+/* Aside nav link inactive text */
+html.light [class*="text-[#eafff4]"] {
+  color: #1a4a2e !important;
+}
+
+/* Border overrides */
+html.light [class*="border-[#1f3d2e]"],
+html.light [class*="border-[#1a2e22]"] {
+  border-color: rgba(0, 150, 80, 0.2) !important;
+}
+
+/* Select in light mode */
+html.light select {
+  color-scheme: light;
+  color: #0d2116 !important;
+  background-color: #e8f5ee !important;
+}
+html.light select option {
+  background-color: #e8f5ee !important;
+  color: #0d2116 !important;
+}
+
+/* Datepicker in light mode */
+html.light .react-datepicker {
+  background-color: #eaf7f0 !important;
+  border-color: rgba(0, 150, 80, 0.3) !important;
+  color: #0d2116 !important;
+}
+html.light .react-datepicker__header {
+  background-color: rgba(0, 200, 100, 0.12) !important;
+}
+html.light .react-datepicker__current-month,
+html.light .react-datepicker__day-name,
+html.light .react-datepicker-time__header {
+  color: #0d2116 !important;
+}
+html.light .react-datepicker__day {
+  color: #0d2116 !important;
+}
+html.light .react-datepicker__day:hover {
+  background-color: rgba(0, 200, 100, 0.2) !important;
+}
+html.light .react-datepicker__day--outside-month {
+  color: rgba(13, 33, 22, 0.35) !important;
+}
+html.light .custom-dark-datepicker {
+  background: rgba(0, 120, 60, 0.08) !important;
+  color: #0d2116 !important;
+  border-color: rgba(0, 150, 80, 0.25) !important;
+}

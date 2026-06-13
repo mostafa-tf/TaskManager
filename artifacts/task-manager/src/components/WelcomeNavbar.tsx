@@ -1,8 +1,11 @@
 import { FaArrowLeft } from "react-icons/fa";
+import { MdLightMode, MdDarkMode } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../contexts/ThemeContext";
 
 const WelcomeNavbar = ({ page = "welcome" }: { page?: string }) => {
   const navigate = useNavigate();
+  const { isDark, toggleTheme } = useTheme();
   return (
     <nav className="flex items-center justify-center w-full h-[70px] text-[#00e676] relative text-2xl sm:text-3xl bg-[#07110d] border-b border-[#1a2e22]">
       {page !== "welcome" && (
@@ -14,6 +17,13 @@ const WelcomeNavbar = ({ page = "welcome" }: { page?: string }) => {
         </button>
       )}
       <span className="font-extrabold tracking-wide">TaskFlow</span>
+      <button
+        onClick={toggleTheme}
+        title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+        className="absolute right-4 w-[42px] h-[42px] rounded-full flex items-center justify-center text-[#00e676] border-2 border-[#00e676] cursor-pointer bg-transparent"
+      >
+        {isDark ? <MdLightMode size={20} /> : <MdDarkMode size={20} />}
+      </button>
     </nav>
   );
 };
