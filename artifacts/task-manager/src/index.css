@@ -372,7 +372,7 @@ html.light .dashboard-grid {
   background: linear-gradient(135deg, #f0faf5 0%, #e6f5ec 50%, #f0faf5 100%) !important;
 }
 
-/* Page-level full-screen backgrounds (all pages use these dark gradient classes) */
+/* ── Tailwind class-based dark backgrounds ── */
 html.light [class*="07110d"],
 html.light [class*="0b1d15"],
 html.light [class*="08110c"],
@@ -380,7 +380,6 @@ html.light [class*="0b1a12"] {
   background: linear-gradient(135deg, #f0faf5 0%, #e6f5ec 50%, #f0faf5 100%) !important;
 }
 
-/* Navbars specifically */
 html.light nav[class*="07110d"],
 html.light nav[class*="1a2e22"],
 html.light nav[class*="1f3d2e"] {
@@ -388,14 +387,12 @@ html.light nav[class*="1f3d2e"] {
   border-color: rgba(0, 150, 80, 0.22) !important;
 }
 
-/* Card / panel backgrounds */
 html.light [class*="rgba(255,255,255,0.04)"],
 html.light [class*="rgba(255,255,255,0.05)"],
 html.light [class*="rgba(255,255,255,0.06)"] {
   background: rgba(0, 120, 60, 0.06) !important;
 }
 
-/* Input / field backgrounds */
 html.light [class*="rgba(255,255,255,0.07)"],
 html.light [class*="rgba(255,255,255,0.08)"],
 html.light [class*="rgba(255,255,255,0.09)"],
@@ -405,13 +402,10 @@ html.light [class*="rgba(255,255,255,0.14)"] {
   background: rgba(0, 120, 60, 0.08) !important;
 }
 
-/* Dark overlay backgrounds (modals, backdrops) */
 html.light [class*="bg-black"] {
   background: rgba(200, 240, 220, 0.7) !important;
-  backdrop-filter: blur(4px);
 }
 
-/* Modal / popup card backgrounds */
 html.light [class*="rgba(10,20,15"],
 html.light [class*="rgba(15,15,15"],
 html.light [class*="rgba(5,15,10"] {
@@ -419,7 +413,45 @@ html.light [class*="rgba(5,15,10"] {
   border-color: rgba(0, 150, 80, 0.2) !important;
 }
 
-/* White text → dark green */
+/* ── Inline style-based dark backgrounds (WelcomePage, ViewProject, etc.) ── */
+
+/* Main page wrapper with #050a08 or radial-gradient dark bg */
+html.light [style*="#050a08"] {
+  background: linear-gradient(135deg, #f0faf5 0%, #e6f5ec 50%, #f0faf5 100%) !important;
+}
+
+/* Dark modal/card panels (rgba(22,22,22...), rgba(12,12,12...), rgba(5,10,8...)) */
+html.light [style*="rgba(22,22,22"],
+html.light [style*="rgba(12,12,12"] {
+  background: #ffffff !important;
+}
+
+html.light [style*="rgba(5,10,8"] {
+  background: rgba(0, 120, 60, 0.05) !important;
+}
+
+/* Feature / info cards with subtle dark gradient */
+html.light [style*="rgba(255,255,255,0.06)"],
+html.light [style*="rgba(255,255,255,0.09)"],
+html.light [style*="rgba(255,255,255,0.03)"],
+html.light [style*="rgba(255,255,255,0.02)"] {
+  background: rgba(0, 120, 60, 0.06) !important;
+}
+
+/* Fixed backdrop overlays */
+html.light [style*="rgba(0,0,0,0.35)"],
+html.light [style*="rgba(0,0,0,0.6)"],
+html.light [style*="rgba(0,0,0,0.85)"] {
+  background: rgba(180, 230, 205, 0.65) !important;
+}
+
+/* Inline select / option dark backgrounds */
+html.light [style*="#0b1a12"] {
+  background-color: #e8f5ee !important;
+  color: #0d2116 !important;
+}
+
+/* ── Text overrides ── */
 html.light .text-white {
   color: #0d2116 !important;
 }
@@ -427,35 +459,31 @@ html.light [class*="text-white\/"] {
   color: rgba(13, 33, 22, 0.85) !important;
 }
 
-/* Light-colored text tokens (#dffff0, #caffdf, #eafff4, #60ff9c stays green) */
 html.light [class*="text-[#dffff0]"],
 html.light [class*="text-[#caffdf]"],
 html.light [class*="text-[#eafff4]"] {
   color: #1a4a2e !important;
 }
 
-/* rgba(255,255,255,...) text */
 html.light [class*="text-[rgba(255"] {
   color: rgba(13, 33, 22, 0.8) !important;
 }
 
-/* Dark aside sidebar */
+/* ── Structural elements ── */
 html.light aside {
   background: #eaf7f0 !important;
 }
 
-/* Aside nav link inactive text */
 html.light [class*="text-[#eafff4]"] {
   color: #1a4a2e !important;
 }
 
-/* Border overrides */
 html.light [class*="border-[#1f3d2e]"],
 html.light [class*="border-[#1a2e22]"] {
   border-color: rgba(0, 150, 80, 0.2) !important;
 }
 
-/* Select in light mode */
+/* ── Selects ── */
 html.light select {
   color-scheme: light;
   color: #0d2116 !important;
@@ -466,7 +494,7 @@ html.light select option {
   color: #0d2116 !important;
 }
 
-/* Datepicker in light mode */
+/* ── Datepicker ── */
 html.light .react-datepicker {
   background-color: #eaf7f0 !important;
   border-color: rgba(0, 150, 80, 0.3) !important;
