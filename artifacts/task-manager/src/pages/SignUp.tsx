@@ -2,9 +2,11 @@ import WelcomeNavbar from "../components/WelcomeNavbar";
 import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdErrorOutline } from "react-icons/md";
+import { useTheme } from "../contexts/ThemeContext";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
   const passwordRef = useRef<HTMLInputElement>(null);
   const repasswordRef = useRef<HTMLInputElement>(null);
   const [matching, setMatching] = useState(true);
@@ -38,7 +40,7 @@ const SignUp = () => {
   return (
     <>
       <WelcomeNavbar page="signup" />
-      <main className="w-full min-h-[calc(100vh-70px)] flex justify-center items-center px-5 py-[30px] box-border bg-[radial-gradient(circle_at_top,rgba(0,255,140,0.08),transparent_24%),linear-gradient(135deg,rgb(7,14,10)_0%,rgb(10,24,17)_45%,rgb(6,10,8)_100%)]">
+      <main className="w-full min-h-[calc(100vh-70px)] flex justify-center items-center px-5 py-[30px] box-border" style={{ background: isDark ? "radial-gradient(circle at top,rgba(0,255,140,0.08),transparent 24%),linear-gradient(135deg,rgb(7,14,10) 0%,rgb(10,24,17) 45%,rgb(6,10,8) 100%)" : "linear-gradient(135deg,#f0faf5 0%,#e6f5ec 50%,#f0faf5 100%)" }}>
         <div className="w-full max-w-[460px] p-[38px_32px] rounded-[28px] bg-[rgba(255,255,255,0.06)] border border-[rgba(0,255,128,0.16)] shadow-[0_22px_60px_rgba(0,0,0,0.42)] backdrop-blur-[14px] box-border">
           <h2 className="m-0 text-white text-[34px] font-extrabold text-center tracking-[0.4px]">Create Account</h2>
           <p className="mt-2.5 mb-7 text-white/72 text-center text-[15px] leading-[1.7]">

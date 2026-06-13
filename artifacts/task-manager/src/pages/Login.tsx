@@ -2,9 +2,11 @@ import WelcomeNavbar from "../components/WelcomeNavbar";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { MdErrorOutline } from "react-icons/md";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
   const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
@@ -23,7 +25,7 @@ const Login = () => {
   return (
     <>
       <WelcomeNavbar page="login" />
-      <div className="w-full min-h-[calc(100vh-70px)] flex items-center justify-center bg-[linear-gradient(135deg,rgb(7,14,10)_0%,rgb(10,24,17)_45%,rgb(6,10,8)_100%)] p-[30px_20px]">
+      <div className="w-full min-h-[calc(100vh-70px)] flex items-center justify-center p-[30px_20px]" style={{ background: isDark ? "linear-gradient(135deg,rgb(7,14,10) 0%,rgb(10,24,17) 45%,rgb(6,10,8) 100%)" : "linear-gradient(135deg,#f0faf5 0%,#e6f5ec 50%,#f0faf5 100%)" }}>
         <div className="w-full max-w-[430px] p-[40px_32px] rounded-[28px] bg-[rgba(255,255,255,0.06)] border border-[rgba(0,255,128,0.18)] shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-[14px]">
           <h2 className="text-white text-[34px] font-extrabold text-center mb-2 tracking-[0.5px]">Welcome Back</h2>
           <p className="text-white/72 text-center text-[15px] mb-[30px] leading-[1.7]">

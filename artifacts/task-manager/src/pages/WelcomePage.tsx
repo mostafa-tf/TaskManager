@@ -5,6 +5,7 @@ import { GiThreeFriends } from "react-icons/gi";
 import { FcStatistics } from "react-icons/fc";
 import { FaProjectDiagram, FaBell } from "react-icons/fa";
 import { MdDone, MdOutlineHistory } from "react-icons/md";
+import { useTheme } from "../contexts/ThemeContext";
 
 const features = [
   {
@@ -51,11 +52,15 @@ const features = [
   },
 ];
 
+const LIGHT_BG = "linear-gradient(135deg, #f0faf5 0%, #e6f5ec 50%, #f0faf5 100%)";
+const DARK_BG  = "radial-gradient(ellipse at top, rgba(0,255,140,0.10), transparent 55%), #050a08";
+
 function WelcomePage() {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
 
   return (
-    <div className="min-h-screen text-white" style={{ background: "radial-gradient(ellipse at top, rgba(0,255,140,0.10), transparent 55%), #050a08" }}>
+    <div className="min-h-screen text-white" style={{ background: isDark ? DARK_BG : LIGHT_BG }}>
       <WelcomeNavbar />
 
       <section className="relative flex flex-col items-center justify-center text-center px-5 pt-[80px] pb-[90px] overflow-hidden">
